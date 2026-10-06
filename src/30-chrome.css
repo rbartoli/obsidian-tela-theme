@@ -21,6 +21,9 @@
 	--nav-item-background-hover: color-mix(in oklch, var(--mono-100) 5%, transparent);
 	--nav-item-background-active: color-mix(in oklch, var(--mono-100) 10%, transparent);
 
+	/* Tree rows read like Tela's rail titles, not Obsidian's muted grey. */
+	--nav-item-color: var(--tela-title-ink);
+
 	/* Active tab: Tela's wash-04 over the base, flattened to a solid colour so
 	   the hairline outline doesn't show through. */
 	--tab-background-active: color-mix(in oklch, var(--mono-100) 4%, var(--background-primary));

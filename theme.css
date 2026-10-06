@@ -97,6 +97,13 @@
 	--tela-code-important: #0969da;
 }
 
+/* Tela's list-title ink (--title-ink): fg at 86%, built from fg as Tela
+   builds it, so each scheme gets its own. */
+.theme-dark,
+.theme-light {
+	--tela-title-ink: color-mix(in srgb, var(--tela-fg) 86%, transparent);
+}
+
 /* Colour: rebuild Obsidian's base scale from Tela's neutrals. Obsidian derives
    its semantic layer from these steps (primary = 00, primary-alt = 10,
    secondary = 20, border = 30, faint = 50, muted = 70, normal = 100), so most
@@ -221,6 +228,9 @@ body {
 	--nav-item-background-hover: color-mix(in oklch, var(--mono-100) 5%, transparent);
 	--nav-item-background-active: color-mix(in oklch, var(--mono-100) 10%, transparent);
 
+	/* Tree rows read like Tela's rail titles, not Obsidian's muted grey. */
+	--nav-item-color: var(--tela-title-ink);
+
 	/* Active tab: Tela's wash-04 over the base, flattened to a solid colour so
 	   the hairline outline doesn't show through. */
 	--tab-background-active: color-mix(in oklch, var(--mono-100) 4%, var(--background-primary));
@@ -254,9 +264,9 @@ body.is-focused .workspace-split.mod-root .mod-active .workspace-tab-header.is-a
 /* File tree marks, after Tela's rail: one 16px Lucide glyph, the size and
    stroke of Obsidian's own icons, in the gutter Obsidian reserves for the
    collapse chevron. Folders swap the chevron for a closed or open folder, and
-   every file gets a glyph for its type, replacing the text badge. Only the
-   active file's mark takes the accent. "Classic tree icons" in Style Settings
-   turns this off. */
+   every file gets a glyph for its type, replacing the text badge. Marks take
+   Tela's icon ink (muted); only the active file's mark takes the accent.
+   "Classic tree icons" in Style Settings turns this off. */
 body {
 	--tela-mark-folder: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z'/%3E%3C/svg%3E");
 	--tela-mark-folder-open: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2'/%3E%3C/svg%3E");
@@ -278,7 +288,7 @@ body:not(.tela-classic-tree) .nav-folder-title .collapse-icon::after {
 	content: "";
 	width: 16px;
 	height: 16px;
-	background-color: var(--text-faint);
+	background-color: var(--text-muted);
 	mask: var(--tela-mark-folder-open) center / 16px no-repeat;
 }
 
@@ -298,7 +308,7 @@ body:not(.tela-classic-tree) .nav-file-title::before {
 	flex-shrink: 0;
 	width: var(--size-4-4);
 	margin-inline: calc(-1 * var(--size-4-5)) var(--size-4-1);
-	background-color: var(--text-faint);
+	background-color: var(--text-muted);
 	mask: var(--tela-mark) center / 16px no-repeat;
 }
 

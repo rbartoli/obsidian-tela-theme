@@ -83,3 +83,10 @@
 	--tela-code-operator: #cf222e;
 	--tela-code-important: #0969da;
 }
+
+/* Tela's list-title ink (--title-ink): fg at 86%, built from fg as Tela
+   builds it, so each scheme gets its own. */
+.theme-dark,
+.theme-light {
+	--tela-title-ink: color-mix(in srgb, var(--tela-fg) 86%, transparent);
+}
