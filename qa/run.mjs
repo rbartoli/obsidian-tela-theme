@@ -17,9 +17,12 @@
 //   --no-shots          audit only, no screenshots
 //   --no-sheets         skip the contact sheets (ImageMagick's montage)
 //   --keep-open         leave Obsidian running afterwards, for probing with qa/cdp.mjs
+//   --out <dir>         write the results there; unlike the default folder, it is
+//                       not emptied first
 //
 // Needs the Obsidian desktop app: `obsidian` on PATH, or OBSIDIAN_BIN.
-// Writes qa/out/<theme>-<obsidian version>/: report.md, report.json, shots/, sheets/.
+// Writes report.md, report.json, shots/ and sheets/ to qa/out/<theme>-<obsidian version>/,
+// which each run empties first, or to --out.
 
 import { spawn, spawnSync } from 'node:child_process'
 import { copyFileSync, cpSync, existsSync, linkSync, mkdirSync, mkdtempSync, openSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
@@ -53,6 +56,7 @@ const { values: opt } = parseArgs({
 		shots: { type: 'boolean', default: true },
 		sheets: { type: 'boolean', default: true },
 		'keep-open': { type: 'boolean', default: false },
+		out: { type: 'string' },
 	},
 	allowNegative: true,
 })
@@ -175,6 +179,11 @@ function prepare(tmp, theme, asar, version) {
 		mkdirSync(dir, { recursive: true })
 		for (const [file, src] of Object.entries(theme.files)) copyFileSync(src, join(dir, file))
 	}
+	// Settings as a modal in the main window, where the audit reaches it; on
+	// desktop, 1.14 opens it in a window of its own by default.
+	const config = join(vault, '.obsidian', 'app.json')
+	const app = existsSync(config) ? JSON.parse(readFileSync(config, 'utf8')) : {}
+	writeFileSync(config, JSON.stringify({ ...app, settingsPopoutWindow: false }, null, '\t'))
 	const appearance = join(vault, '.obsidian', 'appearance.json')
 	const settings = existsSync(appearance) ? JSON.parse(readFileSync(appearance, 'utf8')) : {}
 	writeFileSync(appearance, JSON.stringify({ ...settings, cssTheme: theme.files ? theme.name : '' }, null, '\t'))
@@ -226,6 +235,17 @@ async function press(page, key, code, keyCode) {
 async function ready(page, theme) {
 	await until('the workspace', () => page.evaluate('window.app?.workspace?.layoutReady === true'), 90_000)
 	await until(`the ${theme.name} theme`, () => page.evaluate(`app.customCss.theme === ${JSON.stringify(theme.files ? theme.name : '')} && app.customCss.styleEl.textContent.length ${theme.files ? '> 0' : '=== 0'}`))
+	// Links finish resolving after the layout is ready (a canvas's links come
+	// last), and backlinks and the graph show whatever is resolved so far.
+	// Wait until the resolved links stop changing for a second.
+	let links = ''
+	let stable = 0
+	await until('the link index', async () => {
+		const now = await page.evaluate('app.metadataCache.initialized && !app.metadataCache.inProgressTaskCount ? JSON.stringify(app.metadataCache.resolvedLinks) : ""')
+		stable = now && now === links ? stable + 1 : 0
+		links = now
+		return stable >= 4
+	})
 	await page.evaluate(axeSource())
 	await page.evaluate(`(${installHelpers})()`)
 	for (let i = 0; i < 3 && (await page.evaluate('document.querySelectorAll(".modal-container").length')); i++) await press(page, 'Escape', 'Escape', 27)
@@ -270,8 +290,10 @@ async function capture(page, out, where, scene) {
 		const css = JSON.stringify(`${AUDIT_CSS}\n${scene.auditCss ?? ''}`)
 		await page.evaluate(`document.head.appendChild(Object.assign(document.createElement('style'), { id: 'qa-audit', textContent: ${css} })) && true`)
 		try {
-			// Paging only moves the scroller, so after the first screen only it is audited.
-			const context = n && scene.scroll ? `document.querySelector(${JSON.stringify(scene.scroll)})` : 'document'
+			// Paging only moves the scroller, so after the first screen only it is
+			// audited. Overlay scenes audit just the overlay.
+			const only = scene.audit ?? (n && scene.scroll)
+			const context = only ? `(document.querySelector(${JSON.stringify(only)}) ?? (() => { throw new Error(${JSON.stringify(`nothing matches ${only}`)}) })())` : 'document'
 			Object.assign(step, await page.evaluate(audit(context)))
 		} finally {
 			await page.evaluate("document.getElementById('qa-audit')?.remove()")
@@ -410,8 +432,8 @@ async function main() {
 	const theme = await themeUnderTest(opt.theme)
 	const version = await obsidianVersion()
 	const asar = await obsidianAsar(version)
-	const out = join(root, 'qa', 'out', `${slug(theme.name)}-${version}`)
-	rmSync(out, { recursive: true, force: true })
+	const out = opt.out ? resolve(opt.out) : join(root, 'qa', 'out', `${slug(theme.name)}-${version}`)
+	if (!opt.out) rmSync(out, { recursive: true, force: true })
 	mkdirSync(out, { recursive: true })
 	const tmp = mkdtempSync(join(tmpdir(), 'tela-qa-'))
 	const { profile } = prepare(tmp, theme, asar, version)

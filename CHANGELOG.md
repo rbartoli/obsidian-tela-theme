@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### 2026-10-07: QA fixes (#10, #12)
+
+- Settings opens as a modal in the main window during QA. On desktop, Obsidian 1.14 opens it in a window of its own, so the first run never audited it.
+- Every scene starts from an empty tab. A note reopened in its own tab comes back at its last scroll position, so a scene after a paged one could start at the end of the note.
+- Screens are captured once running transitions finish and the link index has settled. Some themes fade colours for longer than a scene waited, and a canvas's links resolve last.
+- Overlay scenes (command palette, menu, page preview, settings) audit only the overlay; the screen behind it is audited in the other scenes.
+- Contact sheets scale screenshots down as they are read: 30 tablet screens overran ImageMagick's memory limit and one sheet was missing. `--out` writes a run to another folder without emptying it.
+- Re-run on Obsidian 1.14.4: the same 5 light-mode violations. Elements axe couldn't decide fell from 52–77 to 20–24 per device and mode.
+
 ### 2026-10-07: Obsidian update check (#11)
 
 - `npm run drift` checks an Obsidian release for changes that would quietly break the theme. It fails if Obsidian no longer reads a variable the theme sets, no longer defines one the theme reads, or no longer uses a class or attribute the theme styles. It also reports Obsidian's changed defaults for those variables, followed down `var()` chains, against `qa/obsidian-baseline.json`.

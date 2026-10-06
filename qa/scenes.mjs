@@ -23,6 +23,8 @@ const EDITING = '.workspace-leaf.mod-active .cm-scroller'
 // applies to. own: needs this repo's theme (a Style Settings class).
 // auditCss: applied during the audit only, after the screenshot, to hide
 // transparent layers that stop axe from finding the text's background.
+// audit: the overlay a scene opens; only it is audited, since the screen
+// behind it is audited in the scenes without it.
 export const scenes = [
 	{ name: 'reading', scroll: READING, setup: (p) => p.run(() => __qa.open('Tour.md', { mode: 'preview' })) },
 	{ name: 'editing', scroll: EDITING, setup: (p) => p.run(() => __qa.edit('Tour.md')) },
@@ -64,6 +66,7 @@ export const scenes = [
 				app.commands.executeCommandById('command-palette:open')
 				await __qa.settle(600)
 			}),
+		audit: '.modal-container',
 	},
 	{
 		name: 'menu',
@@ -76,6 +79,7 @@ export const scenes = [
 				row.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, clientX: r.left + 40, clientY: r.top + r.height / 2 }))
 				await __qa.settle(600)
 			}),
+		audit: '.menu',
 	},
 	{
 		name: 'popover',
@@ -93,8 +97,10 @@ export const scenes = [
 					linktext: 'Properties',
 					sourcePath: 'Tour.md',
 				})
-				await __qa.settle(2000)
+				await __qa.find('.hover-popover .markdown-preview-view')
+				await __qa.settle(800)
 			}),
+		audit: '.hover-popover',
 	},
 	{
 		name: 'graph',
@@ -112,6 +118,7 @@ export const scenes = [
 				app.setting.openTabById('appearance')
 				await __qa.settle(600)
 			}),
+		audit: '.modal-container',
 	},
 	{
 		name: 'drawer',
@@ -153,10 +160,15 @@ export function installHelpers() {
 	const frames = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
 	const ws = app.workspace
 	window.__qa = {
-		// Two frames, a pause for async rendering (images, maths, diagrams), two more frames.
+		// Two frames, a pause for async rendering (images, maths, diagrams), then
+		// until running transitions finish: some themes fade colours for longer
+		// than the pause, and axe would measure a colour between two states.
 		async settle(ms = 400) {
 			await frames()
 			await sleep(ms)
+			const end = Date.now() + 3000
+			const running = () => document.getAnimations().some((a) => a.playState === 'running' && a.effect?.getComputedTiming().endTime !== Infinity)
+			while (running() && Date.now() < end) await sleep(50)
 			await frames()
 		},
 		// Waits for an element that renders late (drawers, virtualised lists).
@@ -214,11 +226,14 @@ export function installHelpers() {
 		},
 		// One empty tab, the file explorer showing every folder open, the right
 		// sidebar (and on mobile both drawers) closed, no Style Settings class.
+		// The tab is emptied, not reused: a note reopened in its own tab comes
+		// back at its last scroll position.
 		async reset() {
 			document.body.classList.remove('tela-distinct-sidebar')
 			const leaves = []
 			ws.iterateRootLeaves((leaf) => leaves.push(leaf))
 			for (const leaf of leaves.slice(1)) leaf.detach()
+			await leaves[0]?.setViewState({ type: 'empty' })
 			// Sidebar views load on first show, so they may not have their methods yet.
 			ws.getLeavesOfType('search')[0]?.view.setQuery?.('')
 			const explorer = ws.getLeavesOfType('file-explorer')[0]
