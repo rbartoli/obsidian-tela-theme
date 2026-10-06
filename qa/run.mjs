@@ -335,7 +335,7 @@ function summarise(steps) {
 		for (const v of s.violations) {
 			const { fg, bg } = colours(v)
 			const key = [s.device, s.mode, v.rule, v.target, fg, bg].join('|')
-			const seen = unique.get(key) ?? { device: s.device, mode: s.mode, rule: v.rule, target: v.target, text: v.text, fg, bg, ratio: v.data.contrastRatio, expected: v.data.expectedContrastRatio ?? v.data.requiredContrastRatio, size: v.data.fontSize, weight: v.data.fontWeight, scenes: new Set(), shots: [] }
+			const seen = unique.get(key) ?? { device: s.device, mode: s.mode, rule: v.rule, target: v.target, text: v.text, fg, bg, ratio: v.data.contrastRatio, expected: v.data.expectedContrastRatio ?? `${v.data.requiredContrastRatio}:1`, size: v.data.fontSize, weight: v.data.fontWeight, scenes: new Set(), shots: [] }
 			seen.scenes.add(s.scene)
 			if (s.shot) seen.shots.push(s.shot)
 			unique.set(key, seen)
@@ -377,7 +377,9 @@ function report(out, meta, steps, summary, errors) {
 	if (summary.groups.length) {
 		lines.push('## Violations', '', 'One entry per colour pair; each lists where it appears and up to three examples.', '')
 		for (const g of summary.groups) {
-			lines.push(`- **${g.mode}, ${g.ratio}:1** (needs ${g.expected}) · ${g.fg} on ${g.bg} · ${g.size ?? ''} ${g.weight ?? ''} · ${g.rule} · ${g.count} element${g.count > 1 ? 's' : ''}`)
+			// link-in-text-block compares a link with the text around it, not with a background.
+			const pair = g.rule === 'link-in-text-block' ? `link ${g.fg} against text ${g.bg}` : `${g.fg} on ${g.bg}`
+			lines.push(`- **${g.mode}, ${g.ratio}:1** (needs ${g.expected}) · ${pair} · ${g.size ?? ''} ${g.weight ?? ''} · ${g.rule} · ${g.count} element${g.count > 1 ? 's' : ''}`)
 			lines.push(`  - ${[...g.devices].join(', ')} · ${[...g.scenes].join(', ')}`)
 			for (const e of g.examples) lines.push(`  - "${e.text}" \`${e.target.slice(0, 140)}\`${e.shot ? ` · ${e.shot}` : ''}`)
 		}
