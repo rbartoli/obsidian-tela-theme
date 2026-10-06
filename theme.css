@@ -1,0 +1,18 @@
+/* Tela, an Obsidian theme inspired by the Tela app's style guide. */
+
+/* Accent via h/s/l rather than --color-accent, so the user's own accent
+   setting keeps overriding it. Values are Tela's --accent per scheme. */
+.theme-dark {
+	--accent-h: 206;
+	--accent-s: 100%;
+	--accent-l: 50%;
+
+	/* White on #0091ff is 3.23:1; Tela's --on-accent ink is 5.75:1. */
+	--text-on-accent: #111318;
+}
+
+.theme-light {
+	--accent-h: 212;
+	--accent-s: 92%;
+	--accent-l: 45%;
+}
