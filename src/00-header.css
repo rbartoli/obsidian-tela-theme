@@ -1,0 +1,11 @@
+/* Tela, an Obsidian theme inspired by the Tela app's style guide.
+   https://github.com/rbartoli/obsidian-tela-theme (MIT)
+
+   Generated from src/ by scripts/build.mjs. Edit the partials, not theme.css.
+
+   Layers, in order:
+   10-tokens       the --tela-* palette, one block per colour scheme
+   20-foundation   Obsidian's base scale, extended colours, type and shape
+   30-chrome       sidebars, tabs, navigation, overlays
+   40-editor       headings and editor details
+   50-settings     Style Settings options */

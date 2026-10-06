@@ -1,0 +1,52 @@
+/* Tela blends its chrome with the content's ground: rail, toolbar and tab
+   strip all sit on --bg, separated only by hairline borders. Obsidian puts
+   sidebars, ribbon and status bar on --background-secondary, so pointing that
+   at the base gives the same single-plane look. */
+.theme-dark,
+.theme-light {
+	--background-secondary: var(--tela-bg);
+	--tab-container-background: var(--background-primary);
+	--sidebar-tab-container-background: var(--background-secondary);
+	--titlebar-background: var(--background-primary);
+	--titlebar-background-focused: var(--background-primary);
+
+	/* Tela's buttons: panel fill, hairline border, accent border on hover. */
+	--interactive-normal: var(--tela-panel);
+	--interactive-hover: var(--color-base-25);
+	--input-shadow: inset 0 0 0 1px var(--background-modifier-border);
+	--input-shadow-hover: inset 0 0 0 1px var(--interactive-accent);
+
+	/* Selection is a neutral wash, not an accent fill (Tela's .rail-active,
+	   wash-10; hover wash-05). */
+	--nav-item-background-hover: color-mix(in oklch, var(--mono-100) 5%, transparent);
+	--nav-item-background-active: color-mix(in oklch, var(--mono-100) 10%, transparent);
+
+	/* Active tab: Tela's wash-04 over the base, flattened to a solid colour so
+	   the hairline outline doesn't show through. */
+	--tab-background-active: color-mix(in oklch, var(--mono-100) 4%, var(--background-primary));
+
+	/* Overlays sit on the raised panel, as Tela's menus and popovers do. */
+	--menu-background: var(--tela-panel);
+	--menu-border-color: var(--background-modifier-border);
+	--prompt-background: var(--tela-panel);
+	--prompt-border-color: var(--background-modifier-border);
+	--modal-border-color: var(--background-modifier-border);
+}
+
+body {
+	--nav-item-radius: 6px;
+	--nav-item-weight-active: 550;
+
+	/* Flat tab strip: no curves, no rounded tops. */
+	--tab-curve: 0px;
+	--tab-radius-active: 0;
+	--status-bar-radius: 0;
+}
+
+/* The focused pane's active tab gets Tela's 2px accent top line. No variable
+   covers this, so it is the one component rule in the chrome layer. */
+body.is-focused .workspace-split.mod-root .mod-active .workspace-tab-header.is-active {
+	box-shadow:
+		inset 0 2px 0 var(--interactive-accent),
+		0 0 0 var(--tab-outline-width) var(--tab-outline-color);
+}

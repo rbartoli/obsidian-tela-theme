@@ -1,0 +1,85 @@
+/* Tela's palette, copied from tela/shared/theme.ts (DARK / LIGHT) and the
+   values its derivations produce: deriveNeutrals() for panel/border/sunken,
+   railRecess() for the recess, onAccentInk() for the ink on the raw accent,
+   attention and warn fills.
+   The light neutrals sit DARKER than the base: Tela's ramp keeps elevation in
+   perceptual terms, so on a pale ground a raised panel steps down.
+
+   --tela-faint has no Tela counterpart: Tela has two text lanes and holds
+   both to WCAG AA. Obsidian sets real text in faint (tab titles, settings
+   headings, code comments, result counts), so faint is muted blended into
+   the base only as far as it still clears 4.5:1 on bg and on code blocks.
+
+   --tela-code-* is Tela's terminal palette (dark: Tomorrow Night, light:
+   GitHub Light, from theme.ts ansi), so code blocks read like Tela's
+   terminal. Every value clears 4.5:1 on --tela-panel2, the code ground. */
+
+.theme-dark {
+	--tela-bg: #0d0e11;
+	--tela-panel: #16171c;
+	--tela-panel2: #121317;
+	--tela-border: #23252b;
+	--tela-sunken: #0b0d12;
+	--tela-recess: #07080c;
+	--tela-fg: #e6e8ef;
+	--tela-muted: #8b90a3;
+	--tela-faint: #7c8091;
+	--tela-accent: #0091ff;
+	--tela-on-accent: #111318;
+	--tela-on-attention: #111318;
+	--tela-on-warn: #111318;
+	--tela-attention: #f76b15;
+	--tela-ok: #3fb950;
+	--tela-warn: #d29922;
+	--tela-err: #f85149;
+
+	/* Hues Tela has no status role for, from its terminal palette
+	   (Tomorrow Night bright cyan / magenta). */
+	--tela-cyan: #70c0b1;
+	--tela-purple: #c397d8;
+	--tela-yellow: var(--tela-warn);
+	--tela-code-keyword: #b294bb;
+	--tela-code-function: #81a2be;
+	--tela-code-string: #b5bd68;
+	--tela-code-value: #f0c674;
+	--tela-code-property: #c66;
+	--tela-code-tag: #c66;
+	--tela-code-operator: #8abeb7;
+	--tela-code-important: #f0c674;
+}
+
+.theme-light {
+	--tela-bg: #f7f8fa;
+	--tela-panel: #ebedf3;
+	--tela-panel2: #f1f2f6;
+	--tela-border: #d7d9e0;
+	--tela-sunken: #f5f7fb;
+	--tela-recess: #e6e7e9;
+	--tela-fg: #1f2328;
+	--tela-muted: #59636e;
+	--tela-faint: #666f79;
+	--tela-accent: #0969da;
+	--tela-on-accent: #fff;
+	--tela-on-attention: #fff;
+	--tela-on-warn: #fff;
+	--tela-attention: #bc4c00;
+	--tela-ok: #116329;
+	--tela-warn: #7d4e00;
+	--tela-err: #cf222e;
+
+	/* GitHub Light family, which Tela's light terminal palette is built on.
+	   Yellow is not --tela-warn here: warn is tuned dark for text, and Obsidian
+	   tints highlights, callouts and canvas cards from --color-yellow, where
+	   that brown would read as mud. */
+	--tela-cyan: #1b7c83;
+	--tela-purple: #8250df;
+	--tela-yellow: #bf8700;
+	--tela-code-keyword: #cf222e;
+	--tela-code-function: #8250df;
+	--tela-code-string: #116329;
+	--tela-code-value: #0550ae;
+	--tela-code-property: #106068;
+	--tela-code-tag: #a40e26;
+	--tela-code-operator: #cf222e;
+	--tela-code-important: #0969da;
+}

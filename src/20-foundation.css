@@ -1,0 +1,100 @@
+/* Colour: rebuild Obsidian's base scale from Tela's neutrals. Obsidian derives
+   its semantic layer from these steps (primary = 00, primary-alt = 10,
+   secondary = 20, border = 30, faint = 50, muted = 70, normal = 100), so most
+   of the app follows without per-component overrides. Steps Tela has no
+   neutral for are mixed from their neighbours. */
+.theme-dark,
+.theme-light {
+	--color-base-00: var(--tela-bg);
+	--color-base-05: color-mix(in srgb, var(--tela-bg) 50%, var(--tela-panel2));
+	--color-base-10: var(--tela-panel2);
+	--color-base-20: var(--tela-panel);
+	--color-base-25: color-mix(in srgb, var(--tela-panel) 50%, var(--tela-border));
+	--color-base-30: var(--tela-border);
+	--color-base-35: color-mix(in srgb, var(--tela-border) 80%, var(--tela-muted));
+	--color-base-40: color-mix(in srgb, var(--tela-border) 60%, var(--tela-muted));
+	--color-base-50: var(--tela-faint);
+	--color-base-60: color-mix(in srgb, var(--tela-faint) 50%, var(--tela-muted));
+	--color-base-70: var(--tela-muted);
+	--color-base-100: var(--tela-fg);
+
+	/* Extended colours feed callouts, canvas, graph and syntax highlighting. */
+	--color-red: var(--tela-err);
+	--color-orange: var(--tela-attention);
+	--color-yellow: var(--tela-yellow);
+	--color-green: var(--tela-ok);
+	--color-cyan: var(--tela-cyan);
+	--color-blue: var(--tela-accent);
+	--color-purple: var(--tela-purple);
+	--color-pink: color-mix(in oklch, var(--tela-err) 50%, var(--tela-purple));
+	--text-on-accent: var(--tela-on-accent);
+	--text-warning: var(--tela-warn);
+
+	/* Syntax highlighting from Tela's terminal palette. */
+	--code-normal: var(--text-normal);
+	--code-comment: var(--text-faint);
+	--code-punctuation: var(--text-muted);
+	--code-keyword: var(--tela-code-keyword);
+	--code-function: var(--tela-code-function);
+	--code-string: var(--tela-code-string);
+	--code-value: var(--tela-code-value);
+	--code-property: var(--tela-code-property);
+	--code-tag: var(--tela-code-tag);
+	--code-operator: var(--tela-code-operator);
+	--code-important: var(--tela-code-important);
+}
+
+/* Accent text sits on accent tints (tags, links in callouts, selected
+   rows). On the pale ground the raw accent lands near 4.1:1 there, so light
+   mode pulls accent text toward black: AA on tints, and still the user's
+   hue, since it is mixed from --color-accent. */
+.theme-light {
+	--text-accent: color-mix(in oklch, var(--color-accent) 82%, #000);
+	--text-accent-hover: color-mix(in oklch, var(--color-accent) 70%, #000);
+}
+
+/* Obsidian's mobile CSS swaps in true black (.is-mobile.theme-dark) and pure
+   black ink (.is-mobile.theme-light), at a specificity that beats the block
+   above. Tela's mobile app keeps the desktop palette, so reassert it. */
+.is-mobile.theme-dark,
+.is-mobile.theme-light {
+	--color-base-00: var(--tela-bg);
+	--color-base-10: var(--tela-panel2);
+	--color-base-20: var(--tela-panel);
+	--color-base-100: var(--tela-fg);
+}
+
+/* Accent via h/s/l rather than --color-accent, so the user's own accent
+   setting keeps overriding it. Values are --tela-accent per scheme. */
+.theme-dark {
+	--accent-h: 206;
+	--accent-s: 100%;
+	--accent-l: 50%;
+}
+
+.theme-light {
+	--accent-h: 212;
+	--accent-s: 92%;
+	--accent-l: 45%;
+}
+
+/* Type and shape. Set on body: Obsidian's mobile sizes live on .is-mobile,
+   which outranks body, so phones keep their touch sizes. */
+body {
+	/* Obsidian bundles Inter as a variable font, so Tela's UI face needs no
+	   embedding. The mono stack is Tela's, with Windows and Obsidian fallbacks. */
+	--font-interface-theme: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-text-theme: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-monospace-theme: ui-monospace, "SFMono-Regular", "Menlo", "Consolas", "Source Code Pro", monospace;
+
+	/* Tela's type roles: body 12, label 13, heading 14, display 16. */
+	--font-ui-smaller: 12px;
+	--font-ui-small: 13px;
+	--font-ui-medium: 14px;
+	--font-ui-large: 16px;
+
+	/* Tela's controls and cards are 6px; overlays stay at Obsidian's 8. */
+	--radius-s: 6px;
+	--input-radius: 6px;
+	--checkbox-radius: 4px;
+}

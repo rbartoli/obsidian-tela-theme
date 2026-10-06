@@ -1,18 +1,363 @@
-/* Tela, an Obsidian theme inspired by the Tela app's style guide. */
+/* Tela, an Obsidian theme inspired by the Tela app's style guide.
+   https://github.com/rbartoli/obsidian-tela-theme (MIT)
+
+   Generated from src/ by scripts/build.mjs. Edit the partials, not theme.css.
+
+   Layers, in order:
+   10-tokens       the --tela-* palette, one block per colour scheme
+   20-foundation   Obsidian's base scale, extended colours, type and shape
+   30-chrome       sidebars, tabs, navigation, overlays
+   40-editor       headings and editor details
+   50-settings     Style Settings options */
+
+/* Tela's palette, copied from tela/shared/theme.ts (DARK / LIGHT) and the
+   values its derivations produce: deriveNeutrals() for panel/border/sunken,
+   railRecess() for the recess, onAccentInk() for the ink on the raw accent,
+   attention and warn fills.
+   The light neutrals sit DARKER than the base: Tela's ramp keeps elevation in
+   perceptual terms, so on a pale ground a raised panel steps down.
+
+   --tela-faint has no Tela counterpart: Tela has two text lanes and holds
+   both to WCAG AA. Obsidian sets real text in faint (tab titles, settings
+   headings, code comments, result counts), so faint is muted blended into
+   the base only as far as it still clears 4.5:1 on bg and on code blocks.
+
+   --tela-code-* is Tela's terminal palette (dark: Tomorrow Night, light:
+   GitHub Light, from theme.ts ansi), so code blocks read like Tela's
+   terminal. Every value clears 4.5:1 on --tela-panel2, the code ground. */
+
+.theme-dark {
+	--tela-bg: #0d0e11;
+	--tela-panel: #16171c;
+	--tela-panel2: #121317;
+	--tela-border: #23252b;
+	--tela-sunken: #0b0d12;
+	--tela-recess: #07080c;
+	--tela-fg: #e6e8ef;
+	--tela-muted: #8b90a3;
+	--tela-faint: #7c8091;
+	--tela-accent: #0091ff;
+	--tela-on-accent: #111318;
+	--tela-on-attention: #111318;
+	--tela-on-warn: #111318;
+	--tela-attention: #f76b15;
+	--tela-ok: #3fb950;
+	--tela-warn: #d29922;
+	--tela-err: #f85149;
+
+	/* Hues Tela has no status role for, from its terminal palette
+	   (Tomorrow Night bright cyan / magenta). */
+	--tela-cyan: #70c0b1;
+	--tela-purple: #c397d8;
+	--tela-yellow: var(--tela-warn);
+	--tela-code-keyword: #b294bb;
+	--tela-code-function: #81a2be;
+	--tela-code-string: #b5bd68;
+	--tela-code-value: #f0c674;
+	--tela-code-property: #c66;
+	--tela-code-tag: #c66;
+	--tela-code-operator: #8abeb7;
+	--tela-code-important: #f0c674;
+}
+
+.theme-light {
+	--tela-bg: #f7f8fa;
+	--tela-panel: #ebedf3;
+	--tela-panel2: #f1f2f6;
+	--tela-border: #d7d9e0;
+	--tela-sunken: #f5f7fb;
+	--tela-recess: #e6e7e9;
+	--tela-fg: #1f2328;
+	--tela-muted: #59636e;
+	--tela-faint: #666f79;
+	--tela-accent: #0969da;
+	--tela-on-accent: #fff;
+	--tela-on-attention: #fff;
+	--tela-on-warn: #fff;
+	--tela-attention: #bc4c00;
+	--tela-ok: #116329;
+	--tela-warn: #7d4e00;
+	--tela-err: #cf222e;
+
+	/* GitHub Light family, which Tela's light terminal palette is built on.
+	   Yellow is not --tela-warn here: warn is tuned dark for text, and Obsidian
+	   tints highlights, callouts and canvas cards from --color-yellow, where
+	   that brown would read as mud. */
+	--tela-cyan: #1b7c83;
+	--tela-purple: #8250df;
+	--tela-yellow: #bf8700;
+	--tela-code-keyword: #cf222e;
+	--tela-code-function: #8250df;
+	--tela-code-string: #116329;
+	--tela-code-value: #0550ae;
+	--tela-code-property: #106068;
+	--tela-code-tag: #a40e26;
+	--tela-code-operator: #cf222e;
+	--tela-code-important: #0969da;
+}
+
+/* Colour: rebuild Obsidian's base scale from Tela's neutrals. Obsidian derives
+   its semantic layer from these steps (primary = 00, primary-alt = 10,
+   secondary = 20, border = 30, faint = 50, muted = 70, normal = 100), so most
+   of the app follows without per-component overrides. Steps Tela has no
+   neutral for are mixed from their neighbours. */
+.theme-dark,
+.theme-light {
+	--color-base-00: var(--tela-bg);
+	--color-base-05: color-mix(in srgb, var(--tela-bg) 50%, var(--tela-panel2));
+	--color-base-10: var(--tela-panel2);
+	--color-base-20: var(--tela-panel);
+	--color-base-25: color-mix(in srgb, var(--tela-panel) 50%, var(--tela-border));
+	--color-base-30: var(--tela-border);
+	--color-base-35: color-mix(in srgb, var(--tela-border) 80%, var(--tela-muted));
+	--color-base-40: color-mix(in srgb, var(--tela-border) 60%, var(--tela-muted));
+	--color-base-50: var(--tela-faint);
+	--color-base-60: color-mix(in srgb, var(--tela-faint) 50%, var(--tela-muted));
+	--color-base-70: var(--tela-muted);
+	--color-base-100: var(--tela-fg);
+
+	/* Extended colours feed callouts, canvas, graph and syntax highlighting. */
+	--color-red: var(--tela-err);
+	--color-orange: var(--tela-attention);
+	--color-yellow: var(--tela-yellow);
+	--color-green: var(--tela-ok);
+	--color-cyan: var(--tela-cyan);
+	--color-blue: var(--tela-accent);
+	--color-purple: var(--tela-purple);
+	--color-pink: color-mix(in oklch, var(--tela-err) 50%, var(--tela-purple));
+	--text-on-accent: var(--tela-on-accent);
+	--text-warning: var(--tela-warn);
+
+	/* Syntax highlighting from Tela's terminal palette. */
+	--code-normal: var(--text-normal);
+	--code-comment: var(--text-faint);
+	--code-punctuation: var(--text-muted);
+	--code-keyword: var(--tela-code-keyword);
+	--code-function: var(--tela-code-function);
+	--code-string: var(--tela-code-string);
+	--code-value: var(--tela-code-value);
+	--code-property: var(--tela-code-property);
+	--code-tag: var(--tela-code-tag);
+	--code-operator: var(--tela-code-operator);
+	--code-important: var(--tela-code-important);
+}
+
+/* Accent text sits on accent tints (tags, links in callouts, selected
+   rows). On the pale ground the raw accent lands near 4.1:1 there, so light
+   mode pulls accent text toward black: AA on tints, and still the user's
+   hue, since it is mixed from --color-accent. */
+.theme-light {
+	--text-accent: color-mix(in oklch, var(--color-accent) 82%, #000);
+	--text-accent-hover: color-mix(in oklch, var(--color-accent) 70%, #000);
+}
+
+/* Obsidian's mobile CSS swaps in true black (.is-mobile.theme-dark) and pure
+   black ink (.is-mobile.theme-light), at a specificity that beats the block
+   above. Tela's mobile app keeps the desktop palette, so reassert it. */
+.is-mobile.theme-dark,
+.is-mobile.theme-light {
+	--color-base-00: var(--tela-bg);
+	--color-base-10: var(--tela-panel2);
+	--color-base-20: var(--tela-panel);
+	--color-base-100: var(--tela-fg);
+}
 
 /* Accent via h/s/l rather than --color-accent, so the user's own accent
-   setting keeps overriding it. Values are Tela's --accent per scheme. */
+   setting keeps overriding it. Values are --tela-accent per scheme. */
 .theme-dark {
 	--accent-h: 206;
 	--accent-s: 100%;
 	--accent-l: 50%;
-
-	/* White on #0091ff is 3.23:1; Tela's --on-accent ink is 5.75:1. */
-	--text-on-accent: #111318;
 }
 
 .theme-light {
 	--accent-h: 212;
 	--accent-s: 92%;
 	--accent-l: 45%;
+}
+
+/* Type and shape. Set on body: Obsidian's mobile sizes live on .is-mobile,
+   which outranks body, so phones keep their touch sizes. */
+body {
+	/* Obsidian bundles Inter as a variable font, so Tela's UI face needs no
+	   embedding. The mono stack is Tela's, with Windows and Obsidian fallbacks. */
+	--font-interface-theme: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-text-theme: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-monospace-theme: ui-monospace, "SFMono-Regular", "Menlo", "Consolas", "Source Code Pro", monospace;
+
+	/* Tela's type roles: body 12, label 13, heading 14, display 16. */
+	--font-ui-smaller: 12px;
+	--font-ui-small: 13px;
+	--font-ui-medium: 14px;
+	--font-ui-large: 16px;
+
+	/* Tela's controls and cards are 6px; overlays stay at Obsidian's 8. */
+	--radius-s: 6px;
+	--input-radius: 6px;
+	--checkbox-radius: 4px;
+}
+
+/* Tela blends its chrome with the content's ground: rail, toolbar and tab
+   strip all sit on --bg, separated only by hairline borders. Obsidian puts
+   sidebars, ribbon and status bar on --background-secondary, so pointing that
+   at the base gives the same single-plane look. */
+.theme-dark,
+.theme-light {
+	--background-secondary: var(--tela-bg);
+	--tab-container-background: var(--background-primary);
+	--sidebar-tab-container-background: var(--background-secondary);
+	--titlebar-background: var(--background-primary);
+	--titlebar-background-focused: var(--background-primary);
+
+	/* Tela's buttons: panel fill, hairline border, accent border on hover. */
+	--interactive-normal: var(--tela-panel);
+	--interactive-hover: var(--color-base-25);
+	--input-shadow: inset 0 0 0 1px var(--background-modifier-border);
+	--input-shadow-hover: inset 0 0 0 1px var(--interactive-accent);
+
+	/* Selection is a neutral wash, not an accent fill (Tela's .rail-active,
+	   wash-10; hover wash-05). */
+	--nav-item-background-hover: color-mix(in oklch, var(--mono-100) 5%, transparent);
+	--nav-item-background-active: color-mix(in oklch, var(--mono-100) 10%, transparent);
+
+	/* Active tab: Tela's wash-04 over the base, flattened to a solid colour so
+	   the hairline outline doesn't show through. */
+	--tab-background-active: color-mix(in oklch, var(--mono-100) 4%, var(--background-primary));
+
+	/* Overlays sit on the raised panel, as Tela's menus and popovers do. */
+	--menu-background: var(--tela-panel);
+	--menu-border-color: var(--background-modifier-border);
+	--prompt-background: var(--tela-panel);
+	--prompt-border-color: var(--background-modifier-border);
+	--modal-border-color: var(--background-modifier-border);
+}
+
+body {
+	--nav-item-radius: 6px;
+	--nav-item-weight-active: 550;
+
+	/* Flat tab strip: no curves, no rounded tops. */
+	--tab-curve: 0px;
+	--tab-radius-active: 0;
+	--status-bar-radius: 0;
+}
+
+/* The focused pane's active tab gets Tela's 2px accent top line. No variable
+   covers this, so it is the one component rule in the chrome layer. */
+body.is-focused .workspace-split.mod-root .mod-active .workspace-tab-header.is-active {
+	box-shadow:
+		inset 0 2px 0 var(--interactive-accent),
+		0 0 0 var(--tab-outline-width) var(--tab-outline-color);
+}
+
+/* Tela is a dense app-chrome system with no reading scale, so the editor's
+   type is new design in Tela's idiom: one weight for every heading level
+   (Tela's heading role is 600), a gentler ratio than Obsidian's golden-section
+   steps, and the two smallest levels set back to muted ink. */
+body {
+	--h1-size: 1.5em;
+	--h2-size: 1.3em;
+	--h3-size: 1.15em;
+	--h4-size: 1.05em;
+	--h5-size: 1em;
+	--h6-size: 0.9em;
+	--h1-weight: 600;
+	--h2-weight: 600;
+	--h3-weight: 600;
+	--h4-weight: 600;
+	--h5-weight: 600;
+	--h6-weight: 600;
+	--h5-color: var(--text-muted);
+	--h6-color: var(--text-muted);
+
+	/* Hairlines, as everywhere else in Tela. */
+	--hr-thickness: 1px;
+	--callout-quote: var(--tela-muted);
+
+	/* Unresolved links: Obsidian fades them to 70%, which drops the accent
+	   under 4.5:1. Keep full ink and mark them with a dashed underline. */
+	--link-unresolved-opacity: 1;
+	--link-unresolved-decoration-style: dashed;
+	--link-unresolved-decoration-color: color-mix(in oklch, var(--interactive-accent) 60%, transparent);
+}
+
+/* Callout titles are the callout colour on a 10% tint of itself. Fine on
+   the dark ground; on the pale one every hue lands near 4.1:1, so light
+   mode deepens the title ink (the icon keeps the raw colour). */
+.theme-light .callout {
+	--callout-title-color: color-mix(in oklch, var(--callout-color) 78%, #000);
+}
+
+/* Alternate task states. Obsidian draws every non-space marker as a plain
+   tick; these get their own fill and glyph. [!] takes Tela's attention
+   colour (something waiting on you), [?] the warn colour. */
+:is(input[data-task="!"], li[data-task="!"] > input, li[data-task="!"] > p > input, .cm-line[data-task="!"] input) {
+	--checkbox-color: var(--tela-attention);
+	--checkbox-color-hover: var(--tela-attention);
+	--checkbox-marker-color: var(--tela-on-attention);
+}
+
+:is(input[data-task="?"], li[data-task="?"] > input, li[data-task="?"] > p > input, .cm-line[data-task="?"] input) {
+	--checkbox-color: var(--tela-warn);
+	--checkbox-color-hover: var(--tela-warn);
+	--checkbox-marker-color: var(--tela-on-warn);
+}
+
+:is(input[data-task="-"], li[data-task="-"] > input, li[data-task="-"] > p > input, .cm-line[data-task="-"] input) {
+	--checkbox-color: var(--color-base-35);
+	--checkbox-color-hover: var(--color-base-35);
+	--checkbox-marker-color: var(--text-muted);
+}
+
+:is(input[data-task="/"], li[data-task="/"] > input, li[data-task="/"] > p > input, .cm-line[data-task="/"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--interactive-accent);
+}
+
+:is(input[data-task="!"], li[data-task="!"] > input, li[data-task="!"] > p > input, .cm-line[data-task="!"] input):checked::after {
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round'%3E%3Cpath d='M12 5v9M12 19v.01'/%3E%3C/svg%3E");
+}
+
+:is(input[data-task="?"], li[data-task="?"] > input, li[data-task="?"] > p > input, .cm-line[data-task="?"] input):checked::after {
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.5 9a3.5 3.5 0 1 1 4.7 3.3c-.8.3-1.2 1-1.2 1.8v.4M12 19v.01'/%3E%3C/svg%3E");
+}
+
+:is(input[data-task="-"], li[data-task="-"] > input, li[data-task="-"] > p > input, .cm-line[data-task="-"] input):checked::after {
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E");
+}
+
+/* In progress: an accent outline, half filled. */
+:is(input[data-task="/"], li[data-task="/"] > input, li[data-task="/"] > p > input, .cm-line[data-task="/"] input):checked {
+	border-color: var(--interactive-accent);
+}
+
+:is(input[data-task="/"], li[data-task="/"] > input, li[data-task="/"] > p > input, .cm-line[data-task="/"] input):checked::after {
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='2' width='10' height='20' fill='white'/%3E%3C/svg%3E");
+	mask-size: 100%;
+}
+
+/* Cancelled reads as struck out, like done, but stays muted. */
+li[data-task="-"],
+.cm-line[data-task="-"] {
+	color: var(--text-muted);
+	text-decoration: line-through;
+}
+
+/* @settings
+
+name: Tela
+id: tela
+settings:
+    -
+        id: tela-distinct-sidebar
+        title: Distinct sidebars
+        description: Give the sidebars a recessed surface instead of the editor's background, like Tela with "Match terminal background" turned off.
+        type: class-toggle
+
+*/
+
+.tela-distinct-sidebar.theme-dark,
+.tela-distinct-sidebar.theme-light {
+	--background-secondary: var(--tela-recess);
 }

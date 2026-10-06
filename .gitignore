@@ -16,3 +16,6 @@ node_modules
 
 # Claude Code runtime state
 .claude/scheduled_tasks.lock
+
+# Local vault targets for the build script
+.env

@@ -1,0 +1,17 @@
+/* @settings
+
+name: Tela
+id: tela
+settings:
+    -
+        id: tela-distinct-sidebar
+        title: Distinct sidebars
+        description: Give the sidebars a recessed surface instead of the editor's background, like Tela with "Match terminal background" turned off.
+        type: class-toggle
+
+*/
+
+.tela-distinct-sidebar.theme-dark,
+.tela-distinct-sidebar.theme-light {
+	--background-secondary: var(--tela-recess);
+}
