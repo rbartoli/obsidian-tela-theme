@@ -381,8 +381,13 @@ function sheets(out, steps) {
 	}
 	mkdirSync(join(out, 'sheets'), { recursive: true })
 	const shot = (s) => join(out, s.shot)
-	const montage = (files, file, title, pairs, height) =>
-		spawnSync('montage', ['-background', '#808080', '-fill', '#101010', '-pointsize', '15', '-title', title, ...files.flatMap((s) => ['-label', `${s.scene} ${s.mode} ${s.step}`, shot(s)]), '-tile', `${pairs * 2}x`, '-geometry', `x${height}+6+6`, join(out, 'sheets', file)])
+	// Shots are scaled down as they are read ([x<height>]): 30 tablet screens
+	// at full size overrun ImageMagick's default 1 GiB memory limit.
+	const montage = (files, file, title, pairs, height) => {
+		const args = ['-background', '#808080', '-fill', '#101010', '-pointsize', '15', '-title', title, ...files.flatMap((s) => ['-label', `${s.scene} ${s.mode} ${s.step}`, `${shot(s)}[x${height}]`]), '-tile', `${pairs * 2}x`, '-geometry', `x${height}+6+6`, join(out, 'sheets', file)]
+		const res = spawnSync('montage', args, { encoding: 'utf8' })
+		if (res.status !== 0) console.log(`contact sheet ${file} failed: ${(res.stderr || '').trim().split('\n')[0]}`)
+	}
 	const byDevice = Map.groupBy(steps.filter((s) => s.shot), (s) => s.device)
 	for (const [device, list] of byDevice) {
 		const phone = device === 'phone'
