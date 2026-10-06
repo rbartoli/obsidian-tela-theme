@@ -1,0 +1,128 @@
+{
+	"nodes": [
+		{
+			"id": "colours",
+			"type": "group",
+			"label": "Card colours",
+			"x": 480,
+			"y": -260,
+			"width": 520,
+			"height": 520
+		},
+		{
+			"id": "start",
+			"type": "text",
+			"text": "# Canvas\n\nCards, groups and connections. Drag the background to pan.",
+			"x": -520,
+			"y": -80,
+			"width": 300,
+			"height": 160
+		},
+		{
+			"id": "tour",
+			"type": "file",
+			"file": "Tour.md",
+			"x": -80,
+			"y": -260,
+			"width": 420,
+			"height": 520
+		},
+		{
+			"id": "plain",
+			"type": "text",
+			"text": "**Default** card",
+			"x": 500,
+			"y": -220,
+			"width": 220,
+			"height": 80
+		},
+		{
+			"id": "red",
+			"type": "text",
+			"text": "**Red** card",
+			"x": 760,
+			"y": -220,
+			"width": 220,
+			"height": 80,
+			"color": "1"
+		},
+		{
+			"id": "orange",
+			"type": "text",
+			"text": "**Orange** card",
+			"x": 500,
+			"y": -100,
+			"width": 220,
+			"height": 80,
+			"color": "2"
+		},
+		{
+			"id": "yellow",
+			"type": "text",
+			"text": "**Yellow** card",
+			"x": 760,
+			"y": -100,
+			"width": 220,
+			"height": 80,
+			"color": "3"
+		},
+		{
+			"id": "green",
+			"type": "text",
+			"text": "**Green** card",
+			"x": 500,
+			"y": 20,
+			"width": 220,
+			"height": 80,
+			"color": "4"
+		},
+		{
+			"id": "cyan",
+			"type": "text",
+			"text": "**Cyan** card",
+			"x": 760,
+			"y": 20,
+			"width": 220,
+			"height": 80,
+			"color": "5"
+		},
+		{
+			"id": "purple",
+			"type": "text",
+			"text": "**Purple** card",
+			"x": 500,
+			"y": 140,
+			"width": 220,
+			"height": 80,
+			"color": "6"
+		},
+		{
+			"id": "link",
+			"type": "text",
+			"text": "A link to [[Properties]]",
+			"x": 760,
+			"y": 140,
+			"width": 220,
+			"height": 80
+		}
+	],
+	"edges": [
+		{
+			"id": "read",
+			"fromNode": "start",
+			"fromSide": "right",
+			"toNode": "tour",
+			"toSide": "left",
+			"label": "read"
+		},
+		{
+			"id": "then",
+			"fromNode": "tour",
+			"fromSide": "right",
+			"toNode": "colours",
+			"toSide": "left",
+			"color": "5",
+			"label": "then"
+		}
+	]
+}

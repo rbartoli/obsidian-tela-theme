@@ -19,3 +19,8 @@ node_modules
 
 # Local vault targets for the build script
 .env
+
+# QA runs, and the demo vault's local state (npm run build installs the theme)
+qa/out
+demo/.obsidian/*
+!demo/.obsidian/appearance.json

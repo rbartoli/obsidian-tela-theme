@@ -1,0 +1,35 @@
+filters:
+  and:
+    - file.inFolder("Library")
+properties:
+  note.author:
+    displayName: Author
+  note.year:
+    displayName: Year
+  note.status:
+    displayName: Status
+  note.rating:
+    displayName: Rating
+views:
+  - type: table
+    name: Table
+    order:
+      - file.name
+      - note.author
+      - note.year
+      - note.status
+      - note.rating
+    sort:
+      - property: note.year
+        direction: ASC
+  - type: cards
+    name: Cards
+    order:
+      - file.name
+      - note.author
+      - note.status
+    sort:
+      - property: note.year
+        direction: ASC
+    image: note.cover
+    imageAspectRatio: 1.5

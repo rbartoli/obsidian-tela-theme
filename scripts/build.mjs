@@ -10,8 +10,9 @@
 //   node scripts/build.mjs --watch   rebuild and copy on every change in src/
 //   node scripts/build.mjs --check   fail if theme.css is stale (CI)
 //
-// Vault targets come from TELA_THEME_DIRS in .env: one or more theme folders,
-// separated by ";", e.g. /mnt/c/Users/me/Vaults/Test/.obsidian/themes/Tela
+// Vault targets: the demo vault in demo/, plus TELA_THEME_DIRS in .env: one or
+// more theme folders, separated by ";", e.g.
+// /mnt/c/Users/me/Vaults/Test/.obsidian/themes/Tela
 
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, watch, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
@@ -39,10 +40,12 @@ function compile() {
 }
 
 function targets() {
-	return (process.env.TELA_THEME_DIRS ?? '')
+	const { name } = JSON.parse(readFileSync(MANIFEST, 'utf8'))
+	const vaults = (process.env.TELA_THEME_DIRS ?? '')
 		.split(';')
 		.map((d) => d.trim())
 		.filter(Boolean)
+	return [join(root, 'demo', '.obsidian', 'themes', name), ...vaults]
 }
 
 function build() {

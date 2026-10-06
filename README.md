@@ -25,6 +25,29 @@ Restart Obsidian after changing `manifest.json`.
 
 The theme has two Style Settings options: **Distinct sidebars** and **Classic tree icons**.
 
+`demo/` is a small vault to try the theme in: a tour of every Markdown element,
+properties, a canvas, a base and a Kanban board. `npm run build` installs the theme into
+it.
+
+## QA
+
+`npm run qa` opens the demo vault in a throwaway Obsidian and renders every scene in
+`qa/scenes.mjs` (notes in reading view and live preview, Canvas, Bases, search, menus,
+settings and more) in dark and light mode, on desktop, phone and tablet. Every screen
+gets an [axe](https://github.com/dequelabs/axe-core) contrast audit, and the run fails on
+any violation. The report, screenshots and contact sheets go to `qa/out/`.
+
+```sh
+npm run qa                                  # every scene, on the latest Obsidian
+npm run qa -- --obsidian 1.13.8             # another app version
+npm run qa -- --device phone --mode light --scene reading,editing
+```
+
+It needs the Obsidian desktop app (`obsidian` on your `PATH`, or `OBSIDIAN_BIN`) and, for
+contact sheets, ImageMagick. Each run uses a temporary profile and a temporary copy of
+`demo/`, so it never touches your own vaults or settings. The installer only loads app
+versions newer than itself. All options are listed at the top of `qa/run.mjs`.
+
 ## Releasing
 
 1. Bump the version: `npm version <x.y.z>`. This updates `manifest.json` and
