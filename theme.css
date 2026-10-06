@@ -7,6 +7,7 @@
    10-tokens       the --tela-* palette, one block per colour scheme
    20-foundation   Obsidian's base scale, extended colours, type and shape
    30-chrome       sidebars, tabs, navigation, overlays
+   35-tree         file tree marks
    40-editor       headings and editor details
    50-settings     Style Settings options */
 
@@ -250,6 +251,87 @@ body.is-focused .workspace-split.mod-root .mod-active .workspace-tab-header.is-a
 		0 0 0 var(--tab-outline-width) var(--tab-outline-color);
 }
 
+/* File tree marks, after Tela's rail: one 16px Lucide glyph, the size and
+   stroke of Obsidian's own icons, in the gutter Obsidian reserves for the
+   collapse chevron. Folders swap the chevron for a closed or open folder, and
+   every file gets a glyph for its type, replacing the text badge. Only the
+   active file's mark takes the accent. "Classic tree icons" in Style Settings
+   turns this off. */
+body {
+	--tela-mark-folder: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z'/%3E%3C/svg%3E");
+	--tela-mark-folder-open: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2'/%3E%3C/svg%3E");
+	--tela-mark-note: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'/%3E%3Cpath d='M14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8'/%3E%3C/svg%3E");
+	--tela-mark-file: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'/%3E%3Cpath d='M14 2v4a2 2 0 0 0 2 2h4'/%3E%3C/svg%3E");
+	--tela-mark-pdf: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z'/%3E%3C/svg%3E");
+	--tela-mark-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Ccircle cx='9' cy='9' r='2'/%3E%3Cpath d='m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21'/%3E%3C/svg%3E");
+	--tela-mark-canvas: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='7' height='9' x='3' y='3' rx='1'/%3E%3Crect width='7' height='5' x='14' y='3' rx='1'/%3E%3Crect width='7' height='9' x='14' y='12' rx='1'/%3E%3Crect width='7' height='5' x='3' y='16' rx='1'/%3E%3C/svg%3E");
+	--tela-mark-base: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='M12 3v18M3 9h18M3 15h18'/%3E%3C/svg%3E");
+}
+
+/* Folders: hide the chevron and draw the folder in its place. The chevron's
+   box keeps its size and position, so rows don't shift. */
+body:not(.tela-classic-tree) .nav-folder-title .collapse-icon svg.svg-icon {
+	display: none;
+}
+
+body:not(.tela-classic-tree) .nav-folder-title .collapse-icon::after {
+	content: "";
+	width: 16px;
+	height: 16px;
+	background-color: var(--text-faint);
+	mask: var(--tela-mark-folder-open) center / 16px no-repeat;
+}
+
+body:not(.tela-classic-tree) .nav-folder-title .collapse-icon.is-collapsed::after {
+	mask-image: var(--tela-mark-folder);
+}
+
+/* Files: Obsidian leaves the gutter empty, so the mark is a pseudo-element
+   pulled back into it. It holds a zero-width space so the row's baseline
+   alignment centres it on the label. */
+body:not(.tela-classic-tree) .nav-file-title {
+	--tela-mark: var(--tela-mark-note);
+}
+
+body:not(.tela-classic-tree) .nav-file-title::before {
+	content: "\200b";
+	flex-shrink: 0;
+	width: var(--size-4-4);
+	margin-inline: calc(-1 * var(--size-4-5)) var(--size-4-1);
+	background-color: var(--text-faint);
+	mask: var(--tela-mark) center / 16px no-repeat;
+}
+
+body:not(.tela-classic-tree) .nav-file-title:not([data-path$=".md" i]) {
+	--tela-mark: var(--tela-mark-file);
+}
+
+body:not(.tela-classic-tree) .nav-file-title[data-path$=".pdf" i] {
+	--tela-mark: var(--tela-mark-pdf);
+}
+
+body:not(.tela-classic-tree) .nav-file-title:is([data-path$=".png" i], [data-path$=".jpg" i], [data-path$=".jpeg" i], [data-path$=".gif" i], [data-path$=".webp" i], [data-path$=".svg" i], [data-path$=".bmp" i], [data-path$=".avif" i]) {
+	--tela-mark: var(--tela-mark-image);
+}
+
+body:not(.tela-classic-tree) .nav-file-title[data-path$=".canvas" i] {
+	--tela-mark: var(--tela-mark-canvas);
+}
+
+body:not(.tela-classic-tree) .nav-file-title[data-path$=".base" i] {
+	--tela-mark: var(--tela-mark-base);
+}
+
+/* The glyph says what the badge said, so the badge goes. Unknown types keep
+   theirs next to the generic file glyph. */
+body:not(.tela-classic-tree) .nav-file-title:is([data-path$=".pdf" i], [data-path$=".png" i], [data-path$=".jpg" i], [data-path$=".jpeg" i], [data-path$=".gif" i], [data-path$=".webp" i], [data-path$=".svg" i], [data-path$=".bmp" i], [data-path$=".avif" i], [data-path$=".canvas" i], [data-path$=".base" i]) .nav-file-tag {
+	display: none;
+}
+
+body:not(.tela-classic-tree) .nav-file-title.is-active::before {
+	background-color: var(--interactive-accent);
+}
+
 /* Tela is a dense app-chrome system with no reading scale, so the editor's
    type is new design in Tela's idiom: one weight for every heading level
    (Tela's heading role is 600), a gentler ratio than Obsidian's golden-section
@@ -353,6 +435,11 @@ settings:
         id: tela-distinct-sidebar
         title: Distinct sidebars
         description: Give the sidebars a recessed surface instead of the editor's background, like Tela with "Match terminal background" turned off.
+        type: class-toggle
+    -
+        id: tela-classic-tree
+        title: Classic tree icons
+        description: Show Obsidian's collapse chevrons and file-type badges in the file tree instead of Tela's folder, note and file-type marks.
         type: class-toggle
 
 */

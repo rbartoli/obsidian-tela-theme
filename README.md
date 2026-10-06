@@ -23,7 +23,7 @@ vault's theme folder. The folder name must match `name` in `manifest.json`, for 
 `<test-vault>/.obsidian/themes/Tela`. Then pick Tela in Settings → Appearance → Themes.
 Restart Obsidian after changing `manifest.json`.
 
-The theme has one Style Settings option: **Distinct sidebars**.
+The theme has two Style Settings options: **Distinct sidebars** and **Classic tree icons**.
 
 ## Releasing
 

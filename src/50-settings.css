@@ -8,6 +8,11 @@ settings:
         title: Distinct sidebars
         description: Give the sidebars a recessed surface instead of the editor's background, like Tela with "Match terminal background" turned off.
         type: class-toggle
+    -
+        id: tela-classic-tree
+        title: Classic tree icons
+        description: Show Obsidian's collapse chevrons and file-type badges in the file tree instead of Tela's folder, note and file-type marks.
+        type: class-toggle
 
 */
 
