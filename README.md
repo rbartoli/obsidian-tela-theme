@@ -48,6 +48,22 @@ contact sheets, ImageMagick. Each run uses a temporary profile and a temporary c
 `demo/`, so it never touches your own vaults or settings. The installer only loads app
 versions newer than itself. All options are listed at the top of `qa/run.mjs`.
 
+## Obsidian updates
+
+`npm run drift` checks an Obsidian release for changes that would quietly break the theme.
+It fails if Obsidian no longer reads a variable the theme sets, no longer defines one the
+theme reads, or no longer uses a class or attribute the theme styles. It also reports
+Obsidian's changed defaults for those variables, followed down `var()` chains, against
+`qa/obsidian-baseline.json`: the release last certified with `npm run qa`.
+
+```sh
+npm run drift                                         # the newest release
+npm run drift -- --obsidian 1.14.4 --update-baseline  # certify a release once QA passes on it
+```
+
+`.github/workflows/obsidian-canary.yml` runs it every Monday and files what it finds as an
+issue labelled `obsidian-update`.
+
 ## Releasing
 
 1. Bump the version: `npm version <x.y.z>`. This updates `manifest.json` and

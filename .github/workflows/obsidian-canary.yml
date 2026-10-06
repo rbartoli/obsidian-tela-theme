@@ -1,0 +1,54 @@
+name: Obsidian canary
+
+# Checks the newest Obsidian release for changes that would quietly break the
+# theme (npm run drift), and files what it finds as an issue labelled
+# obsidian-update, updating the open one if there is one.
+
+on:
+  schedule:
+    - cron: '23 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      obsidian:
+        description: 'Obsidian version (default: the newest release)'
+        required: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+          cache: 'npm'
+      - run: npm ci
+      - name: Check the release
+        id: drift
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OBSIDIAN: ${{ inputs.obsidian }}
+        run: npm run drift -- --report drift.md ${OBSIDIAN:+--obsidian "$OBSIDIAN"}
+      - name: File the findings
+        if: hashFiles('drift.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create obsidian-update --force --color d93f0b \
+            --description 'Obsidian changed something the theme relies on'
+          title="$(head -n 1 drift.md | sed 's/^# //')"
+          issue="$(gh issue list --label obsidian-update --state open --limit 1 --json number --jq '.[0].number')"
+          if [ -n "$issue" ]; then
+            gh issue edit "$issue" --title "$title" --body-file drift.md
+          else
+            gh issue create --label obsidian-update --title "$title" --body-file drift.md
+          fi
+      - name: Fail if something the theme relies on has gone
+        if: steps.drift.outcome == 'failure'
+        run: exit 1

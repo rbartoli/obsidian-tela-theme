@@ -6,10 +6,12 @@
         "dev": "node scripts/build.mjs --watch",
         "check": "node scripts/build.mjs --check",
         "qa": "node qa/run.mjs",
+        "drift": "node scripts/obsidian-drift.mjs",
         "version": "node version-bump.mjs && git add manifest.json versions.json",
         "lint": "stylelint \"**/*.css\""
     },
     "devDependencies": {
+        "@electron/asar": "^4.3.1",
         "axe-core": "^4.14.0",
         "stylelint": "^17.0.0",
         "stylelint-config-obsidianmd": "^0.1.0"

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### 2026-10-07: Obsidian update check (#11)
+
+- `npm run drift` checks an Obsidian release for changes that would quietly break the theme. It fails if Obsidian no longer reads a variable the theme sets, no longer defines one the theme reads, or no longer uses a class or attribute the theme styles. It also reports Obsidian's changed defaults for those variables, followed down `var()` chains, against `qa/obsidian-baseline.json`.
+- The baseline certifies Obsidian 1.14.4, the release the QA harness covers: 94 variables the theme sets, 14 it reads, 19 classes and attributes, and 123 defaults.
+- A workflow runs the check every Monday on the newest release and files what it finds as an issue labelled `obsidian-update`.
+- Verified against a baseline certified on 1.12.7: checking 1.13.4 flags `--callout-default`, behind `--callout-color`, changing from `var(--color-blue-rgb)` to `var(--color-blue)`, and the same change in the other callout colours. The theme's light-callout titles depend on that change. Checking 1.14.4 against its own baseline finds nothing.
+- Found along the way: `--mono-100`, which the hover and selection washes are mixed from, first ships in 1.13, and `--sidebar-tab-container-background` in 1.14. The manifest's `minAppVersion` is still 1.10.6.
+
 ### 2026-10-07: tree text in the Tela app's list inks (#8)
 
 - File tree labels use the Tela app's rail-title ink (foreground at 86%) instead of Obsidian's muted grey, and the marks use its icon ink (muted) instead of faint. The tree had read washed out next to body text.
