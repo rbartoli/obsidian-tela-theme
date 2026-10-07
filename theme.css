@@ -620,13 +620,17 @@ li[data-task="-"],
 }
 
 /* PDF export and printing: keep a block on one page, and a heading on the
-   page of the text it introduces. A block taller than a page still breaks. */
+   page of the text it introduces. A block taller than a page still breaks.
+   The lint's "partial support" warning is about breaks between columns;
+   Chromium honours these between pages, as a real PDF export confirms. */
 @media print {
 	.print :is(.callout, pre, table, .math-block, .mermaid, img) {
+		/* stylelint-disable-next-line plugin/no-unsupported-browser-features */
 		break-inside: avoid;
 	}
 
 	.print :is(h1, h2, h3, h4, h5, h6) {
+		/* stylelint-disable-next-line plugin/no-unsupported-browser-features */
 		break-after: avoid;
 	}
 }

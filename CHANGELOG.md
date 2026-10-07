@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2026-10-07: a README for users, lint without warnings
+
+- The README now covers what a user needs: why the theme, features, settings, fonts, compatibility and how to verify a release. Development, QA, the Obsidian update check and releasing moved to `CONTRIBUTING.md`, and the README links its claims about the contrast audit and the update check there.
+- `npm run lint` reports nothing: 0 errors, 0 warnings. The four warnings came from the print rules' `break-inside` and `break-after`, which the lint marks as partly supported because of breaks between columns; Chromium honours them between pages, as the 7-page PDF export showed. Each line carries a disable comment with that reason.
+- Removed leftovers: the empty `screenshots/` folder from the sample theme, and an unlinked tree screenshot in `docs/`.
+- `package.json` is marked private, with a description, licence and repository.
+
 ### 2026-10-07: text on hovered and selected rows clears AA
 
 - Faint text (result counts, row subtext, menu and list descriptions) cleared 4.5:1 on every ground but not under the hover and selection washes laid over a row: 3.7 to 4.9:1 across both modes. A hovered or selected row now shows it in muted ink, as Obsidian already does for file-type badges. Muted under the washes: 4.8:1 or more in dark mode, 4.6:1 or more on the light base.
