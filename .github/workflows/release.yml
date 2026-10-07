@@ -9,8 +9,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+
     steps:
       - uses: actions/checkout@v7
+
+      # Signed build provenance for the two files the release ships, so anyone
+      # can check them with `gh attestation verify`. GitHub only stores
+      # attestations for public repositories (or Enterprise Cloud).
+      - name: Attest build provenance
+        if: ${{ !github.event.repository.private }}
+        uses: actions/attest@v4
+        with:
+          subject-path: |
+            manifest.json
+            theme.css
 
       - name: Create release
         env:

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### 2026-10-07: contributing guide, issue forms, attested releases, minimum Obsidian 1.13.4 (#15)
+
+- `minAppVersion` is 1.13.4, was 1.10.6, which had never been tested. 1.13.4 is the first public 1.13 desktop release, and nothing older can work: the hover and selection washes are mixed from `--mono-100`, which first ships in 1.13.
+- Verified with `npm run qa -- --obsidian 1.13.4` and `1.13.7`: 0 violations and no scene errors in 90 scene runs each, dark and light, on desktop, phone and tablet. Screens on 1.13.4 match 1.14.4 apart from Obsidian's own layout changes, such as 1.14 grouping settings into cards. `--sidebar-tab-container-background`, which only 1.14 reads, makes no visible difference, since the sidebars already share the base colour.
+- `CONTRIBUTING.md` covers reporting a problem, the theme's three principles (variables first, few settings, readable text) and the checks to run before a pull request.
+- Issue forms: the bug form asks for Obsidian and theme versions, platform, mode, plugins and snippets, theme settings and a screenshot. Blank issues are off, and Obsidian's own problems point to the forum.
+- The release workflow attests build provenance for `theme.css` and `manifest.json` with `actions/attest@v4`. The step only runs once the repository is public, since GitHub stores attestations only for public repositories (or Enterprise Cloud).
+- The README gains Why Tela, Features, Settings, Fonts and Compatibility sections, and how to verify a release.
+
 ### 2026-10-07: light-mode faint text clears AA on every ground (#14)
 
 - Light mode's faint text (`--tela-faint`) is `#5e6772`, was `#666f79`. It is still muted blended into the base, but now stops where it clears 4.5:1 on the darkest ground it sits on: the recessed sidebars of the Distinct sidebars option.

@@ -1,0 +1,19 @@
+name: Feature request
+description: Suggest a change to how the theme looks or works.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What gets in your way
+      description: What you're trying to do, and what about the theme makes it harder.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What you'd like
+      description: A screenshot or mock-up helps, from another app or theme too.
+  - type: markdown
+    attributes:
+      value: The theme keeps its settings few on purpose, so a change that works without a new option is easier to take.

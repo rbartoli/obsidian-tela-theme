@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Obsidian bug or question
+    url: https://forum.obsidian.md
+    about: Problems that also happen with the default theme belong to Obsidian, not this theme.

@@ -1,0 +1,65 @@
+name: Bug report
+description: Something looks wrong or broke, for example after an Obsidian update.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What's wrong
+      description: What you see, and what you expected instead. Where in Obsidian is it?
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot
+      description: Paste or drag one in. Mark the spot if it's small.
+    validations:
+      required: true
+  - type: input
+    id: obsidian
+    attributes:
+      label: Obsidian version
+      description: Settings → General → App, for example 1.14.4.
+    validations:
+      required: true
+  - type: input
+    id: tela
+    attributes:
+      label: Tela version
+      description: The "version" in your vault's .obsidian/themes/Tela/manifest.json, or "latest" if you have just updated.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      multiple: true
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - iOS / iPadOS
+        - Android
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      multiple: true
+      options:
+        - Dark
+        - Light
+    validations:
+      required: true
+  - type: textarea
+    id: plugins
+    attributes:
+      label: Plugins and CSS snippets
+      description: Community plugins and snippets that are turned on. If you can, check whether the problem stays with them all off.
+  - type: textarea
+    id: settings
+    attributes:
+      label: Theme settings
+      description: Style Settings options you've turned on, and any changed accent colour or fonts.
