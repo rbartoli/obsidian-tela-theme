@@ -36,7 +36,8 @@ Setup and commands are under [Development](#development). In short:
    npm run qa      # contrast audit of every scene; needs the Obsidian desktop app
    ```
 
-4. Add a dated entry at the top of `CHANGELOG.md`: what changed, why, and how you checked
+4. If the change is visible, run `npm run shots` and commit the new images in `assets/`.
+5. Add a dated entry at the top of `CHANGELOG.md`: what changed, why, and how you checked
    it.
 
 Keep a pull request to one change, and include before and after screenshots for anything
@@ -86,6 +87,24 @@ contact sheets, ImageMagick. Each run uses a temporary profile and a temporary c
 `demo/` plus `qa/fixtures/`, so it never touches your own vaults or settings. Plugins
 are downloaded from their GitHub releases once, then cached. The installer only loads app
 versions newer than itself. All options are listed at the top of `qa/run.mjs`.
+
+## Screenshots
+
+`npm run shots` regenerates the README's cover and screenshots in `assets/` from the demo
+vault, in a throwaway Obsidian, in about a minute. Run it after any visible change.
+
+```sh
+npm run shots                        # the cover and every screenshot
+npm run shots -- --only cover,tasks-dark
+npm run shots -- --platform linux    # the Linux app, even on WSL
+```
+
+On WSL it drives the Windows app, for Windows' text rendering, which needs
+`networkingMode=mirrored` in `.wslconfig`; elsewhere it uses the Linux app. Desktop shots
+are 1200×800 and phone shots 900×1600, the community directory's sizes, captured at 2x and
+written as lossless WebP. The cover's layout is `scripts/shots-cover.html`, rendered by
+the same Obsidian in the Inter it bundles. Scenes and options are at the top of
+`scripts/shots.mjs`.
 
 ## Obsidian updates
 

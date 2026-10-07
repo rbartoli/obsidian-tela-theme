@@ -30,16 +30,15 @@
 // which each run empties first, or to --out.
 
 import { spawn, spawnSync } from 'node:child_process'
-import { copyFileSync, cpSync, existsSync, linkSync, mkdirSync, mkdtempSync, openSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
-import { homedir, tmpdir } from 'node:os'
+import { copyFileSync, cpSync, existsSync, linkSync, mkdirSync, mkdtempSync, openSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join, relative, resolve, sep } from 'node:path'
 import { parseArgs } from 'node:util'
-import { gunzipSync } from 'node:zlib'
 import { axeSource, connect } from './cdp.mjs'
+import { cache, download, obsidianAsar, obsidianVersion, sleep, until } from './obsidian.mjs'
 import { devices, installHelpers, modes, scenes } from './scenes.mjs'
 
 const root = resolve(import.meta.dirname, '..')
-const cache = join(process.env.XDG_CACHE_HOME ?? join(homedir(), '.cache'), 'tela-qa')
 
 // The rules a theme controls: text contrast (WCAG 1.4.3) and links told apart
 // from body text by more than colour (1.4.1). Obsidian's own markup issues
@@ -72,13 +71,7 @@ const { values: opt } = parseArgs({
 	allowNegative: true,
 })
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-const byVersion = (a, b) => {
-	const [x, y] = [a, b].map((v) => v.split('.').map(Number))
-	for (let i = 0; i < Math.max(x.length, y.length); i++) if ((x[i] ?? 0) !== (y[i] ?? 0)) return (x[i] ?? 0) - (y[i] ?? 0)
-	return 0
-}
 
 function list(name, value, known) {
 	const items = value.split(',').map((s) => s.trim()).filter(Boolean)
@@ -87,59 +80,9 @@ function list(name, value, known) {
 	return items
 }
 
-// Retries fn until it returns something truthy; errors count as "not yet".
-async function until(what, fn, timeout = 60_000) {
-	const end = Date.now() + timeout
-	let last
-	for (;;) {
-		try {
-			const v = await fn()
-			if (v) return v
-		} catch (err) {
-			if (err.fatal) throw err
-			last = err
-		}
-		if (Date.now() > end) throw new Error(`timed out waiting for ${what}${last ? ` (${last.message})` : ''}`)
-		await sleep(250)
-	}
-}
 
-async function download(url) {
-	const res = await fetch(url)
-	if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`)
-	return Buffer.from(await res.arrayBuffer())
-}
 
-// Some releases are mobile-only (1.13.8 ships just an APK), so the default is
-// the newest release with a desktop app package.
-async function obsidianVersion() {
-	if (opt.obsidian) return opt.obsidian.replace(/^v/, '')
-	try {
-		const releases = JSON.parse(await download('https://api.github.com/repos/obsidianmd/obsidian-releases/releases?per_page=30'))
-		const desktop = releases.find((r) => !r.prerelease && !r.draft && r.assets.some((a) => /^obsidian-.+\.asar\.gz$/.test(a.name)))
-		if (!desktop) throw new Error('no recent release has a desktop package')
-		return desktop.tag_name.replace(/^v/, '')
-	} catch (err) {
-		const cached = existsSync(cache) ? readdirSync(cache).map((f) => /^obsidian-(.+)\.asar$/.exec(f)?.[1]).filter(Boolean).sort(byVersion) : []
-		if (!cached.length) throw new Error(`cannot look up the latest Obsidian release (${err.message}); pass --obsidian <version>`)
-		console.log(`offline: using the newest cached Obsidian, ${cached.at(-1)}`)
-		return cached.at(-1)
-	}
-}
 
-async function obsidianAsar(version) {
-	const file = join(cache, `obsidian-${version}.asar`)
-	if (!existsSync(file)) {
-		console.log(`downloading Obsidian ${version}`)
-		const gz = await download(`https://github.com/obsidianmd/obsidian-releases/releases/download/v${version}/obsidian-${version}.asar.gz`).catch((err) => {
-			throw /HTTP 404/.test(err.message) ? new Error(`Obsidian ${version} has no desktop app package on GitHub (some releases are mobile-only)`) : err
-		})
-		mkdirSync(cache, { recursive: true })
-		writeFileSync(`${file}.tmp`, gunzipSync(gz))
-		renameSync(`${file}.tmp`, file)
-	}
-	return file
-}
 
 // This repo's theme (theme.css must be current), Obsidian's default, or a
 // theme from the community directory, fetched the way Obsidian installs one:
@@ -486,7 +429,7 @@ async function main() {
 		scenes: list('scene', opt.scene, scenes.map((s) => s.name)),
 	}
 	const theme = await themeUnderTest(opt.theme)
-	const version = await obsidianVersion()
+	const version = await obsidianVersion(opt.obsidian)
 	const asar = await obsidianAsar(version)
 	const plugins = await communityPlugins()
 	const out = opt.out ? resolve(opt.out) : join(root, 'qa', 'out', `${slug(theme.name)}-${version}`)

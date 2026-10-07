@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2026-10-07: `npm run shots` regenerates the README images
+
+- One command rebuilds the cover and every screenshot in `assets/` from the demo vault, in a throwaway Obsidian with a temporary profile and vault copy, in about 40 seconds. Before, the images were made by hand with scripts that weren't kept, so any visible change left them stale.
+- On WSL it drives the Windows app, for its text rendering, and stops only the processes started with its own profile; elsewhere it uses the Linux app. The cover's layout lives in `scripts/shots-cover.html` and is rendered by the same Obsidian, inside a shadow root so the theme's CSS can't reach it, in the Inter Obsidian bundles: no browser or font install needed.
+- The code that finds and caches Obsidian's app packages moved from `qa/run.mjs` to `qa/obsidian.mjs`, shared by both.
+- Regenerated every image with the 8px tree gap. Checked: the new images match the previous ones apart from the gap; a cold single-shot run and a full run both pass, on Windows and Linux; no Obsidian process or temporary folder is left behind.
+
 ### 2026-10-07: room between tree marks and labels
 
 - File and folder labels in the tree sit 8px after their mark, was 4px: the gap Obsidian puts between an icon and its label in menus, the settings sidebar and the quick switcher. Obsidian's own 4px suits its 10px chevron but crowded a 16px mark. Classic tree icons keep Obsidian's spacing.

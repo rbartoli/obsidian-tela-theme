@@ -1,0 +1,51 @@
+<!-- The README cover, 1280x640 at 2x. scripts/shots.mjs fills {{light}},
+     {{dark}} and {{phone}} with its captures and renders this in a shadow
+     root over Obsidian, so the type is the Inter that Obsidian bundles. -->
+<style>
+	.cover {
+		position: relative;
+		width: 1280px;
+		height: 640px;
+		overflow: hidden;
+		background: radial-gradient(120% 140% at 85% 30%, #f7f8fa 0%, #ebedf3 55%, #e1e4ec 100%);
+		font-family: "Inter", sans-serif;
+		-webkit-font-smoothing: antialiased;
+	}
+	.title { position: absolute; left: 88px; top: 206px; }
+	h1 { margin: 0; color: #1f2328; font-size: 104px; font-weight: 600; letter-spacing: -0.035em; line-height: 1; }
+	.tagline { margin-top: 22px; color: #3b434c; font-size: 25px; letter-spacing: -0.01em; }
+	.facts { display: flex; gap: 10px; align-items: center; margin-top: 26px; color: #59636e; font-size: 15px; }
+	.facts i { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: #9aa2ad; }
+	.window {
+		position: absolute;
+		width: 560px;
+		overflow: hidden;
+		border-radius: 10px;
+		box-shadow: 0 0 0 1px rgb(15 20 30 / 10%), 0 24px 60px -12px rgb(15 20 30 / 35%), 0 8px 18px -8px rgb(15 20 30 / 25%);
+	}
+	.window img { display: block; width: 100%; }
+	.light { left: 676px; top: 52px; }
+	.dark { left: 588px; top: 232px; }
+	.phone {
+		position: absolute;
+		left: 1074px;
+		top: 236px;
+		width: 168px;
+		height: 336px;
+		padding: 7px;
+		border-radius: 30px;
+		background: #0b0c0f;
+		box-shadow: inset 0 0 0 1px rgb(255 255 255 / 8%), 0 0 0 1px rgb(15 20 30 / 25%), 0 30px 60px -14px rgb(15 20 30 / 50%);
+	}
+	.phone img { display: block; width: 168px; height: 336px; border-radius: 24px; object-fit: cover; object-position: top; }
+</style>
+<div class="cover">
+	<div class="title">
+		<h1>Tela</h1>
+		<div class="tagline">A calm, legible theme for Obsidian</div>
+		<div class="facts">Dark and light<i></i>WCAG AA text<i></i>Desktop and mobile</div>
+	</div>
+	<div class="window light"><img src="{{light}}" alt=""></div>
+	<div class="window dark"><img src="{{dark}}" alt=""></div>
+	<div class="phone"><img src="{{phone}}" alt=""></div>
+</div>

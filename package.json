@@ -11,6 +11,7 @@
         "check": "node scripts/build.mjs --check",
         "qa": "node qa/run.mjs",
         "drift": "node scripts/obsidian-drift.mjs",
+        "shots": "node scripts/shots.mjs",
         "version": "node version-bump.mjs && git add manifest.json versions.json",
         "lint": "stylelint \"**/*.css\""
     },
