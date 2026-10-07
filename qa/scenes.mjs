@@ -376,12 +376,18 @@ export function installHelpers() {
 			await this.settle(600)
 			return leaf
 		},
-		// Gives every matching row the selected state, as a click would.
+		// Gives every matching row the selected state, as a click would, until
+		// the next reset.
 		async select(selector) {
 			await this.find(selector)
-			for (const el of document.querySelectorAll(selector)) el.classList.add('is-active')
+			for (const el of document.querySelectorAll(selector)) {
+				if (el.classList.contains('is-active')) continue
+				el.classList.add('is-active')
+				this.selected.push(el)
+			}
 			await this.settle()
 		},
+		selected: [],
 		async search(query) {
 			const leaf = await this.reveal('search')
 			leaf.view.setQuery(query)
@@ -390,13 +396,14 @@ export function installHelpers() {
 		},
 		// One empty tab, the file explorer showing every folder open, the right
 		// sidebar (and on mobile both drawers) closed, no Style Settings class,
-		// nothing set up for printing, left-to-right.
+		// nothing set up for printing, no rows selected by select(), left-to-right.
 		// The tab is emptied, not reused: a note reopened in its own tab comes
 		// back at its last scroll position.
 		async reset() {
 			document.body.classList.remove('tela-distinct-sidebar')
 			for (const el of document.querySelectorAll('body > .print')) el.remove()
 			this.audited = new WeakSet()
+			for (const el of this.selected.splice(0)) el.classList.remove('is-active')
 			if (app.vault.getConfig('rightToLeft')) app.vault.setConfig('rightToLeft', false)
 			const leaves = []
 			ws.iterateRootLeaves((leaf) => leaves.push(leaf))

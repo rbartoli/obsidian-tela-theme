@@ -15,6 +15,7 @@
 - In light mode with Distinct sidebars, the washes darkened rows on the recess so far that muted text, Obsidian's file-type badges included, fell to 3.96:1. Rows there now lift toward the note's ground instead of darkening: halfway on hover, all the way when selected. Muted text sits at 5.3 to 5.75:1, and a selected row stands off the recess as clearly as before (1.16:1, was 1.11:1). Picked from a before/after preview.
 - `npm run qa` gains four scenes that select every row in the file explorer and in search results, with and without Distinct sidebars, so the washes are audited on purpose rather than when a leftover pointer happens to rest on a row. The selection wash is the deeper of the two, so it covers hover too.
 - Full run on Obsidian 1.14.4 with the plugins: 340 screens, 0 violations, dark and light, on desktop, phone and tablet.
+- The selected-row scenes now undo their selection when the next scene starts. At first it carried over, so every later screen in a run showed the explorer's rows selected. The audits stayed valid, since a selected row is the harder ground, but the screenshots didn't show the theme as a user sees it.
 
 ### 2026-10-07: surfaces themes forget: print, plugins, title bar, right-to-left
 
