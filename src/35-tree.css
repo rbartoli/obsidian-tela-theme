@@ -78,3 +78,12 @@ body:not(.tela-classic-tree) .nav-file-title:is([data-path$=".pdf" i], [data-pat
 body:not(.tela-classic-tree) .nav-file-title.is-active::before {
 	background-color: var(--interactive-accent);
 }
+
+/* Iconize draws its own icon at the start of a row. A file then shows that
+   icon alone, as it would without the theme; a folder keeps its folder mark,
+   which opens and closes it, as Obsidian keeps its chevron. :has() is limited
+   to a direct child of the row, the cheapest form to re-check. */
+/* stylelint-disable-next-line selector-pseudo-class-disallowed-list */
+body:not(.tela-classic-tree) .nav-file-title:has(> .iconize-icon)::before {
+	display: none;
+}

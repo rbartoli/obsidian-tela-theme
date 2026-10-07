@@ -344,6 +344,15 @@ body:not(.tela-classic-tree) .nav-file-title.is-active::before {
 	background-color: var(--interactive-accent);
 }
 
+/* Iconize draws its own icon at the start of a row. A file then shows that
+   icon alone, as it would without the theme; a folder keeps its folder mark,
+   which opens and closes it, as Obsidian keeps its chevron. :has() is limited
+   to a direct child of the row, the cheapest form to re-check. */
+/* stylelint-disable-next-line selector-pseudo-class-disallowed-list */
+body:not(.tela-classic-tree) .nav-file-title:has(> .iconize-icon)::before {
+	display: none;
+}
+
 /* Tela is a dense app-chrome system with no reading scale, so the editor's
    type is new design in Tela's idiom: one weight for every heading level
    (Tela's heading role is 600) and a gentler ratio than Obsidian's
@@ -600,6 +609,18 @@ li[data-task="-"],
 .cm-line[data-task="-"] {
 	color: var(--text-muted);
 	text-decoration: line-through;
+}
+
+/* PDF export and printing: keep a block on one page, and a heading on the
+   page of the text it introduces. A block taller than a page still breaks. */
+@media print {
+	.print :is(.callout, pre, table, .math-block, .mermaid, img) {
+		break-inside: avoid;
+	}
+
+	.print :is(h1, h2, h3, h4, h5, h6) {
+		break-after: avoid;
+	}
 }
 
 /* @settings

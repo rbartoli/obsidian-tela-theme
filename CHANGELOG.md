@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### 2026-10-07: surfaces themes forget: print, plugins, title bar, right-to-left (#18)
+
+- `npm run qa` gains scenes for printing and PDF export, the frameless title bar with both sidebars collapsed, right-to-left text in reading view and live preview, and five popular plugins: Dataview, Tasks, Kanban, Excalidraw and Iconize. Canvas, Bases, Properties, phone and tablet were already covered.
+- The plugins are downloaded from their GitHub releases, cached, installed into the temporary vault and turned on, so every scene runs with them, as many users' vaults do. Their notes and settings are in `qa/fixtures/`, not `demo/`, which stays plugin-free. `--no-plugins` skips them.
+- The vault's first open asks "Do you trust the author of this vault?" when it comes with plugins, and holds back the plugins and the theme until it is answered. The harness answers it.
+- The print scene renders the note with Obsidian's own PDF export renderer, in light mode as the export does, with print media emulated. One real export of the Tour, checked page by page, came out as 7 A4 pages.
+- Printing and PDF export keep a callout, code block, table, maths block, diagram or image on one page, and a heading with the text after it. Before, callouts were cut across page breaks.
+- With Iconize, a file that has an icon shows Iconize's icon instead of the theme's file-type mark; the two had sat side by side and pushed the label out of line. Folders keep the folder mark, which opens and closes them, beside Iconize's icon, as Obsidian keeps its chevron. The rule uses `:has()`, limited to a direct child of the row; the directory's lint warns on `:has()`, so the line carries a disable comment with the reason.
+- The print scene audits each block of the note once, on the first screen that shows it whole: the print view renders the whole note at once, so auditing all of it on every screen reported over 1,200 off-screen elements as undecided. All 68 blocks of the Tour are audited.
+- Full run on Obsidian 1.14.4 with the plugins: 316 screens, one violation. Faint text on a hovered search result in phone dark mode was at 4.48:1, where the pointer left over from an earlier scene rested on the row. Faint text clears 4.5:1 on every ground but not on the hover and selection washes laid over them (3.7 to 4.9:1 across both modes). That is a colour change, so it is left for its own change.
+- Checked by eye, with no change needed: Dataview tables and task lists, Tasks query results (which show the alternate task marks), Kanban lanes and cards, Excalidraw's toolbars, the title bar buttons, and right-to-left lists, tasks, quotes, callouts and tables.
+
 ### 2026-10-07: alternate task states (#17)
 
 - Twenty task markers now have a mark of their own, in two kinds, each drawn one way.

@@ -16,9 +16,14 @@
 //   --scene <list>      scene names from qa/scenes.mjs (default: all)
 //   --no-shots          audit only, no screenshots
 //   --no-sheets         skip the contact sheets (ImageMagick's montage)
+//   --no-plugins        skip the community plugins and their scenes (they are
+//                       downloaded from GitHub once, then cached in ~/.cache/tela-qa)
 //   --keep-open         leave Obsidian running afterwards, for probing with qa/cdp.mjs
 //   --out <dir>         write the results there; unlike the default folder, it is
 //                       not emptied first
+//
+// The vault is demo/ plus qa/fixtures/vault/, with the plugins in PLUGINS
+// installed and turned on, set up from qa/fixtures/plugins/<id>/data.json.
 //
 // Needs the Obsidian desktop app: `obsidian` on PATH, or OBSIDIAN_BIN.
 // Writes report.md, report.json, shots/ and sheets/ to qa/out/<theme>-<obsidian version>/,
@@ -46,6 +51,11 @@ const RULES = ['color-contrast', 'link-in-text-block']
 // the drawer; the text under the fade is audited once it scrolls clear.
 const AUDIT_CSS = '.workspace-drawer .workspace-leaf-content::after { display: none; }'
 
+// Popular community plugins whose views a theme has to style: the largest
+// plugin bug classes across theme repos, plus Iconize, which draws its own
+// marks in the file tree.
+const PLUGINS = ['dataview', 'obsidian-tasks-plugin', 'obsidian-kanban', 'obsidian-excalidraw-plugin', 'obsidian-icon-folder']
+
 const { values: opt } = parseArgs({
 	options: {
 		obsidian: { type: 'string' },
@@ -55,6 +65,7 @@ const { values: opt } = parseArgs({
 		scene: { type: 'string', default: scenes.map((s) => s.name).join(',') },
 		shots: { type: 'boolean', default: true },
 		sheets: { type: 'boolean', default: true },
+		plugins: { type: 'boolean', default: true },
 		'keep-open': { type: 'boolean', default: false },
 		out: { type: 'string' },
 	},
@@ -164,9 +175,32 @@ async function themeUnderTest(name) {
 	return { name: manifest.name, version: manifest.version, files: { 'theme.css': join(dir, 'theme.css'), 'manifest.json': join(dir, 'manifest.json') } }
 }
 
+// Each plugin as Obsidian installs it: main.js, manifest.json and styles.css
+// from the release whose tag is the manifest's version.
+async function communityPlugins() {
+	if (!opt.plugins) return []
+	const directory = JSON.parse(await download('https://raw.githubusercontent.com/obsidianmd/obsidian-releases/HEAD/community-plugins.json'))
+	const found = []
+	for (const id of PLUGINS) {
+		const entry = directory.find((p) => p.id === id)
+		if (!entry) throw new Error(`no plugin with id ${id} in the community directory`)
+		const manifest = JSON.parse(await download(`https://raw.githubusercontent.com/${entry.repo}/HEAD/manifest.json`))
+		const dir = join(cache, 'plugins', id, manifest.version)
+		if (!existsSync(join(dir, 'manifest.json'))) {
+			const release = `https://github.com/${entry.repo}/releases/download/${manifest.version}`
+			const files = { 'main.js': await download(`${release}/main.js`), 'styles.css': await download(`${release}/styles.css`).catch(() => null) }
+			mkdirSync(dir, { recursive: true })
+			for (const [file, data] of Object.entries(files)) if (data) writeFileSync(join(dir, file), data)
+			writeFileSync(join(dir, 'manifest.json'), JSON.stringify(manifest, null, '\t'))
+		}
+		found.push({ id, name: entry.name, version: manifest.version, dir })
+	}
+	return found
+}
+
 // A copy of demo/ without its local workspace or installed themes, the theme
 // under test, and a profile that opens the copy with updates turned off.
-function prepare(tmp, theme, asar, version) {
+function prepare(tmp, theme, asar, version, plugins) {
 	const vault = join(tmp, 'Demo')
 	const profile = join(tmp, 'profile')
 	const demo = join(root, 'demo')
@@ -174,6 +208,14 @@ function prepare(tmp, theme, asar, version) {
 		recursive: true,
 		filter: (src) => !/^\.obsidian[\\/](themes|workspace)/.test(relative(demo, src)),
 	})
+	cpSync(join(root, 'qa', 'fixtures', 'vault'), vault, { recursive: true })
+	for (const plugin of plugins) {
+		const dir = join(vault, '.obsidian', 'plugins', plugin.id)
+		cpSync(plugin.dir, dir, { recursive: true })
+		const data = join(root, 'qa', 'fixtures', 'plugins', plugin.id, 'data.json')
+		if (existsSync(data)) copyFileSync(data, join(dir, 'data.json'))
+	}
+	writeFileSync(join(vault, '.obsidian', 'community-plugins.json'), JSON.stringify(plugins.map((p) => p.id)))
 	if (theme.files) {
 		const dir = join(vault, '.obsidian', 'themes', theme.name)
 		mkdirSync(dir, { recursive: true })
@@ -234,6 +276,16 @@ async function press(page, key, code, keyCode) {
 // and the page helpers.
 async function ready(page, theme) {
 	await until('the workspace', () => page.evaluate('window.app?.workspace?.layoutReady === true'), 90_000)
+	// A vault that comes with plugins opens with "Do you trust the author of
+	// this vault?", and holds back its plugins and theme until it is answered.
+	// Community plugins also need restricted mode off, a per-device setting.
+	if (page.plugins.length) {
+		const trust = "[...document.querySelectorAll('.modal-container button')].find((b) => /^trust/i.test(b.innerText.trim()))"
+		if (!page.trusted) await until('the trust prompt', () => page.evaluate(`(() => { const b = ${trust}; b?.click(); return !!b })()`), 15_000)
+		page.trusted = true
+		await page.evaluate('(async () => { if (!app.plugins.isEnabled()) await app.plugins.setEnable(true); return true })()')
+		await until('the community plugins', () => page.evaluate(`${JSON.stringify(page.plugins)}.every((id) => app.plugins.plugins[id]?._loaded)`))
+	}
 	await until(`the ${theme.name} theme`, () => page.evaluate(`app.customCss.theme === ${JSON.stringify(theme.files ? theme.name : '')} && app.customCss.styleEl.textContent.length ${theme.files ? '> 0' : '=== 0'}`))
 	// Links finish resolving after the layout is ready (a canvas's links come
 	// last), and backlinks and the graph show whatever is resolved so far.
@@ -264,14 +316,15 @@ async function useDevice(page, theme, name) {
 	if ((await page.evaluate('app.isMobile')) !== d.mobile) throw new Error(`could not switch mobile emulation ${d.mobile ? 'on' : 'off'}`)
 }
 
-const audit = (context) => `axe.run(${context}, ${JSON.stringify({ runOnly: { type: 'rule', values: RULES }, resultTypes: ['violations', 'incomplete'] })}).then((r) => {
+// A context with an empty include list (no new blocks on this screen) has nothing to audit.
+const audit = (context) => `((context) => context.include?.length === 0 ? { violations: [], incomplete: [] } : axe.run(context, ${JSON.stringify({ runOnly: { type: 'rule', values: RULES }, resultTypes: ['violations', 'incomplete'] })}).then((r) => {
 	const text = (n) => {
 		const el = document.querySelector(n.target.at(-1))
 		return (el?.innerText || el?.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 60)
 	}
 	const pick = (v) => v.nodes.map((n) => ({ rule: v.id, target: n.target.join(' '), text: text(n), data: Object.assign({}, ...n.any.map((c) => c.data).filter((d) => d && typeof d === 'object')) }))
 	return { violations: r.violations.flatMap(pick), incomplete: r.incomplete.flatMap(pick) }
-})`
+}))(${context})`
 
 // One screenshot and one audit per screenful: pages through the scene's
 // scroller when it has one, since Obsidian only renders what is near the
@@ -293,7 +346,7 @@ async function capture(page, out, where, scene) {
 			// Paging only moves the scroller, so after the first screen only it is
 			// audited. Overlay scenes audit just the overlay.
 			const only = scene.audit ?? (n && scene.scroll)
-			const context = only ? `(document.querySelector(${JSON.stringify(only)}) ?? (() => { throw new Error(${JSON.stringify(`nothing matches ${only}`)}) })())` : 'document'
+			const context = scene.blocks ? `__qa.blocks(${JSON.stringify(scene.blocks)})` : only ? `(document.querySelector(${JSON.stringify(only)}) ?? (() => { throw new Error(${JSON.stringify(`nothing matches ${only}`)}) })())` : 'document'
 			Object.assign(step, await page.evaluate(audit(context)))
 		} finally {
 			await page.evaluate("document.getElementById('qa-audit')?.remove()")
@@ -365,6 +418,7 @@ function report(out, meta, steps, summary, errors) {
 		`# QA: ${meta.theme}${meta.themeVersion ? ` ${meta.themeVersion}` : ''} on Obsidian ${meta.obsidian}`,
 		'',
 		`${meta.date} · ${steps.length} screens · axe ${meta.axe}, rules: ${RULES.join(', ')}`,
+		...(meta.plugins.length ? ['', `Plugins: ${meta.plugins.join(', ')}`] : []),
 		'',
 		'| Device | Mode | Violations | Needs review |',
 		'| --- | --- | ---: | ---: |',
@@ -434,11 +488,12 @@ async function main() {
 	const theme = await themeUnderTest(opt.theme)
 	const version = await obsidianVersion()
 	const asar = await obsidianAsar(version)
+	const plugins = await communityPlugins()
 	const out = opt.out ? resolve(opt.out) : join(root, 'qa', 'out', `${slug(theme.name)}-${version}`)
 	if (!opt.out) rmSync(out, { recursive: true, force: true })
 	mkdirSync(out, { recursive: true })
 	const tmp = mkdtempSync(join(tmpdir(), 'tela-qa-'))
-	const { profile } = prepare(tmp, theme, asar, version)
+	const { profile } = prepare(tmp, theme, asar, version, plugins)
 	const child = launch(profile, join(out, 'electron.log'))
 	let page
 	const cleanup = async () => {
@@ -455,6 +510,7 @@ async function main() {
 		})
 		page = await until('the vault window', () => connect(port))
 		// Runs a function from qa/scenes.mjs in the page, for its side effects.
+		page.plugins = plugins.map((p) => p.id)
 		page.run = (fn, ...args) => page.evaluate(`(async () => { await (${fn})(${args.map((a) => JSON.stringify(a)).join(', ')}) })()`)
 		await ready(page, theme)
 
@@ -464,6 +520,7 @@ async function main() {
 		if (loaded !== version) throw new Error(`Obsidian ${version} did not load (got ${loaded}): the installer only loads versions newer than its own`)
 		const axe = await page.evaluate('axe.version')
 		console.log(`${theme.name}${theme.version ? ` ${theme.version}` : ''} on Obsidian ${version}, axe ${axe}`)
+		if (plugins.length) console.log(`plugins: ${plugins.map((p) => `${p.name} ${p.version}`).join(', ')}`)
 
 		const steps = []
 		const errors = []
@@ -473,12 +530,13 @@ async function main() {
 				await page.evaluate(`app.changeTheme(${JSON.stringify(modes[mode])})`)
 				await sleep(600)
 				for (const scene of scenes) {
-					if (!wanted.scenes.includes(scene.name) || (scene.only && !scene.only.includes(device)) || (scene.own && !theme.own)) continue
+					if (!wanted.scenes.includes(scene.name) || (scene.only && !scene.only.includes(device)) || (scene.modes && !scene.modes.includes(mode)) || (scene.own && !theme.own) || (scene.plugin && !page.plugins.includes(scene.plugin))) continue
 					for (let i = 0; i < 4 && (await page.evaluate('document.querySelectorAll(".modal-container, .menu, .hover-popover").length')); i++) await press(page, 'Escape', 'Escape', 27)
 					const started = Date.now()
 					const label = `${device.padEnd(7)} ${mode.padEnd(5)} ${scene.name.padEnd(18)}`
 					// A scene that breaks is reported and fails the run, but the rest still run.
 					try {
+						await page.send('Emulation.setEmulatedMedia', { media: '' })
 						await page.run(() => __qa.reset())
 						await scene.setup(page)
 						const shots = await capture(page, out, { device, mode, scene: scene.name }, scene)
@@ -494,7 +552,7 @@ async function main() {
 			}
 		}
 
-		const meta = { theme: theme.name, themeVersion: theme.version, obsidian: version, axe, date: new Date().toLocaleString('sv-SE').slice(0, 16), devices: wanted.devices, modes: wanted.modes, scenes: wanted.scenes }
+		const meta = { theme: theme.name, themeVersion: theme.version, obsidian: version, axe, plugins: plugins.map((p) => `${p.name} ${p.version}`), date: new Date().toLocaleString('sv-SE').slice(0, 16), devices: wanted.devices, modes: wanted.modes, scenes: wanted.scenes }
 		const summary = summarise(steps)
 		const lines = report(out, meta, steps, summary, errors)
 		if (opt.shots && opt.sheets) sheets(out, steps)

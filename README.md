@@ -29,6 +29,8 @@ Work in progress: not yet in the community directory.
 - Headings at one weight in a gentle size scale, with the two smallest levels in muted ink.
 - Unresolved links keep full colour, with a dashed underline instead of fading.
 - Phone and tablet keep the desktop palette rather than switching to pure black.
+- Printing and PDF export keep callouts, code blocks, tables and images on one page, and
+  each heading on the page of the text it introduces.
 
 ## Settings
 
@@ -47,7 +49,9 @@ over the theme's.
 
 ## Compatibility
 
-Obsidian 1.13.4 or later, on desktop and mobile.
+Obsidian 1.13.4 or later, on desktop and mobile. Checked with the Dataview, Tasks, Kanban,
+Excalidraw and Iconize plugins, and with right-to-left text. With Iconize, a file that has
+an icon shows it in place of the theme's file-type mark.
 
 ## Development
 
@@ -77,7 +81,9 @@ it.
 
 `npm run qa` opens the demo vault in a throwaway Obsidian and renders every scene in
 `qa/scenes.mjs` (notes in reading view and live preview, Canvas, Bases, search, menus,
-settings and more) in dark and light mode, on desktop, phone and tablet. Every screen
+settings, print, right-to-left text and more) in dark and light mode, on desktop, phone and
+tablet. It installs Dataview, Tasks, Kanban, Excalidraw and Iconize into the vault and
+renders their views too. Every screen
 gets an [axe](https://github.com/dequelabs/axe-core) contrast audit, and the run fails on
 any violation. The report, screenshots and contact sheets go to `qa/out/`.
 
@@ -85,11 +91,13 @@ any violation. The report, screenshots and contact sheets go to `qa/out/`.
 npm run qa                                  # every scene, on the latest Obsidian
 npm run qa -- --obsidian 1.13.4             # another app version
 npm run qa -- --device phone --mode light --scene reading,editing
+npm run qa -- --no-plugins                  # without the community plugins
 ```
 
 It needs the Obsidian desktop app (`obsidian` on your `PATH`, or `OBSIDIAN_BIN`) and, for
 contact sheets, ImageMagick. Each run uses a temporary profile and a temporary copy of
-`demo/`, so it never touches your own vaults or settings. The installer only loads app
+`demo/` plus `qa/fixtures/`, so it never touches your own vaults or settings. Plugins
+are downloaded from their GitHub releases once, then cached. The installer only loads app
 versions newer than itself. All options are listed at the top of `qa/run.mjs`.
 
 ## Obsidian updates

@@ -20,11 +20,15 @@ const EDITING = '.workspace-leaf.mod-active .cm-scroller'
 
 // name: used in --scene and output paths. scroll: the scroller to page
 // through, one screenshot and audit per screenful. only: the devices a scene
-// applies to. own: needs this repo's theme (a Style Settings class).
+// applies to; modes: the colour schemes. own: needs this repo's theme (a Style
+// Settings class). plugin: needs that community plugin (skipped with
+// --no-plugins).
 // auditCss: applied during the audit only, after the screenshot, to hide
 // transparent layers that stop axe from finding the text's background.
 // audit: the overlay a scene opens; only it is audited, since the screen
-// behind it is audited in the scenes without it.
+// behind it is audited in the scenes without it. blocks: for a scroller that
+// renders everything at once, the blocks to audit, each once, on the first
+// screen that shows it whole, or else the last screen that shows its top.
 export const scenes = [
 	{ name: 'reading', scroll: READING, setup: (p) => p.run(() => __qa.open('Tour.md', { mode: 'preview' })) },
 	{ name: 'editing', scroll: EDITING, setup: (p) => p.run(() => __qa.edit('Tour.md')) },
@@ -129,6 +133,69 @@ export const scenes = [
 				await __qa.reveal('file-explorer')
 			}),
 	},
+	// Printing and PDF export render the note into a .print element at the end
+	// of the body, always in light mode, and print it under @media print, which
+	// hides the rest of the app. This is the same renderer and element, with
+	// print media emulated. The document won't scroll under emulated print
+	// media, so the element is given the viewport's height and scrolls itself.
+	{
+		name: 'print',
+		only: ['desktop'],
+		modes: ['light'],
+		scroll: 'body > .print',
+		blocks: '.print .markdown-preview-view > div',
+		setup: async (p) => {
+			await p.run(() => __qa.print('Tour.md'))
+			await p.send('Emulation.setEmulatedMedia', { media: 'print' })
+			await p.run(() => __qa.settle(800))
+		},
+	},
+	// The frameless window's own title bar buttons, with nothing beside them:
+	// both sidebars collapsed.
+	{
+		name: 'titlebar',
+		only: ['desktop'],
+		setup: (p) =>
+			p.run(async () => {
+				await __qa.open('Tour.md', { mode: 'preview' })
+				app.workspace.leftSplit.collapse()
+				app.workspace.rightSplit.collapse()
+				await __qa.settle(600)
+			}),
+	},
+	// Settings → Editor → Right-to-left, with Arabic and Hebrew text.
+	{
+		name: 'rtl-reading',
+		scroll: READING,
+		setup: (p) =>
+			p.run(async () => {
+				app.vault.setConfig('rightToLeft', true)
+				await __qa.open('RTL.md', { mode: 'preview' })
+			}),
+	},
+	{
+		name: 'rtl-editing',
+		setup: (p) =>
+			p.run(async () => {
+				app.vault.setConfig('rightToLeft', true)
+				await __qa.edit('RTL.md')
+			}),
+	},
+	// Popular plugins' own views.
+	{ name: 'dataview', plugin: 'dataview', setup: (p) => p.run(() => __qa.open('Plugins/Dataview.md', { mode: 'preview' })) },
+	{ name: 'tasks-query', plugin: 'obsidian-tasks-plugin', setup: (p) => p.run(() => __qa.open('Plugins/Tasks.md', { mode: 'preview' })) },
+	{ name: 'kanban', plugin: 'obsidian-kanban', setup: (p) => p.run(() => __qa.view('Board.md', 'kanban')) },
+	{ name: 'excalidraw', plugin: 'obsidian-excalidraw-plugin', setup: (p) => p.run(() => __qa.view('Plugins/Drawing.excalidraw.md', 'excalidraw')) },
+	// Iconize draws its icons in the file tree, where the theme draws its marks.
+	{
+		name: 'iconize',
+		plugin: 'obsidian-icon-folder',
+		setup: (p) =>
+			p.run(async () => {
+				await __qa.open('Tour.md', { mode: 'preview' })
+				await __qa.reveal('file-explorer')
+			}),
+	},
 	// Distinct sidebars put the sidebars on a recessed surface, where faint
 	// text (file-type badges, result counts) has the least room.
 	{
@@ -203,6 +270,54 @@ export function installHelpers() {
 			await this.settle()
 			return leaf
 		},
+		// Opens a file in a plugin's view, which the plugin usually picks itself.
+		async view(path, type) {
+			const leaf = await this.open(path)
+			if (leaf.view.getViewType() !== type) await leaf.setViewState({ type, state: { file: path }, active: true })
+			await this.settle(1500)
+			if (leaf.view.getViewType() !== type) throw new Error(`${path} did not open in the ${type} view`)
+			return leaf
+		},
+		// Renders a note the way PDF export does. The export modal holds the
+		// renderer, so it is opened and caught on its way to the screen.
+		async print(path) {
+			const leaf = await this.open(path, { mode: 'preview' })
+			let proto = app.setting
+			let base
+			while ((proto = Object.getPrototypeOf(proto)) && proto !== Object.prototype) if (Object.hasOwn(proto, 'open')) base = proto
+			const open = base.open
+			let modal
+			base.open = function () {
+				modal = this
+				return open.call(this)
+			}
+			try {
+				leaf.view.printToPdf()
+			} finally {
+				base.open = open
+			}
+			if (!modal?.print) throw new Error('no PDF export modal')
+			modal.close()
+			const el = document.body.createDiv('print')
+			Object.assign(el.style, { height: '100vh', overflowY: 'auto' })
+			await modal.print(el, leaf.view, true)
+			await this.settle(800)
+			return leaf
+		},
+		// The blocks matching selector to audit on this screen: those it shows
+		// whole, and those whose top the next screen will scroll past. The next
+		// screen starts 93% of a screen down (capture in qa/run.mjs), so a block
+		// cut off at the bottom waits for it only if its top is below that line.
+		blocks(selector) {
+			const h = innerHeight
+			const fresh = [...document.querySelectorAll(selector)].filter((el) => {
+				const r = el.getBoundingClientRect()
+				return !this.audited.has(el) && r.height > 0 && r.top >= -1 && (r.bottom <= h || r.top < h * 0.93)
+			})
+			for (const el of fresh) this.audited.add(el)
+			return { include: fresh }
+		},
+		audited: new WeakSet(),
 		async base(view) {
 			const leaf = await this.open('Library.base')
 			await leaf.view.controller.selectView?.(view)
@@ -225,11 +340,15 @@ export function installHelpers() {
 			return leaf
 		},
 		// One empty tab, the file explorer showing every folder open, the right
-		// sidebar (and on mobile both drawers) closed, no Style Settings class.
+		// sidebar (and on mobile both drawers) closed, no Style Settings class,
+		// nothing set up for printing, left-to-right.
 		// The tab is emptied, not reused: a note reopened in its own tab comes
 		// back at its last scroll position.
 		async reset() {
 			document.body.classList.remove('tela-distinct-sidebar')
+			for (const el of document.querySelectorAll('body > .print')) el.remove()
+			this.audited = new WeakSet()
+			if (app.vault.getConfig('rightToLeft')) app.vault.setConfig('rightToLeft', false)
 			const leaves = []
 			ws.iterateRootLeaves((leaf) => leaves.push(leaf))
 			for (const leaf of leaves.slice(1)) leaf.detach()

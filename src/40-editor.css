@@ -255,3 +255,15 @@ li[data-task="-"],
 	color: var(--text-muted);
 	text-decoration: line-through;
 }
+
+/* PDF export and printing: keep a block on one page, and a heading on the
+   page of the text it introduces. A block taller than a page still breaks. */
+@media print {
+	.print :is(.callout, pre, table, .math-block, .mermaid, img) {
+		break-inside: avoid;
+	}
+
+	.print :is(h1, h2, h3, h4, h5, h6) {
+		break-after: avoid;
+	}
+}
