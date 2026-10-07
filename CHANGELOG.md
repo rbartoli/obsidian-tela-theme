@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### 2026-10-07: room between tree marks and labels
+
+- File and folder labels in the tree sit 8px after their mark, was 4px: the gap Obsidian puts between an icon and its label in menus, the settings sidebar and the quick switcher. Obsidian's own 4px suits its 10px chevron but crowded a 16px mark. Classic tree icons keep Obsidian's spacing.
+- Picked from a preview of 4, 6 and 8px in dark and light. Measured afterwards: 8px from the mark's box to the label, for files and folders. `npm run qa` on the explorer, drawer, menu, Iconize and right-to-left scenes: 0 violations.
+
 ### 2026-10-07: a cover and screenshots for the README
 
 - The README opens with a cover: the theme's name beside a reading note in dark mode, the Library base's book covers in light mode, and the note on a phone. A gallery follows: notes and properties, Bases cards, the task marks and code, plus three phone screens.

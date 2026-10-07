@@ -49,6 +49,13 @@ body:not(.tela-classic-tree) .nav-file-title::before {
 	mask: var(--tela-mark) center / 16px no-repeat;
 }
 
+/* Obsidian leaves 4px after the gutter, enough for its small chevron but
+   tight beside a 16px mark. Labels move 4px further, for the 8px Obsidian
+   puts between an icon and its label in menus, settings and the switcher. */
+body:not(.tela-classic-tree) :is(.nav-file-title-content, .nav-folder-title-content) {
+	margin-inline-start: var(--size-4-1);
+}
+
 body:not(.tela-classic-tree) .nav-file-title:not([data-path$=".md" i]) {
 	--tela-mark: var(--tela-mark-file);
 }
