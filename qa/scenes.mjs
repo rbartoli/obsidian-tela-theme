@@ -196,6 +196,27 @@ export const scenes = [
 				await __qa.reveal('file-explorer')
 			}),
 	},
+	// Every sidebar row under the selection wash, the deeper of the two washes
+	// Obsidian lays over a row, so the text on a hovered or selected row is
+	// audited too. Without Distinct sidebars, the rows sit on the base.
+	{
+		name: 'selected-explorer',
+		setup: (p) =>
+			p.run(async () => {
+				await __qa.open('Tour.md', { mode: 'preview' })
+				await __qa.reveal('file-explorer')
+				await __qa.select('.workspace-leaf-content[data-type="file-explorer"] .tree-item-self')
+			}),
+	},
+	{
+		name: 'selected-search',
+		setup: (p) =>
+			p.run(async () => {
+				await __qa.open('Tour.md', { mode: 'preview' })
+				await __qa.search('callout')
+				await __qa.select('.workspace-leaf-content[data-type="search"] .tree-item-self')
+			}),
+	},
 	// Distinct sidebars put the sidebars on a recessed surface, where faint
 	// text (file-type badges, result counts) has the least room.
 	{
@@ -217,6 +238,28 @@ export const scenes = [
 				document.body.classList.add('tela-distinct-sidebar')
 				await __qa.open('Tour.md', { mode: 'preview' })
 				await __qa.search('callout')
+			}),
+	},
+	{
+		name: 'distinct-selected-explorer',
+		own: true,
+		setup: (p) =>
+			p.run(async () => {
+				document.body.classList.add('tela-distinct-sidebar')
+				await __qa.open('Tour.md', { mode: 'preview' })
+				await __qa.reveal('file-explorer')
+				await __qa.select('.workspace-leaf-content[data-type="file-explorer"] .tree-item-self')
+			}),
+	},
+	{
+		name: 'distinct-selected-search',
+		own: true,
+		setup: (p) =>
+			p.run(async () => {
+				document.body.classList.add('tela-distinct-sidebar')
+				await __qa.open('Tour.md', { mode: 'preview' })
+				await __qa.search('callout')
+				await __qa.select('.workspace-leaf-content[data-type="search"] .tree-item-self')
 			}),
 	},
 ]
@@ -332,6 +375,12 @@ export function installHelpers() {
 			await leaf.loadIfDeferred?.()
 			await this.settle(600)
 			return leaf
+		},
+		// Gives every matching row the selected state, as a click would.
+		async select(selector) {
+			await this.find(selector)
+			for (const el of document.querySelectorAll(selector)) el.classList.add('is-active')
+			await this.settle()
 		},
 		async search(query) {
 			const leaf = await this.reveal('search')

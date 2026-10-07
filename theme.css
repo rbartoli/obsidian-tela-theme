@@ -255,6 +255,14 @@ body {
 	--status-bar-radius: 0;
 }
 
+/* Faint text can't hold 4.5:1 under the hover and selection washes, so a
+   washed row lifts it to muted, as Obsidian already does for file-type
+   badges: result counts, row subtext, menu and list descriptions. */
+:is(.tree-item-self, .suggestion-item, .menu-item, .list-item, .vertical-tab-nav-item):is(:hover, .is-active, .is-selected, .selected, .mobile-tap),
+.cm-tooltip-autocomplete li[aria-selected] {
+	--text-faint: var(--text-muted);
+}
+
 /* The focused pane's active tab gets Tela's 2px accent top line. No variable
    covers this, so it is the one component rule in the chrome layer. */
 body.is-focused .workspace-split.mod-root .mod-active .workspace-tab-header.is-active {
@@ -644,4 +652,12 @@ settings:
 .tela-distinct-sidebar.theme-dark,
 .tela-distinct-sidebar.theme-light {
 	--background-secondary: var(--tela-recess);
+}
+
+/* On the light recess, a black wash darkens a row past what muted text can
+   hold. Rows there lift toward the note's ground instead: halfway on hover,
+   all the way when selected. */
+.tela-distinct-sidebar.theme-light :is(.mod-left-split, .mod-right-split, .workspace-drawer) {
+	--nav-item-background-hover: color-mix(in srgb, var(--tela-bg) 50%, var(--tela-recess));
+	--nav-item-background-active: var(--tela-bg);
 }

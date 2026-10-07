@@ -20,3 +20,11 @@ settings:
 .tela-distinct-sidebar.theme-light {
 	--background-secondary: var(--tela-recess);
 }
+
+/* On the light recess, a black wash darkens a row past what muted text can
+   hold. Rows there lift toward the note's ground instead: halfway on hover,
+   all the way when selected. */
+.tela-distinct-sidebar.theme-light :is(.mod-left-split, .mod-right-split, .workspace-drawer) {
+	--nav-item-background-hover: color-mix(in srgb, var(--tela-bg) 50%, var(--tela-recess));
+	--nav-item-background-active: var(--tela-bg);
+}

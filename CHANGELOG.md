@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2026-10-07: text on hovered and selected rows clears AA (#19)
+
+- Faint text (result counts, row subtext, menu and list descriptions) cleared 4.5:1 on every ground but not under the hover and selection washes laid over a row: 3.7 to 4.9:1 across both modes. A hovered or selected row now shows it in muted ink, as Obsidian already does for file-type badges. Muted under the washes: 4.8:1 or more in dark mode, 4.6:1 or more on the light base.
+- In light mode with Distinct sidebars, the washes darkened rows on the recess so far that muted text, Obsidian's file-type badges included, fell to 3.96:1. Rows there now lift toward the note's ground instead of darkening: halfway on hover, all the way when selected. Muted text sits at 5.3 to 5.75:1, and a selected row stands off the recess as clearly as before (1.16:1, was 1.11:1). Picked from a before/after preview.
+- `npm run qa` gains four scenes that select every row in the file explorer and in search results, with and without Distinct sidebars, so the washes are audited on purpose rather than when a leftover pointer happens to rest on a row. The selection wash is the deeper of the two, so it covers hover too.
+- Full run on Obsidian 1.14.4 with the plugins: 340 screens, 0 violations, dark and light, on desktop, phone and tablet.
+
 ### 2026-10-07: surfaces themes forget: print, plugins, title bar, right-to-left (#18)
 
 - `npm run qa` gains scenes for printing and PDF export, the frameless title bar with both sidebars collapsed, right-to-left text in reading view and live preview, and five popular plugins: Dataview, Tasks, Kanban, Excalidraw and Iconize. Canvas, Bases, Properties, phone and tablet were already covered.
