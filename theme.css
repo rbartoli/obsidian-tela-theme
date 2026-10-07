@@ -395,53 +395,204 @@ body {
 	--callout-title-color: color-mix(in oklch, var(--callout-color) 78%, #000);
 }
 
-/* Alternate task states. Obsidian draws every non-space marker as a plain
-   tick; these get their own fill and glyph. [!] takes Tela's attention
-   colour (something waiting on you), [?] the warn colour. */
+/* Alternate task states. Obsidian draws every marker other than [ ] and [x]
+   as a plain tick; these get a mark of their own, in two kinds, each drawn
+   one way:
+   - Status markers keep the box, filled, with a heavy glyph like the tick:
+     [!] important in Tela's attention colour (something waiting on you),
+     [?] question in warn, [/] in progress as a half-filled accent box, and
+     the parked states [-] cancelled, [>] forwarded and [<] scheduled in grey.
+   - Annotation markers drop the box for a bare 16px Lucide glyph in a hue,
+     like the file tree's marks: [*] ["] [l] [b] [i] [S] [I] [p] [c] [f] [k]
+     [w] [u] [d], the set many themes share. Every hue clears 3:1 on the
+     note, except light mode's yellow, so yellow glyphs take warn.
+   Each state sets custom properties on its checkbox, and one rule draws them.
+   The checkbox carries data-task in some views and its line or list item in
+   others, so each state names all four places. Other markers get a check. */
+
+/* [!] important */
 :is(input[data-task="!"], li[data-task="!"] > input, li[data-task="!"] > p > input, .cm-line[data-task="!"] input) {
 	--checkbox-color: var(--tela-attention);
 	--checkbox-color-hover: var(--tela-attention);
 	--checkbox-marker-color: var(--tela-on-attention);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v9M12 19v.01'/%3E%3C/svg%3E");
 }
 
+/* [?] question */
 :is(input[data-task="?"], li[data-task="?"] > input, li[data-task="?"] > p > input, .cm-line[data-task="?"] input) {
 	--checkbox-color: var(--tela-warn);
 	--checkbox-color-hover: var(--tela-warn);
 	--checkbox-marker-color: var(--tela-on-warn);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.5 9a3.5 3.5 0 1 1 4.7 3.3c-.8.3-1.2 1-1.2 1.8v.4M12 19v.01'/%3E%3C/svg%3E");
 }
 
+/* [-] cancelled */
 :is(input[data-task="-"], li[data-task="-"] > input, li[data-task="-"] > p > input, .cm-line[data-task="-"] input) {
 	--checkbox-color: var(--color-base-35);
 	--checkbox-color-hover: var(--color-base-35);
 	--checkbox-marker-color: var(--text-muted);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E");
 }
 
+/* [>] forwarded */
+:is(input[data-task=">"], li[data-task=">"] > input, li[data-task=">"] > p > input, .cm-line[data-task=">"] input) {
+	--checkbox-color: var(--color-base-35);
+	--checkbox-color-hover: var(--color-base-35);
+	--checkbox-marker-color: var(--text-muted);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E");
+}
+
+/* [<] scheduled */
+:is(input[data-task="<"], li[data-task="<"] > input, li[data-task="<"] > p > input, .cm-line[data-task="<"] input) {
+	--checkbox-color: var(--color-base-35);
+	--checkbox-color-hover: var(--color-base-35);
+	--checkbox-marker-color: var(--text-muted);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 2v3'/%3E%3Cpath d='M16 2v3'/%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cpath d='M3 9h18'/%3E%3C/svg%3E");
+}
+
+/* [*] star */
+:is(input[data-task="*"], li[data-task="*"] > input, li[data-task="*"] > p > input, .cm-line[data-task="*"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-warn);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* ["] quote */
+:is(input[data-task="\""], li[data-task="\""] > input, li[data-task="\""] > p > input, .cm-line[data-task="\""] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--text-muted);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z'/%3E%3Cpath d='M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [l] location */
+:is(input[data-task="l"], li[data-task="l"] > input, li[data-task="l"] > p > input, .cm-line[data-task="l"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-err);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [b] bookmark */
+:is(input[data-task="b"], li[data-task="b"] > input, li[data-task="b"] > p > input, .cm-line[data-task="b"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-attention);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [i] information */
+:is(input[data-task="i"], li[data-task="i"] > input, li[data-task="i"] > p > input, .cm-line[data-task="i"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-accent);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 16v-4'/%3E%3Cpath d='M12 8h.01'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [S] savings */
+:is(input[data-task="S"], li[data-task="S"] > input, li[data-task="S"] > p > input, .cm-line[data-task="S"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-ok);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.16 3.16 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-4V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z'/%3E%3Cpath d='M16 10h.01'/%3E%3Cpath d='M2 8v1a2 2 0 0 0 2 2h1'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [I] idea */
+:is(input[data-task="I"], li[data-task="I"] > input, li[data-task="I"] > p > input, .cm-line[data-task="I"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-warn);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5'/%3E%3Cpath d='M9 18h6'/%3E%3Cpath d='M10 22h4'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [p] pro */
+:is(input[data-task="p"], li[data-task="p"] > input, li[data-task="p"] > p > input, .cm-line[data-task="p"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-ok);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z'/%3E%3Cpath d='M7 10v12'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [c] con */
+:is(input[data-task="c"], li[data-task="c"] > input, li[data-task="c"] > p > input, .cm-line[data-task="c"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-err);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z'/%3E%3Cpath d='M17 14V2'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [f] fire */
+:is(input[data-task="f"], li[data-task="f"] > input, li[data-task="f"] > p > input, .cm-line[data-task="f"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-attention);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [k] key */
+:is(input[data-task="k"], li[data-task="k"] > input, li[data-task="k"] > p > input, .cm-line[data-task="k"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-warn);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z'/%3E%3Ccircle cx='16.5' cy='7.5' r='.5' fill='white'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [w] win */
+:is(input[data-task="w"], li[data-task="w"] > input, li[data-task="w"] > p > input, .cm-line[data-task="w"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-purple);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2'/%3E%3Cpath d='M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2'/%3E%3Cpath d='M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3'/%3E%3Cpath d='M4 22h16'/%3E%3Cpath d='M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z'/%3E%3Cpath d='M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [u] up */
+:is(input[data-task="u"], li[data-task="u"] > input, li[data-task="u"] > p > input, .cm-line[data-task="u"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-ok);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 7h6v6'/%3E%3Cpath d='m22 7-8.5 8.5-5-5L2 17'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [d] down */
+:is(input[data-task="d"], li[data-task="d"] > input, li[data-task="d"] > p > input, .cm-line[data-task="d"] input) {
+	--checkbox-color: transparent;
+	--checkbox-color-hover: transparent;
+	--checkbox-marker-color: var(--tela-err);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 17h6v-6'/%3E%3Cpath d='m22 17-8.5-8.5-5 5L2 7'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
+}
+
+/* [/] in progress: an accent outline, half filled. */
 :is(input[data-task="/"], li[data-task="/"] > input, li[data-task="/"] > p > input, .cm-line[data-task="/"] input) {
 	--checkbox-color: transparent;
 	--checkbox-color-hover: transparent;
 	--checkbox-marker-color: var(--interactive-accent);
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='2' width='10' height='20' fill='white'/%3E%3C/svg%3E");
+	--tela-task-glyph-size: 100%;
 }
 
-:is(input[data-task="!"], li[data-task="!"] > input, li[data-task="!"] > p > input, .cm-line[data-task="!"] input):checked::after {
-	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round'%3E%3Cpath d='M12 5v9M12 19v.01'/%3E%3C/svg%3E");
-}
-
-:is(input[data-task="?"], li[data-task="?"] > input, li[data-task="?"] > p > input, .cm-line[data-task="?"] input):checked::after {
-	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.5 9a3.5 3.5 0 1 1 4.7 3.3c-.8.3-1.2 1-1.2 1.8v.4M12 19v.01'/%3E%3C/svg%3E");
-}
-
-:is(input[data-task="-"], li[data-task="-"] > input, li[data-task="-"] > p > input, .cm-line[data-task="-"] input):checked::after {
-	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E");
-}
-
-/* In progress: an accent outline, half filled. */
 :is(input[data-task="/"], li[data-task="/"] > input, li[data-task="/"] > p > input, .cm-line[data-task="/"] input):checked {
 	border-color: var(--interactive-accent);
 }
 
-:is(input[data-task="/"], li[data-task="/"] > input, li[data-task="/"] > p > input, .cm-line[data-task="/"] input):checked::after {
-	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2' y='2' width='10' height='20' fill='white'/%3E%3C/svg%3E");
-	mask-size: 100%;
+:is(input[data-task]:not([data-task=" "], [data-task="x"], [data-task="X"]), li[data-task]:not([data-task=" "], [data-task="x"], [data-task="X"]) > input, li[data-task]:not([data-task=" "], [data-task="x"], [data-task="X"]) > p > input, .cm-line[data-task]:not([data-task=" "], [data-task="x"], [data-task="X"]) input):checked::after {
+	mask-image: var(--tela-task-glyph, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E"));
+	mask-size: var(--tela-task-glyph-size, 65%);
+	mask-position: center;
 }
 
 /* Cancelled reads as struck out, like done, but stays muted. */

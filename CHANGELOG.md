@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### 2026-10-07: alternate task states (#17)
+
+- Twenty task markers now have a mark of their own, in two kinds, each drawn one way.
+- Status markers keep a filled box with a heavy glyph, like the done tick: `[!]` important (attention orange), `[?]` question (warn), `[/]` in progress (a half-filled accent box), and the parked states in grey: `[-]` cancelled, `[>]` forwarded (arrow) and `[<]` scheduled (calendar). `[>]` and `[<]` are new.
+- Annotation markers drop the box for a bare 16px Lucide glyph, the size and stroke of the file tree's marks: `[*]` star, `["]` quote, `[l]` location, `[b]` bookmark, `[i]` information, `[S]` savings, `[I]` idea, `[p]` pro, `[c]` con, `[f]` fire, `[k]` key, `[w]` win, `[u]` up and `[d]` down. Their text stays unstruck, as Obsidian only strikes `[x]`.
+- Every glyph clears 3:1 against the note background, the WCAG minimum for non-text marks: 5.8:1 or more in dark mode, 4.7:1 or more in light. Light mode's yellow is 2.96:1, so yellow glyphs (star, idea, key) take the warn colour instead.
+- Each state now sets custom properties on its checkbox (`--checkbox-color`, `--checkbox-marker-color`, `--tela-task-glyph`), and one rule draws the glyph. Markers without a mark of their own get a check.
+- The selectors still name four places per state. In reading view Obsidian 1.14 puts `data-task` on the list item, not the checkbox, so `input[data-task]` alone would miss it.
+- The demo Tour lists every state.
+
 ### 2026-10-07: heading levels you can tell apart (#16)
 
 - Heading sizes are 1.6, 1.4, 1.25, 1.125, 1 and 0.875em, up from 1.5, 1.3, 1.15, 1.05, 1 and 0.9. Every heading stays at weight 600.

@@ -30,6 +30,25 @@ without starting a new paragraph. %% Comments like this one only show while you 
 - [!] Important
 - [?] Question
 	- [ ] A subtask
+- [>] Forwarded
+- [<] Scheduled
+
+Other markers annotate a line rather than track it:
+
+- [*] Star
+- ["] Quote
+- [l] Location
+- [b] Bookmark
+- [i] Information
+- [S] Savings
+- [I] Idea
+- [p] Pro
+- [c] Con
+- [f] Fire
+- [k] Key
+- [w] Win
+- [u] Up
+- [d] Down
 
 ## Quotes
 
