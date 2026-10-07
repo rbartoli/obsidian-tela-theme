@@ -21,7 +21,9 @@
    --tela-faint has no Tela counterpart: Tela has two text lanes and holds
    both to WCAG AA. Obsidian sets real text in faint (tab titles, settings
    headings, code comments, result counts), so faint is muted blended into
-   the base only as far as it still clears 4.5:1 on bg and on code blocks.
+   the base only as far as it still clears 4.5:1 on every ground it sits on:
+   bg, code blocks, panels, and the recess under Distinct sidebars. The
+   recess is the darkest light ground, so it sets the light value.
 
    --tela-code-* is Tela's terminal palette (dark: Tomorrow Night, light:
    GitHub Light, from theme.ts ansi), so code blocks read like Tela's
@@ -70,7 +72,7 @@
 	--tela-recess: #e6e7e9;
 	--tela-fg: #1f2328;
 	--tela-muted: #59636e;
-	--tela-faint: #666f79;
+	--tela-faint: #5e6772;
 	--tela-accent: #0969da;
 	--tela-on-accent: #fff;
 	--tela-on-attention: #fff;

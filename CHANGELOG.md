@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2026-10-07: light-mode faint text clears AA on every ground (#14)
+
+- Light mode's faint text (`--tela-faint`) is `#5e6772`, was `#666f79`. It is still muted blended into the base, but now stops where it clears 4.5:1 on the darkest ground it sits on: the recessed sidebars of the Distinct sidebars option.
+- The first QA run found it at 4.12:1 there (a file-type badge, a search result count, the "Unlinked mentions" header) and at 4.28:1 in the phone file menu. Now: 4.64:1 on the recess, 4.82:1 in the phone menu, 4.90:1 on panels, 5.13:1 on code blocks and 5.40:1 on the base. Dark mode is unchanged.
+- Verified with `npm run qa` on Obsidian 1.14.4: 0 violations in every scene, dark and light, on desktop, phone and tablet.
+
 ### 2026-10-07: QA fixes (#10, #12, #13)
 
 - Settings opens as a modal in the main window during QA. On desktop, Obsidian 1.14 opens it in a window of its own, so the first run never audited it.
