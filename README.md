@@ -1,9 +1,30 @@
-# Tela
+<img src="assets/cover.webp" alt="Tela, a calm, legible theme for Obsidian: a reading note in dark mode, the Library's book covers in light mode, and the same note on a phone">
 
 An Obsidian theme inspired by the style guide of the Tela app. It supports dark and light
-mode.
+mode, on desktop, phone and tablet.
 
 Work in progress: not yet in the community directory.
+
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="assets/notes-light.webp" alt="A reading note with properties, a quote and a callout, in light mode"><br>Notes and properties</td>
+    <td width="50%"><img src="assets/bases-light.webp" alt="A base in cards view, showing four book covers, in light mode"><br>Bases cards</td>
+  </tr>
+  <tr>
+    <td><img src="assets/tasks-dark.webp" alt="Task markers, each with its own mark, in dark mode"><br>Twenty task marks</td>
+    <td><img src="assets/code-dark.webp" alt="Code blocks in JavaScript, CSS, HTML and Python, in dark mode"><br>Code in Tela's terminal colours</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td width="33%"><img src="assets/phone-notes-dark.webp" alt="The reading note on a phone, in dark mode"></td>
+    <td width="33%"><img src="assets/phone-notes-light.webp" alt="The reading note on a phone, in light mode"></td>
+    <td width="33%"><img src="assets/phone-bases-dark.webp" alt="The base's book covers on a phone, in dark mode"></td>
+  </tr>
+</table>
 
 ## Why Tela
 

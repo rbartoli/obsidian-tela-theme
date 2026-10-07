@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2026-10-07: a cover and screenshots for the README
+
+- The README opens with a cover: the theme's name beside a reading note in dark mode, the Library base's book covers in light mode, and the note on a phone. A gallery follows: notes and properties, Bases cards, the task marks and code, plus three phone screens.
+- Every image is from the demo vault, captured at 2x in Obsidian 1.14.4 on Windows, for its text rendering. The cover is laid out in HTML and rendered by Edge, with Inter, the theme's font. Desktop shots are 1200x800 and phone shots 900x1600, the community directory's sizes. They are stored as lossless WebP in `assets/`, under 1 MB together and pixel-identical to the captures.
+- The demo's Frankenstein note is now a full reading note, so the screenshots show real use rather than a test page: properties, a quote from the novel, a question callout, tasks in several states and a link.
+
 ### 2026-10-07: a README for users, lint without warnings
 
 - The README now covers what a user needs: why the theme, features, settings, fonts, compatibility and how to verify a release. Development, QA, the Obsidian update check and releasing moved to `CONTRIBUTING.md`, and the README links its claims about the contrast audit and the update check there.
