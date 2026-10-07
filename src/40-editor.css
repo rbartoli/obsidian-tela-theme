@@ -1,14 +1,17 @@
 /* Tela is a dense app-chrome system with no reading scale, so the editor's
    type is new design in Tela's idiom: one weight for every heading level
-   (Tela's heading role is 600), a gentler ratio than Obsidian's golden-section
-   steps, and the two smallest levels set back to muted ink. */
+   (Tela's heading role is 600) and a gentler ratio than Obsidian's
+   golden-section steps. Every pair of neighbouring levels differs by a cue of
+   its own: at least 11% in size down to h4, which keeps h4 clear of a bold
+   paragraph; muted ink from h5, which sits at body size; and h6 is a small
+   capitalised label. */
 body {
-	--h1-size: 1.5em;
-	--h2-size: 1.3em;
-	--h3-size: 1.15em;
-	--h4-size: 1.05em;
+	--h1-size: 1.6em;
+	--h2-size: 1.4em;
+	--h3-size: 1.25em;
+	--h4-size: 1.125em;
 	--h5-size: 1em;
-	--h6-size: 0.9em;
+	--h6-size: 0.875em;
 	--h1-weight: 600;
 	--h2-weight: 600;
 	--h3-weight: 600;
@@ -17,6 +20,7 @@ body {
 	--h6-weight: 600;
 	--h5-color: var(--text-muted);
 	--h6-color: var(--text-muted);
+	--h6-letter-spacing: 0.05em;
 
 	/* Hairlines, as everywhere else in Tela. */
 	--hr-thickness: 1px;
@@ -27,6 +31,15 @@ body {
 	--link-unresolved-opacity: 1;
 	--link-unresolved-decoration-style: dashed;
 	--link-unresolved-decoration-color: color-mix(in oklch, var(--interactive-accent) 60%, transparent);
+}
+
+/* No variable sets text-transform, so h6's capitals need Obsidian's own heading
+   selectors: the reading view's h6, and the heading text in the editor.
+   Small caps (--h6-variant) would avoid the rule, but they render about 8px
+   tall at this size, too small to read as a heading. */
+.markdown-rendered h6,
+.cm-header-6 {
+	text-transform: uppercase;
 }
 
 /* Callout titles are the callout colour on a 10% tint of itself. Fine on

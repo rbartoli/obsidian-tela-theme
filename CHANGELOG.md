@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2026-10-07: heading levels you can tell apart (#16)
+
+- Heading sizes are 1.6, 1.4, 1.25, 1.125, 1 and 0.875em, up from 1.5, 1.3, 1.15, 1.05, 1 and 0.9. Every heading stays at weight 600.
+- Every pair of neighbouring levels now differs by a cue of its own. Sizes step at least 11% down to h4. Before, h4 was 1.05em: 5% above h5, and barely larger than a bold paragraph. h5 sits at body size in muted ink. h6 is a small capitalised label, muted and letter-spaced.
+- Capitals come from `text-transform` on Obsidian's own heading selectors (`.markdown-rendered h6`, `.cm-header-6`): no variable covers it, and small caps through `--h6-variant` rendered about 8px tall.
+- Picked from a preview of three ladders (the old one, Obsidian's golden-section steps, and this one) in dark and light mode. Under Obsidian's steps, h5 and h6 differed by 7.6% and h6 was body size.
+
 ### 2026-10-07: contributing guide, issue forms, attested releases, minimum Obsidian 1.13.4 (#15)
 
 - `minAppVersion` is 1.13.4, was 1.10.6, which had never been tested. 1.13.4 is the first public 1.13 desktop release, and nothing older can work: the hover and selection washes are mixed from `--mono-100`, which first ships in 1.13.
