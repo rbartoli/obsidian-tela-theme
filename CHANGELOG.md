@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2026-10-09: headings that scan as a skeleton
+
+- H1 and H2 take the accent colour, with a 1px hairline under them in the border colour. H3 mixes the accent into body ink so a subsection is not another paragraph. H4 stays with the paragraph; H5 and H6 stay muted. Before, H1–H4 were body ink and only size set them apart.
+- H2 uses the same colour as H1, because many notes never use H1 and open at a second-level heading. The hairline is not accent-coloured, and H3 does not get one.
+- Colour is Obsidian's `--h1-color` / `--h2-color` / `--h3-color` (and `--text-accent`, already AA on both grounds). The line needs a selector: reading view, print, and the live-preview heading line. Picked from a preview of colour, hairlines, left rails and weight, on a living project note and the Style Guide, dark and light.
+
 ### 2026-10-07: `npm run shots` regenerates the README images
 
 - One command rebuilds the cover and every screenshot in `assets/` from the demo vault, in a throwaway Obsidian with a temporary profile and vault copy, in about 40 seconds. Before, the images were made by hand with scripts that weren't kept, so any visible change left them stale.

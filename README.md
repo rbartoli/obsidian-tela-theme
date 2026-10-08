@@ -48,7 +48,8 @@ Work in progress: not yet in the community directory.
   that open and close.
 - Tasks with their own marks for important `[!]`, question `[?]`, cancelled `[-]` and in
   progress `[/]`.
-- Headings at one weight in a gentle size scale, with the two smallest levels in muted ink.
+- Headings at one weight in a gentle size scale. H1 and H2 take the accent, with a
+  hairline under them; H3 mixes the accent into body ink; the two smallest levels stay muted.
 - Unresolved links keep full colour, with a dashed underline instead of fading.
 - Phone and tablet keep the desktop palette rather than switching to pure black.
 - Printing and PDF export keep callouts, code blocks, tables and images on one page, and

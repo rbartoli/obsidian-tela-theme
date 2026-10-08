@@ -3,8 +3,9 @@
    (Tela's heading role is 600) and a gentler ratio than Obsidian's
    golden-section steps. Every pair of neighbouring levels differs by a cue of
    its own: at least 11% in size down to h4, which keeps h4 clear of a bold
-   paragraph; muted ink from h5, which sits at body size; and h6 is a small
-   capitalised label. */
+   paragraph; the accent on h1 and h2 (many notes never use h1, so they share
+   a colour); a mix of that accent into body ink on h3; muted ink from h5,
+   which sits at body size; and h6 is a small capitalised label. */
 body {
 	--h1-size: 1.6em;
 	--h2-size: 1.4em;
@@ -18,6 +19,9 @@ body {
 	--h4-weight: 600;
 	--h5-weight: 600;
 	--h6-weight: 600;
+	--h1-color: var(--text-accent);
+	--h2-color: var(--text-accent);
+	--h3-color: color-mix(in oklch, var(--text-accent) 28%, var(--text-normal));
 	--h5-color: var(--text-muted);
 	--h6-color: var(--text-muted);
 	--h6-letter-spacing: 0.05em;
@@ -40,6 +44,21 @@ body {
 .markdown-rendered h6,
 .cm-header-6 {
 	text-transform: uppercase;
+}
+
+/* Chapter hairline under h1 and h2: the border colour, not the accent, and
+   h3 does not get one. No variable covers a heading border, so this uses
+   Obsidian's own heading selectors: the reading view, print, and the live
+   preview line (HyperMD-header-N; the lint wants kebab-case, which that
+   class is not). Padding keeps the glyphs off the line. */
+.markdown-rendered :is(h1, h2),
+.print :is(h1, h2),
+/* stylelint-disable-next-line selector-class-pattern */
+.cm-line.HyperMD-header-1,
+/* stylelint-disable-next-line selector-class-pattern */
+.cm-line.HyperMD-header-2 {
+	border-bottom: var(--hr-thickness) solid var(--background-modifier-border);
+	padding-bottom: 0.35em;
 }
 
 /* Callout titles are the callout colour on a 10% tint of itself. Fine on
