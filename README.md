@@ -1,4 +1,4 @@
-<img src="assets/cover.webp" alt="Tela, a calm, legible theme for Obsidian: a reading note in dark mode, the Library's book covers in light mode, and the same note on a phone">
+<img src="assets/cover.webp" alt="Tela, an Obsidian theme that is easy to read and easy to scan: a reading note in dark mode, the Library's book covers in light mode, and the same note on a phone">
 
 An Obsidian theme inspired by the style guide of the Tela app. It supports dark and light
 mode, on desktop, phone and tablet.
@@ -28,12 +28,12 @@ Work in progress: not yet in the community directory.
 
 ## Why Tela
 
-- **Calm, legible and ready as installed.** One quiet surface for sidebars, tabs and
-  notes, hairline borders, and nothing to set up.
-- **Readable text.** Every text colour clears WCAG AA (4.5:1) in dark and light
-  mode, on desktop, phone and tablet. An
-  [automated contrast audit](CONTRIBUTING.md#qa) of notes, Canvas, Bases, search,
-  menus and settings checks this before each release.
+- **Easy to read, easy to scan.** Every text colour clears WCAG AA (4.5:1) in dark and
+  light mode, on desktop, phone and tablet, and headings step down by colour as well as
+  size. An [automated contrast audit](CONTRIBUTING.md#qa) of notes, Canvas, Bases,
+  search, menus and settings checks this before each release.
+- **Ready as installed.** One quiet surface for sidebars, tabs and notes, hairline
+  borders, and nothing to set up.
 - **Built to survive Obsidian updates.** The theme works through Obsidian's own variables
   rather than fragile selectors, and a [weekly check](CONTRIBUTING.md#obsidian-updates)
   tests each new Obsidian release for changes that would break it.

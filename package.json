@@ -1,7 +1,7 @@
 {
     "name": "obsidian-tela-theme",
     "version": "0.1.0",
-    "description": "A calm, legible Obsidian theme inspired by the Tela app",
+    "description": "An easy-to-read, easy-to-scan Obsidian theme, inspired by the Tela app",
     "license": "MIT",
     "private": true,
     "repository": "github:rbartoli/obsidian-tela-theme",

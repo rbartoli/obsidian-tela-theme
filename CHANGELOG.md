@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2026-10-09: "easy to read, easy to scan"
+
+- The cover tagline, README and package description lead with "easy to read, easy to scan" instead of "calm, legible". The theme isn't calm (accent headings, tinted bold, coloured callouts), and users say "readable" about themes but "legible" only about fonts. "Scan" names what the heading change is for.
+- The README's first two "Why Tela" points are merged into one about reading and scanning, followed by "Ready as installed".
+- Regenerated the cover.
+
 ### 2026-10-09: a thumbnail for the theme browser
 
 - `npm run shots` also writes `assets/screenshot.png`, the 512×288 thumbnail Obsidian's theme browser shows: a 1024×576 window on the dark note, captured at 2x and scaled down. The submission form asks for it.
