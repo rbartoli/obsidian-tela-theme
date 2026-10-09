@@ -1,13 +1,15 @@
 // npm run shots [-- options]
 //
-// Regenerates the README's cover and screenshots in assets/ from the demo
-// vault, in a throwaway Obsidian (temporary profile, temporary copy of demo/).
+// Regenerates the README's cover and screenshots, and the theme browser's
+// thumbnail, in assets/ from the demo vault, in a throwaway Obsidian (temporary
+// profile, temporary copy of demo/).
 // Run it after any visible change and commit assets/.
 //
 // On WSL it drives the Windows app, for Windows' text rendering; elsewhere, the
 // Linux app (`obsidian` on PATH, or OBSIDIAN_BIN). Desktop shots are 1200x800
 // and phone shots 900x1600, the community directory's sizes; the cover is
-// 2560x1280. Everything is captured at 2x and written as lossless WebP. The
+// 2560x1280. Everything is captured at 2x and written as lossless WebP, except
+// the thumbnail, a 1024x576 window scaled to a 512x288 PNG. The
 // cover is laid out by scripts/shots-cover.html and rendered by the same
 // Obsidian, in the Inter it bundles.
 //
@@ -42,10 +44,16 @@ const SHOTS = [
 	{ name: 'phone-notes-dark', mode: 'dark', device: 'phone', scene: 'note-body', save: true },
 	{ name: 'phone-notes-light', mode: 'light', device: 'phone', scene: 'note-body', save: true },
 	{ name: 'phone-bases-dark', mode: 'dark', device: 'phone', scene: 'cards', save: true },
+	// The thumbnail in Obsidian's theme browser, at the 512x288 it recommends.
+	{ name: 'screenshot', mode: 'dark', device: 'store', scene: 'note', save: true, size: '512x288' },
 ]
 // The cover's three windows, by shot name.
 const COVER = { light: 'bases-light', dark: 'notes-dark', phone: 'phone-notes-dark' }
-const DEVICES = { desktop: { width: 1200, height: 800, mobile: false }, phone: { width: 450, height: 800, mobile: true } }
+const DEVICES = {
+	desktop: { width: 1200, height: 800, mobile: false },
+	store: { width: 1024, height: 576, mobile: false },
+	phone: { width: 450, height: 800, mobile: true },
+}
 
 const { values: opt } = parseArgs({
 	options: {
@@ -67,7 +75,7 @@ if (unknown.length) throw new Error(`unknown shots: ${unknown.join(', ')} (known
 const needed = new Set(only.filter((n) => n !== 'cover'))
 if (only.includes('cover')) for (const n of Object.values(COVER)) needed.add(n)
 // Desktop first, so the app reloads into phone emulation once.
-const shots = SHOTS.filter((s) => needed.has(s.name)).sort((a, b) => (a.device === b.device ? 0 : a.device === 'desktop' ? -1 : 1))
+const shots = SHOTS.filter((s) => needed.has(s.name)).sort((a, b) => DEVICES[a.device].mobile - DEVICES[b.device].mobile)
 
 // Windows paths, seen from WSL and from Windows.
 const winPath = (unix) => execFileSync('wslpath', ['-w', unix], { encoding: 'utf8' }).trim()
@@ -226,6 +234,15 @@ function webp(png, name) {
 	console.log(`  assets/${name}.webp`)
 }
 
+// The theme browser's thumbnail: the 2x capture scaled down, as PNG, the
+// format the submission docs use.
+function thumbnail(png, name, size) {
+	const out = join(assets, `${name}.png`)
+	const r = spawnSync('convert', [png, '-resize', size, '-strip', out], { encoding: 'utf8' })
+	if (r.status !== 0) throw new Error(`ImageMagick could not write ${name}.png: ${r.stderr || r.error?.message}`)
+	console.log(`  assets/${name}.png`)
+}
+
 async function main() {
 	const version = await obsidianVersion(opt.obsidian)
 	const asar = await obsidianAsar(version)
@@ -262,7 +279,7 @@ async function main() {
 			await sleep(400)
 			png[shot.name] = join(tmp, `${shot.name}.png`)
 			writeFileSync(png[shot.name], Buffer.from((await page.send('Page.captureScreenshot', { format: 'png' })).data, 'base64'))
-			if (shot.save && only.includes(shot.name)) webp(png[shot.name], shot.name)
+			if (shot.save && only.includes(shot.name)) (shot.size ? thumbnail : webp)(png[shot.name], shot.name, shot.size)
 		}
 
 		if (only.includes('cover')) {

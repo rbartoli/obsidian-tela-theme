@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### 2026-10-09: a thumbnail for the theme browser
+
+- `npm run shots` also writes `assets/screenshot.png`, the 512×288 thumbnail Obsidian's theme browser shows: a 1024×576 window on the dark note, captured at 2x and scaled down. The submission form asks for it.
+- Regenerated every image, which still showed white headings and the file-tree marks from before the heading and tree changes.
+
 ### 2026-10-09: a whisper of accent on bold
 
 - Bold text mixes 16% of the accent into body ink: enough to catch, quieter than h3 (28%), so a bold run is not a heading and not a link. Links that are also bold keep the link colour. Colour is Obsidian's `--bold-color`, and a selector so it still applies inside quotes (live preview paints those lines as quote ink, which outranked bold).

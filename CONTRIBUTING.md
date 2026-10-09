@@ -90,8 +90,9 @@ versions newer than itself. All options are listed at the top of `qa/run.mjs`.
 
 ## Screenshots
 
-`npm run shots` regenerates the README's cover and screenshots in `assets/` from the demo
-vault, in a throwaway Obsidian, in about a minute. Run it after any visible change.
+`npm run shots` regenerates the README's cover and screenshots, and the theme browser's
+512×288 thumbnail, in `assets/` from the demo vault, in a throwaway Obsidian, in about a
+minute. Run it after any visible change.
 
 ```sh
 npm run shots                        # the cover and every screenshot
