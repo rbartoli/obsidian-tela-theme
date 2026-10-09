@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### 2026-10-09: dark faint text with a margin
+
+- Dark-mode faint is `#808497`, up from `#7c8091`. The old value cleared 4.5:1 on the base (4.92:1) but only 4.56:1 on panels, and axe measured the phone drawer's file-type badges at 4.43–4.48:1 against a slightly lighter ground. The new value holds 4.54:1 up to `#1c1d21`, stays below muted (`#8b90a3`), and is about 2% lighter.
+- `npm run qa` on Obsidian 1.14.4: 0 violations in 346 screens.
+
 ### 2026-10-09: Distinct sidebars reaches the light phone drawer
 
 - With **Distinct sidebars** on, the file drawer on phone and tablet now takes the recessed surface in light mode too. Obsidian paints the drawer with `--mobile-sidebar-background`, which it points at `--background-secondary` in dark mode but at `--background-primary` in light, so the setting only reached the dark drawer.
