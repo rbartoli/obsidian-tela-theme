@@ -26,6 +26,10 @@ body {
 	--h6-color: var(--text-muted);
 	--h6-letter-spacing: 0.05em;
 
+	/* Bold: a whisper of accent, half of h3's mix, so a bold run is not a
+	   heading and not a link. */
+	--bold-color: color-mix(in oklch, var(--text-accent) 16%, var(--text-normal));
+
 	/* Hairlines, as everywhere else in Tela. */
 	--hr-thickness: 1px;
 	--callout-quote: var(--tela-muted);
@@ -35,6 +39,23 @@ body {
 	--link-unresolved-opacity: 1;
 	--link-unresolved-decoration-style: dashed;
 	--link-unresolved-decoration-color: color-mix(in oklch, var(--interactive-accent) 60%, transparent);
+}
+
+/* Live preview paints a quote line as .cm-quote, which outranks .cm-strong,
+   so --bold-color never showed there. Same for the ** markers. */
+.markdown-rendered :is(strong, b),
+.cm-s-obsidian span.cm-strong,
+.cm-s-obsidian span.cm-formatting-strong,
+.cm-s-obsidian span.cm-quote.cm-strong,
+.cm-s-obsidian span.cm-quote.cm-formatting-strong {
+	color: var(--bold-color);
+}
+
+/* A bold run inside a link keeps the link colour. */
+.markdown-rendered a :is(strong, b),
+.cm-s-obsidian span.cm-strong:is(.cm-hmd-internal-link, .cm-link, .cm-url),
+.cm-s-obsidian span.cm-quote.cm-strong:is(.cm-hmd-internal-link, .cm-link, .cm-url) {
+	color: var(--link-color);
 }
 
 /* No variable sets text-transform, so h6's capitals need Obsidian's own heading
@@ -76,7 +97,7 @@ body {
      [?] question in warn, [/] in progress as a half-filled accent box, and
      the parked states [-] cancelled, [>] forwarded and [<] scheduled in grey.
    - Annotation markers drop the box for a bare 16px Lucide glyph in a hue,
-     like the file tree's marks: [*] ["] [l] [b] [i] [S] [I] [p] [c] [f] [k]
+     like Obsidian's own icons: [*] ["] [l] [b] [i] [S] [I] [p] [c] [f] [k]
      [w] [u] [d], the set many themes share. Every hue clears 3:1 on the
      note, except light mode's yellow, so yellow glyphs take warn.
    Each state sets custom properties on its checkbox, and one rule draws them.
@@ -96,7 +117,7 @@ body {
 	--checkbox-color: var(--tela-warn);
 	--checkbox-color-hover: var(--tela-warn);
 	--checkbox-marker-color: var(--tela-on-warn);
-	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.5 9a3.5 3.5 0 1 1 4.7 3.3c-.8.3-1.2 1-1.2 1.8v.4M12 19v.01'/%3E%3C/svg%3E");
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8.5 9a3.5 3.5 0 1 1 4.7 3.3c-.8.3-1.2 1-1.2 1.8v.4M12 19v.01'/%3E%3C/svg%3E");
 }
 
 /* [-] cancelled */
@@ -104,7 +125,7 @@ body {
 	--checkbox-color: var(--color-base-35);
 	--checkbox-color-hover: var(--color-base-35);
 	--checkbox-marker-color: var(--text-muted);
-	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E");
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E");
 }
 
 /* [>] forwarded */
@@ -112,7 +133,7 @@ body {
 	--checkbox-color: var(--color-base-35);
 	--checkbox-color-hover: var(--color-base-35);
 	--checkbox-marker-color: var(--text-muted);
-	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E");
+	--tela-task-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E");
 }
 
 /* [<] scheduled */
@@ -263,7 +284,7 @@ body {
 }
 
 :is(input[data-task]:not([data-task=" "], [data-task="x"], [data-task="X"]), li[data-task]:not([data-task=" "], [data-task="x"], [data-task="X"]) > input, li[data-task]:not([data-task=" "], [data-task="x"], [data-task="X"]) > p > input, .cm-line[data-task]:not([data-task=" "], [data-task="x"], [data-task="X"]) input):checked::after {
-	mask-image: var(--tela-task-glyph, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E"));
+	mask-image: var(--tela-task-glyph, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E"));
 	mask-size: var(--tela-task-glyph-size, 65%);
 	mask-position: center;
 }

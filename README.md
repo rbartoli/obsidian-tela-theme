@@ -44,8 +44,6 @@ Work in progress: not yet in the community directory.
   colour in Settings → Appearance still applies.
 - Code blocks in the colours of Tela's terminal, every one readable on the code
   background.
-- A file tree with a glyph for each file type (note, canvas, base, PDF, image) and folders
-  that open and close.
 - Tasks with their own marks for important `[!]`, question `[?]`, cancelled `[-]` and in
   progress `[/]`.
 - Headings at one weight in a gentle size scale. H1 and H2 take the accent, with a
@@ -58,11 +56,9 @@ Work in progress: not yet in the community directory.
 ## Settings
 
 With the [Style Settings](https://github.com/obsidian-community/obsidian-style-settings)
-plugin, the theme has two options:
+plugin, the theme has one option:
 
 - **Distinct sidebars** gives the sidebars a recessed surface of their own.
-- **Classic tree icons** brings back Obsidian's collapse arrows and file-type labels in
-  the file tree.
 
 ## Fonts
 
@@ -73,8 +69,8 @@ over the theme's.
 ## Compatibility
 
 Obsidian 1.13.4 or later, on desktop and mobile. Checked with the Dataview, Tasks, Kanban,
-Excalidraw and Iconize plugins, and with right-to-left text. With Iconize, a file that has
-an icon shows it in place of the theme's file-type mark.
+Excalidraw and Iconize plugins, and with right-to-left text. File-tree icons are left to a
+plugin such as Iconize.
 
 ## Verifying a release
 

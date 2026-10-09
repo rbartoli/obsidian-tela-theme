@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### 2026-10-09: a whisper of accent on bold
+
+- Bold text mixes 16% of the accent into body ink: enough to catch, quieter than h3 (28%), so a bold run is not a heading and not a link. Links that are also bold keep the link colour. Colour is Obsidian's `--bold-color`, and a selector so it still applies inside quotes (live preview paints those lines as quote ink, which outranked bold).
+
+### 2026-10-09: file tree left to icon plugins
+
+- The theme no longer draws folder or file-type marks in the file explorer. Obsidian's chevrons and badges are back, and icons are left to a plugin such as Iconize. A CSS theme cannot ship live Lucide, and a companion plugin would have been a second install.
+- **Classic tree icons** is gone from Style Settings; it only existed to turn those marks off.
+
 ### 2026-10-09: headings that scan as a skeleton
 
 - H1 and H2 take the accent colour, with a 1px hairline under them in the border colour. H3 mixes the accent into body ink so a subsection is not another paragraph. H4 stays with the paragraph; H5 and H6 stay muted. Before, H1–H4 were body ink and only size set them apart.

@@ -186,7 +186,7 @@ export const scenes = [
 	{ name: 'tasks-query', plugin: 'obsidian-tasks-plugin', setup: (p) => p.run(() => __qa.open('Plugins/Tasks.md', { mode: 'preview' })) },
 	{ name: 'kanban', plugin: 'obsidian-kanban', setup: (p) => p.run(() => __qa.view('Board.md', 'kanban')) },
 	{ name: 'excalidraw', plugin: 'obsidian-excalidraw-plugin', setup: (p) => p.run(() => __qa.view('Plugins/Drawing.excalidraw.md', 'excalidraw')) },
-	// Iconize draws its icons in the file tree, where the theme draws its marks.
+	// Iconize draws its icons in the file tree.
 	{
 		name: 'iconize',
 		plugin: 'obsidian-icon-folder',
