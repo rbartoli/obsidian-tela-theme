@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### 2026-10-09: Distinct sidebars reaches the light phone drawer
+
+- With **Distinct sidebars** on, the file drawer on phone and tablet now takes the recessed surface in light mode too. Obsidian paints the drawer with `--mobile-sidebar-background`, which it points at `--background-secondary` in dark mode but at `--background-primary` in light, so the setting only reached the dark drawer.
+- Found on a real phone (Pixel 9a, Obsidian 1.14.4): the light drawer stayed `#f7f8fa` with the setting on; it is now `#e6e7e9`, with the selected row lifting to the note's ground.
+
 ### 2026-10-09: Obsidian 1.14.4 certified again
 
 - `npm run qa` on 1.14.4 after the heading, bold and tree changes: 0 violations across 340 screens, dark and light, desktop, phone and tablet. The baseline in `qa/obsidian-baseline.json` now covers the variables those changes use (`--h1-color` to `--h3-color`, `--bold-color`, `--link-color`), so the weekly check watches them too.

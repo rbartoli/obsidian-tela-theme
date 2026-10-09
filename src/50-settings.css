@@ -11,9 +11,12 @@ settings:
 
 */
 
+/* The mobile drawer reads --mobile-sidebar-background, which Obsidian points
+   at --background-secondary in dark mode but --background-primary in light. */
 .tela-distinct-sidebar.theme-dark,
 .tela-distinct-sidebar.theme-light {
 	--background-secondary: var(--tela-recess);
+	--mobile-sidebar-background: var(--tela-recess);
 }
 
 /* On the light recess, a black wash darkens a row past what muted text can
