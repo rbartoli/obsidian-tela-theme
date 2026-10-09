@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### 2026-10-09: Obsidian 1.14.4 certified again
+
+- `npm run qa` on 1.14.4 after the heading, bold and tree changes: 0 violations across 340 screens, dark and light, desktop, phone and tablet. The baseline in `qa/obsidian-baseline.json` now covers the variables those changes use (`--h1-color` to `--h3-color`, `--bold-color`, `--link-color`), so the weekly check watches them too.
+
 ### 2026-10-09: Notebook Navigator in QA, its dates readable in light mode
 
 - `npm run qa` installs Notebook Navigator (1M downloads, the most used replacement for the file explorer) and audits its view, now that the theme leaves the file tree to plugins.

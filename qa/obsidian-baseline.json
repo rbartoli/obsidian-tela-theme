@@ -6,6 +6,7 @@
 			"--accent-l",
 			"--accent-s",
 			"--background-secondary",
+			"--bold-color",
 			"--callout-quote",
 			"--callout-title-color",
 			"--checkbox-color",
@@ -50,10 +51,13 @@
 			"--font-ui-medium",
 			"--font-ui-small",
 			"--font-ui-smaller",
+			"--h1-color",
 			"--h1-size",
 			"--h1-weight",
+			"--h2-color",
 			"--h2-size",
 			"--h2-weight",
+			"--h3-color",
 			"--h3-size",
 			"--h3-weight",
 			"--h4-size",
@@ -62,6 +66,7 @@
 			"--h5-size",
 			"--h5-weight",
 			"--h6-color",
+			"--h6-letter-spacing",
 			"--h6-size",
 			"--h6-weight",
 			"--hr-thickness",
@@ -92,6 +97,7 @@
 			"--tab-radius-active",
 			"--text-accent",
 			"--text-accent-hover",
+			"--text-faint",
 			"--text-on-accent",
 			"--text-warning",
 			"--titlebar-background",
@@ -103,39 +109,57 @@
 			"--callout-color",
 			"--color-accent",
 			"--interactive-accent",
+			"--link-color",
 			"--mono-100",
-			"--size-4-1",
-			"--size-4-4",
-			"--size-4-5",
 			"--tab-outline-color",
 			"--tab-outline-width",
-			"--text-faint",
 			"--text-muted",
 			"--text-normal"
 		],
 		"selectors": [
+			".HyperMD-header-1",
+			".HyperMD-header-2",
 			".callout",
+			".cm-formatting-strong",
+			".cm-header-6",
+			".cm-hmd-internal-link",
 			".cm-line",
-			".collapse-icon",
+			".cm-link",
+			".cm-quote",
+			".cm-s-obsidian",
+			".cm-strong",
+			".cm-tooltip-autocomplete",
+			".cm-url",
 			".is-active",
-			".is-collapsed",
 			".is-focused",
 			".is-mobile",
+			".is-selected",
+			".list-item",
+			".markdown-rendered",
+			".math-block",
+			".menu-item",
+			".mermaid",
+			".mobile-tap",
 			".mod-active",
 			".mod-root",
-			".nav-file-tag",
-			".nav-file-title",
-			".nav-folder-title",
-			".svg-icon",
+			".print",
+			".selected",
+			".suggestion-item",
 			".theme-dark",
 			".theme-light",
+			".tree-item-self",
+			".vertical-tab-nav-item",
+			".workspace-drawer",
 			".workspace-split",
 			".workspace-tab-header",
-			"[data-path]",
+			"[aria-selected]",
 			"[data-task]"
 		]
 	},
-	"unknown": [],
+	"unknown": [
+		".mod-left-split",
+		".mod-right-split"
+	],
 	"defaults": {
 		"--accent-h": {
 			"body": "258"
@@ -155,6 +179,9 @@
 		},
 		"--background-secondary": {
 			"body": "var(--color-base-20)"
+		},
+		"--bold-color": {
+			"body": "inherit"
 		},
 		"--callout-bug": {
 			"body": "var(--color-red)"
@@ -384,6 +411,9 @@
 			".is-mobile": "calc(var(--font-preferred-size) * 0.8)",
 			"body": "12px"
 		},
+		"--h1-color": {
+			"body": "inherit"
+		},
 		"--h1-size": {
 			"body": "1.618em"
 		},
@@ -391,12 +421,18 @@
 			":root": "700",
 			"@supports (font-variation-settings: normal) » :root": "700"
 		},
+		"--h2-color": {
+			"body": "inherit"
+		},
 		"--h2-size": {
 			"body": "1.462em"
 		},
 		"--h2-weight": {
 			":root": "600",
 			"@supports (font-variation-settings: normal) » :root": "680"
+		},
+		"--h3-color": {
+			"body": "inherit"
 		},
 		"--h3-size": {
 			"body": "1.318em"
@@ -424,6 +460,9 @@
 		},
 		"--h6-color": {
 			"body": "inherit"
+		},
+		"--h6-letter-spacing": {
+			"body": "0em"
 		},
 		"--h6-size": {
 			"body": "1em"
@@ -475,6 +514,16 @@
 			".mod-macos": "var(--background-modifier-border)",
 			".theme-dark": "var(--color-base-30)",
 			"body": "var(--color-base-00)"
+		},
+		"--link-color": {
+			".bases-cards-property.mod-title": "var(--text-normal)",
+			".bases-group-heading": "var(--bases-group-heading-value-color)",
+			".bases-kanban-card-property.mod-title": "var(--text-normal)",
+			".bases-toolbar-menu-item .bases-toolbar-menu-item-name": "var(--text-normal)",
+			".bases-toolbar-menu-item.mod-hidden .bases-toolbar-menu-item-name": "var(--text-faint)",
+			".setting-item-description": "var(--text-muted)",
+			"@keyframes multi-select-highlight » from": "var(--text-warning)",
+			"body": "var(--text-accent)"
 		},
 		"--link-unresolved-decoration-color": {
 			"body": "color-mix(in oklch, var(--interactive-accent) 30%, transparent)"
@@ -533,15 +582,6 @@
 		"--sidebar-tab-container-background": {
 			".sidebar-toggle-button, .workspace-tabs.mod-top": "var(--titlebar-background)",
 			"body": "var(--tab-container-background)"
-		},
-		"--size-4-1": {
-			"body": "4px"
-		},
-		"--size-4-4": {
-			"body": "16px"
-		},
-		"--size-4-5": {
-			"body": "20px"
 		},
 		"--status-bar-radius": {
 			".mod-rtl": "0 var(--radius-m) 0 0",
