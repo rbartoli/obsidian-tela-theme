@@ -3,8 +3,6 @@
 An Obsidian theme inspired by the style guide of the Tela app. It supports dark and light
 mode, on desktop, phone and tablet.
 
-Work in progress: not yet in the community directory.
-
 ## Screenshots
 
 <table>

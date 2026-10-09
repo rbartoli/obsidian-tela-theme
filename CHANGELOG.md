@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.0.0 (2026-10-09)
+
+The first public release.
 
 ### 2026-10-09: dark faint text with a margin
 
