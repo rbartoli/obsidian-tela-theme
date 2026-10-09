@@ -70,8 +70,8 @@ it.
 `npm run qa` opens the demo vault in a throwaway Obsidian and renders every scene in
 `qa/scenes.mjs` (notes in reading view and live preview, Canvas, Bases, search, menus,
 settings, selected rows, print, right-to-left text and more) in dark and light mode, on
-desktop, phone and tablet. It installs Dataview, Tasks, Kanban, Excalidraw and Iconize
-into the vault and renders their views too. Every screen gets an
+desktop, phone and tablet. It installs Dataview, Tasks, Kanban, Excalidraw, Iconize and
+Notebook Navigator into the vault and renders their views too. Every screen gets an
 [axe](https://github.com/dequelabs/axe-core) contrast audit, and the run fails on any
 violation. The report, screenshots and contact sheets go to `qa/out/`.
 

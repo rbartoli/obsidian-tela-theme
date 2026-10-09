@@ -52,8 +52,8 @@ const AUDIT_CSS = '.workspace-drawer .workspace-leaf-content::after { display: n
 
 // Popular community plugins whose views a theme has to style: the largest
 // plugin bug classes across theme repos, plus Iconize, which draws its own
-// marks in the file tree.
-const PLUGINS = ['dataview', 'obsidian-tasks-plugin', 'obsidian-kanban', 'obsidian-excalidraw-plugin', 'obsidian-icon-folder']
+// marks in the file tree, and Notebook Navigator, which replaces it.
+const PLUGINS = ['dataview', 'obsidian-tasks-plugin', 'obsidian-kanban', 'obsidian-excalidraw-plugin', 'obsidian-icon-folder', 'notebook-navigator']
 
 const { values: opt } = parseArgs({
 	options: {

@@ -262,6 +262,13 @@ body {
 	--text-faint: var(--text-muted);
 }
 
+/* Notebook Navigator draws dates, tags and other secondary text in body ink
+   at 50%, under 4.5:1 on the light ground. Muted ink holds AA in both modes. */
+.theme-light,
+.theme-dark {
+	--nn-theme-foreground-faded: var(--text-muted);
+}
+
 /* The focused pane's active tab gets Tela's 2px accent top line. No variable
    covers this, so it is the one component rule in the chrome layer. */
 body.is-focused .workspace-split.mod-root .mod-active .workspace-tab-header.is-active {

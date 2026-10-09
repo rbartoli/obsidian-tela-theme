@@ -196,6 +196,16 @@ export const scenes = [
 				await __qa.reveal('file-explorer')
 			}),
 	},
+	{
+		name: 'notebook-navigator',
+		plugin: 'notebook-navigator',
+		setup: (p) =>
+			p.run(async () => {
+				await __qa.open('Tour.md', { mode: 'preview' })
+				if (!app.workspace.getLeavesOfType('notebook-navigator').length) await app.commands.executeCommandById('notebook-navigator:open')
+				await __qa.reveal('notebook-navigator')
+			}),
+	},
 	// Every sidebar row under the selection wash, the deeper of the two washes
 	// Obsidian lays over a row, so the text on a hovered or selected row is
 	// audited too. Without Distinct sidebars, the rows sit on the base.

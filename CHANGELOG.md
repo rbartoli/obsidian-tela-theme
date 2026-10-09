@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### 2026-10-09: Notebook Navigator in QA, its dates readable in light mode
+
+- `npm run qa` installs Notebook Navigator (1M downloads, the most used replacement for the file explorer) and audits its view, now that the theme leaves the file tree to plugins.
+- Its first run failed in light mode: dates and tag pills sat at 3.09:1, because the plugin draws secondary text in body ink at 50%. The theme now sets its `--nn-theme-foreground-faded` to muted ink, which holds AA in both modes. 0 violations on desktop, phone and tablet, dark and light.
+
 ### 2026-10-09: "easy to read, easy to scan"
 
 - The cover tagline, README and package description lead with "easy to read, easy to scan" instead of "calm, legible". The theme isn't calm (accent headings, tinted bold, coloured callouts), and users say "readable" about themes but "legible" only about fonts. "Scan" names what the heading change is for.
