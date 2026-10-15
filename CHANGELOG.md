@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### 2026-10-15: Android date icons clear the text
+
+- Reserve space for the native calendar icon in Android date and date/time inputs, including right-to-left layouts. Obsidian pins the icon to the left but omits desktop padding on Android, so it overlapped empty placeholders and filled values. Reported in a screenshot from a real phone and reproduced with Obsidian’s default theme too.
+- QA now measures native icon and text bounds for empty and filled date/time properties. Android scenes explicitly exercise `is-android`; ordinary mobile emulation keeps desktop padding and missed the bug. The regression fails before the fix in both text directions; all 14 date-input cases pass after it on Obsidian 1.14.4, in dark and light mode on desktop, phone and tablet.
+
 ## 1.0.0 (2026-10-09)
 
 The first public release.

@@ -73,7 +73,11 @@ settings, selected rows, print, right-to-left text and more) in dark and light m
 desktop, phone and tablet. It installs Dataview, Tasks, Kanban, Excalidraw, Iconize and
 Notebook Navigator into the vault and renders their views too. Every screen gets an
 [axe](https://github.com/dequelabs/axe-core) contrast audit, and the run fails on any
-violation. The report, screenshots and contact sheets go to `qa/out/`.
+violation. The date-input scenes also check native calendar-icon and text bounds,
+including empty and filled date/time fields with Android's platform CSS and RTL. Mobile
+emulation alone keeps desktop date padding, so those scenes explicitly add `is-android`.
+This exercises platform CSS in Electron; it does not emulate Android's native picker.
+The report, screenshots and contact sheets go to `qa/out/`.
 
 ```sh
 npm run qa                                  # every scene, on the latest Obsidian

@@ -368,6 +368,15 @@ body {
 	--callout-title-color: color-mix(in oklch, var(--callout-color) 78%, #000);
 }
 
+/* Obsidian pins the native calendar icon to the left but reserves space for
+   it only on desktop. Android WebViews that show it paint it over date text.
+   Match desktop's physical left inset: Obsidian's later picker rule also wins
+   over its RTL rule, so logical padding would reserve the wrong side in RTL. */
+body.is-android input[type="date"]:not(:disabled),
+body.is-android input[type="datetime-local"]:not(:disabled) {
+	padding-left: var(--size-4-6);
+}
+
 /* Alternate task states. Obsidian draws every marker other than [ ] and [x]
    as a plain tick; these get a mark of their own, in two kinds, each drawn
    one way:
