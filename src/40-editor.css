@@ -82,11 +82,92 @@ body {
 	padding-bottom: 0.35em;
 }
 
-/* Callout titles are the callout colour on a 10% tint of itself. Fine on
-   the dark ground; on the pale one every hue lands near 4.1:1, so light
-   mode deepens the title ink (the icon keeps the raw colour). */
+/* Callouts are Tela's request card: a faint neutral box, radius 8, with a
+   bar in the callout's colour, 4px wide, 4px in and 6px clear of the ends.
+   Text starts 22px in, not the card's 16: beside 16px note text, 8px from
+   the bar crowds it. The inline padding is logical, so the text keeps clear
+   of the bar in right-to-left notes too.
+   Every bar is a border, not a background: axe skips short text (titles,
+   inline code) inside anything with a sizeable background pseudo-element,
+   so a filled bar would hide callout titles from npm run qa. */
+body {
+	--callout-radius: 8px;
+}
+
+.callout {
+	/* Code sits on the note's own ground. Obsidian's code ground is within a
+	   step of the card's, so inline code and code blocks would lose their
+	   box; on the ground they keep it, at the contrast they have outside. */
+	--code-background: var(--background-primary);
+
+	position: relative;
+	padding-inline: 22px 12px;
+	background-color: color-mix(in srgb, var(--text-normal) 4%, transparent);
+}
+
+.callout::before {
+	content: "";
+	position: absolute;
+	inset-block: 6px;
+	inset-inline-start: 4px;
+	width: 0;
+	border-inline-start: 4px solid var(--callout-color);
+	border-radius: 2px;
+}
+
+/* Callout titles take the callout colour. On the pale box several hues
+   land under 4.5:1 (cyan 4.31:1), so light mode deepens the title ink; the
+   icon and the bar keep the raw colour. */
 .theme-light .callout {
 	--callout-title-color: color-mix(in oklch, var(--callout-color) 78%, #000);
+}
+
+/* Quotes take the same bar in faint ink, 2px clear of the ends. Note
+   embeds keep Obsidian's 2px accent line: an embed frames a whole note,
+   and a bar there would stack with the bars of the quotes and callouts
+   inside it. */
+body {
+	--blockquote-border-thickness: 0;
+	--blockquote-border-color: var(--text-faint);
+}
+
+.markdown-rendered blockquote {
+	position: relative;
+}
+
+.markdown-rendered blockquote::before {
+	content: "";
+	position: absolute;
+	inset-block: 2px;
+	inset-inline-start: 0;
+	width: 0;
+	border-inline-start: 4px solid var(--blockquote-border-color);
+	border-radius: 2px;
+}
+
+/* Live preview draws a quote one line at a time, so the bar is each line's,
+   joined; the last and first line round its ends. Only :has() can find
+   the last line, and it looks at the next sibling alone. Nested levels
+   draw theirs with .cm-blockquote-border. */
+.markdown-source-view.mod-cm6 .cm-blockquote-border::before,
+/* stylelint-disable-next-line selector-class-pattern */
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote::before {
+	width: 0;
+	border-inline-start: 4px solid var(--blockquote-border-color);
+}
+
+/* stylelint-disable-next-line selector-class-pattern, selector-pseudo-class-disallowed-list */
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote:not(:has(+ .HyperMD-quote))::before {
+	bottom: 2px;
+	border-end-start-radius: 2px;
+	border-end-end-radius: 2px;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote:not(.HyperMD-quote + .HyperMD-quote)::before {
+	top: 2px;
+	border-start-start-radius: 2px;
+	border-start-end-radius: 2px;
 }
 
 /* Alternate task states. Obsidian draws every marker other than [ ] and [x]

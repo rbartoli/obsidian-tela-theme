@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+### 2026-10-16: the accent marks where you are; callouts and quotes take Tela's bar
+
+- "You are here" is Tela's selected card, the accent at 16%, where it was a grey wash: the open note in the file tree and Notebook Navigator, the open settings page, the active sidebar view and a toggled header button (sort, auto-reveal). Menus highlight in the accent at 18%, the command palette and suggestions at 16%, as Tela's context menu and palette do, and a destructive menu item in red. Hover stays grey, so the row under the pointer and the selected one differ in hue, not just in strength.
+- Notebook Navigator keeps its focus cue: the focused pane's selection stays the text-selection blue, and an unfocused one takes the accent wash instead of grey.
+- While rows are picked for a batch action (alt-click, shift-click), the open note steps back to the hover wash. Obsidian leaves it out of the pick, and in the accent it would look picked too: the open note and the picked rows were within a shade of each other.
+- A highlighted destructive menu item and the quick switcher's "Enter to create" hint take their colour moved 40% toward the body ink. Plain error red and the accent sat at 3.4:1 and 3.0:1 on their washes in light mode (1.0.0, on grey: 3.9:1 and 3.1:1); they now hold 5.5:1 and 5.2:1, and 6.7:1 and 6.9:1 in dark mode.
+- With **Distinct sidebars** in light mode, the selected row is the wash laid on the note's ground, since on the recess itself muted text would drop to 4.1:1.
+- Callouts are Tela's request card: a faint neutral box, radius 8, with a 4px rounded bar in the callout's colour, inset from the edges, where 1.0.0 tinted the whole box. Text starts 22px in rather than the card's 16, which crowds the bar beside note text. Light-mode titles keep their deeper ink: on the new box cyan, orange and purple would sit near 4.3–4.4:1.
+- Code in a callout sits on the note's own ground. Obsidian's code ground is within a step of the card's, so inline code and code blocks lost their box, and in dark mode a code block all but vanished. On the ground they keep it, at the contrast they have outside the callout.
+- Quotes take the same bar in faint ink, in reading view and live preview, in place of Obsidian's 2px accent line. Note embeds keep that line: an embed frames a whole note, and a bar there would stack with the bars of the quotes and callouts inside it.
+- The bars are borders, not fills. axe skips short text, such as callout titles and inline code, inside an element with a large filled pseudo-element, so filled bars would have taken callout titles out of `npm run qa`.
+- Checked: `npm run qa` on Obsidian 1.14.4, 0 violations in 346 screens, callout titles included. Notebook Navigator's selected rows, which axe can't read, measure 5.01:1 or better, focused and unfocused, with and without Distinct sidebars. In right-to-left notes the callout's text keeps clear of the bar. A walk through the demo vault, 1.0.0 against this change in dark and light, on desktop, phone and tablet, covers the states the audit doesn't reach: rows picked for a batch action, toggled header buttons, menus with a submenu and a destructive item, typed palette and switcher queries, link and tag suggestions, a plugin's settings page, the plugin browser, Bases' toolbar, the cursor inside a quote and a callout, source mode, embeds, a hover preview, a canvas card, a pinned tab and the phone menu. The fixes above for picked rows, the destructive item, the create hint and code in callouts came out of it. The baseline in `qa/obsidian-baseline.json` now covers the variables and classes these changes use, so the weekly check watches them too.
+
 ## 1.0.0 (2026-10-09)
 
 The first public release.

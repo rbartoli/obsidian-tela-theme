@@ -16,10 +16,13 @@
 	--input-shadow: inset 0 0 0 1px var(--background-modifier-border);
 	--input-shadow-hover: inset 0 0 0 1px var(--interactive-accent);
 
-	/* Selection is a neutral wash, not an accent fill (Tela's .rail-active,
-	   wash-10; hover wash-05). */
+	/* "You are here" is Tela's selected card: the accent at 16%, on the open
+	   note, a toggled button and the open settings page. Hover stays a
+	   neutral wash (wash-05), so a hovered row never reads as selected. */
+	--tela-selected: color-mix(in srgb, var(--interactive-accent) 16%, transparent);
 	--nav-item-background-hover: color-mix(in oklch, var(--mono-100) 5%, transparent);
-	--nav-item-background-active: color-mix(in oklch, var(--mono-100) 10%, transparent);
+	--nav-item-background-active: var(--tela-selected);
+	--background-modifier-active-hover: var(--tela-selected);
 
 	/* Tree rows read like Tela's rail titles, not Obsidian's muted grey. */
 	--nav-item-color: var(--tela-title-ink);
@@ -55,14 +58,80 @@ body {
 }
 
 /* Notebook Navigator draws dates, tags and other secondary text in body ink
-   at 50%, under 4.5:1 on the light ground. Muted ink holds AA in both modes. */
+   at 50%, under 4.5:1 on the light ground. Muted ink holds AA in both modes.
+   Its selection keeps its focus cue: the focused pane's row stays the
+   text-selection blue, and an unfocused one takes the selected wash, not
+   grey, so the open note always reads as selected. */
 .theme-light,
 .theme-dark {
 	--nn-theme-foreground-faded: var(--text-muted);
+	--nn-theme-navitem-selected-inactive-bg: var(--tela-selected);
+	--nn-theme-file-selected-inactive-bg: var(--tela-selected);
+}
+
+/* Rows picked for a batch action (alt-click, shift-click) keep Obsidian's
+   accent selection. Obsidian leaves the open note out of the pick, so while
+   one is under way the open note steps back to the hover wash: in the
+   accent it would read as picked too. */
+/* stylelint-disable-next-line selector-pseudo-class-disallowed-list */
+.workspace-leaf-content:is([data-type="file-explorer"], [data-type="bookmarks"]):has(.tree-item-self.is-selected) .tree-item-self.is-active:not(.is-selected) {
+	background-color: var(--nav-item-background-hover);
+}
+
+/* Menus highlight in the accent at 18%, the command palette and suggestions
+   at 16%, as Tela's context menu and palette do. A destructive item
+   highlights in red, its title ink moved toward the body ink: plain error
+   red on its own wash is 3.4:1 in light mode. */
+.menu {
+	--background-modifier-hover: color-mix(in srgb, var(--interactive-accent) 18%, transparent);
+}
+
+.menu-item.is-warning:not(.is-disabled):is(.selected, .mobile-tap) {
+	background-color: color-mix(in srgb, var(--text-error) 18%, transparent);
+	color: color-mix(in oklch, var(--text-error) 60%, var(--text-normal));
+}
+
+.prompt,
+.suggestion-container {
+	--background-modifier-hover: var(--tela-selected);
+}
+
+/* Obsidian draws a suggestion's action hint ("Enter to create") in the
+   interactive accent: 3:1 on the selected row in light mode. Moved toward
+   the body ink, it holds AA on the accent wash in both modes. */
+.suggestion-item.mod-complex .suggestion-action {
+	color: color-mix(in oklch, var(--interactive-accent) 60%, var(--text-normal));
+}
+
+/* Settings mark the open page as the file tree marks the open note.
+   Obsidian paints it with the hover wash, and not on phones, where the list
+   and the page never share the screen. */
+body:not(.is-phone) .vertical-tab-nav-item.is-active {
+	background-color: var(--tela-selected);
+}
+
+/* The active sidebar view and a toggled header button (sort, auto-reveal)
+   are Tela's active icon button: the accent on the selected wash, hovered
+   or not. Obsidian colours a focused view's icon through its tab variables,
+   so those carry the accent too. */
+:is(.mod-primary-split, .mod-secondary-split) .workspace-tab-header-container .workspace-tab-header.is-active,
+:is(.mod-primary-split, .mod-secondary-split) .workspace-tab-header-container .workspace-tab-header.is-active:hover {
+	--icon-color: var(--interactive-accent);
+	--icon-color-focused: var(--interactive-accent);
+	--tab-text-color-active: var(--interactive-accent);
+	--tab-text-color-focused-active: var(--interactive-accent);
+	--tab-text-color-focused-active-current: var(--interactive-accent);
+
+	background-color: var(--tela-selected);
+}
+
+.nav-buttons-container .nav-action-button.is-active {
+	background-color: var(--tela-selected);
+	color: var(--interactive-accent);
 }
 
 /* The focused pane's active tab gets Tela's 2px accent top line. No variable
-   covers this, so it is the one component rule in the chrome layer. */
+   covers this. */
 body.is-focused .workspace-split.mod-root .mod-active .workspace-tab-header.is-active {
 	box-shadow:
 		inset 0 2px 0 var(--interactive-accent),
