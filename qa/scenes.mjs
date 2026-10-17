@@ -4,6 +4,8 @@
 // inside Obsidian, so they can only use the page's globals (app, document,
 // __qa), not this module's scope.
 
+import { assertDateInputSeparation } from './date-inputs.mjs'
+
 // Phone and tablet are Obsidian's own mobile emulation: the window size picks
 // between them, at 600px (app.js: "(min-width: 600px) and (min-height: 600px)").
 export const devices = {
@@ -17,6 +19,17 @@ export const modes = { dark: 'obsidian', light: 'moonstone' }
 
 const READING = '.workspace-leaf.mod-active .markdown-preview-view'
 const EDITING = '.workspace-leaf.mod-active .cm-scroller'
+
+async function dateInputs(p, { android = false, rtl = false } = {}) {
+	await p.run(async (android, rtl) => {
+		document.body.classList.toggle('is-android', android)
+		app.vault.setConfig('rightToLeft', rtl)
+		for (const name of ['empty-date', 'filled-date']) await app.metadataTypeManager.setType(name, 'date')
+		for (const name of ['empty-datetime', 'filled-datetime']) await app.metadataTypeManager.setType(name, 'datetime')
+		await __qa.edit('Date inputs.md')
+	}, android, rtl)
+	await assertDateInputSeparation(p)
+}
 
 // name: used in --scene and output paths. scroll: the scroller to page
 // through, one screenshot and audit per screenful. only: the devices a scene
@@ -33,6 +46,11 @@ export const scenes = [
 	{ name: 'reading', scroll: READING, setup: (p) => p.run(() => __qa.open('Tour.md', { mode: 'preview' })) },
 	{ name: 'editing', scroll: EDITING, setup: (p) => p.run(() => __qa.edit('Tour.md')) },
 	{ name: 'properties', setup: (p) => p.run(() => __qa.edit('Properties.md')) },
+	{ name: 'date-inputs', setup: (p) => dateInputs(p) },
+	// EmulateMobile alone omits Android's platform class and keeps desktop
+	// date padding. Exercise the Android CSS path as well as the usual layout.
+	{ name: 'date-inputs-android', only: ['phone', 'tablet'], setup: (p) => dateInputs(p, { android: true }) },
+	{ name: 'date-inputs-android-rtl', only: ['phone', 'tablet'], setup: (p) => dateInputs(p, { android: true, rtl: true }) },
 	{
 		name: 'canvas',
 		setup: (p) =>
@@ -442,11 +460,12 @@ export function installHelpers() {
 		},
 		// One empty tab, the file explorer showing every folder open, the right
 		// sidebar (and on mobile both drawers) closed, no Style Settings class,
-		// nothing set up for printing, no rows selected by select(), left-to-right.
+		// nothing set up for printing, no rows selected by select(), left-to-right,
+		// and no simulated Android platform class.
 		// The tab is emptied, not reused: a note reopened in its own tab comes
 		// back at its last scroll position.
 		async reset() {
-			document.body.classList.remove('tela-distinct-sidebar')
+			document.body.classList.remove('tela-distinct-sidebar', 'is-android')
 			for (const el of document.querySelectorAll('body > .print')) el.remove()
 			this.audited = new WeakSet()
 			for (const [el, state] of this.selected.splice(0)) el.classList.remove(state)

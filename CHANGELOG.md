@@ -17,6 +17,18 @@
 - The bars are borders, not fills. axe skips short text, such as callout titles and inline code, inside an element with a large filled pseudo-element, so filled bars would have taken callout titles out of `npm run qa`.
 - Checked: `npm run qa` on Obsidian 1.14.4, 0 violations in 346 screens, callout titles included. Notebook Navigator's selected rows, which axe can't read, measure 5.01:1 or better, focused and unfocused, with and without Distinct sidebars. In right-to-left notes the callout's text keeps clear of the bar. A walk through the demo vault, 1.0.0 against this change in dark and light, on desktop, phone and tablet, covers the states the audit doesn't reach: rows picked for a batch action, toggled header buttons, menus with a submenu and a destructive item, typed palette and switcher queries, link and tag suggestions, a plugin's settings page, the plugin browser, Bases' toolbar, the cursor inside a quote and a callout, source mode, embeds, a hover preview, a canvas card, a pinned tab and the phone menu. The fixes above for picked rows, the destructive item, the create hint and code in callouts came out of it. The baseline in `qa/obsidian-baseline.json` now covers the variables and classes these changes use, so the weekly check watches them too.
 
+### 2026-10-15: document tabs meet the strip's edges
+
+- Desktop document tabs lose the outer top and side gaps, bringing the active accent line to the top edge like Tela. The title and close button keep their inner padding. The change excludes stacked tabs, sidebar tabs and mobile layouts, and preserves Obsidian's space for window controls.
+- With the left sidebar collapsed, the first tab starts at the ribbon's edge, in line with the note, where it sat 8px further in. Obsidian pads the window's top-left tabs by 8px plus the room macOS keeps for its window buttons; the room stays, and right-to-left layouts are unchanged.
+- The active tab is a neutral grey. It was mixed in oklch, which gave it a red cast in both modes (dark `rgb(24,20,21)` on `rgb(13,14,17)`); mixed in sRGB, as Tela's wash is, it is `rgb(23,24,27)`.
+- Checked in Obsidian 1.14.4 in dark and light mode: 196 screens, zero axe violations across reading, editing, title bar, right-to-left text and mobile drawer scenes on desktop, phone and tablet, without community plugins. Measured zero top and side gaps in split panes, compared stacked and sidebar spacing with the previous theme, and clicked the new-tab and close controls. Regenerated the README images and added a before/after comparison in `assets/tabs-spacing.webp`.
+
+### 2026-10-15: Android date icons clear the text
+
+- Reserve space for the native calendar icon in Android date and date/time inputs, including right-to-left layouts. Obsidian pins the icon to the left but omits desktop padding on Android, so it overlapped empty placeholders and filled values. Reported in a screenshot from a real phone and reproduced with Obsidian’s default theme too.
+- QA now measures native icon and text bounds for empty and filled date/time properties. Android scenes explicitly exercise `is-android`; ordinary mobile emulation keeps desktop padding and missed the bug. The regression fails before the fix in both text directions; all 14 date-input cases pass after it on Obsidian 1.14.4, in dark and light mode on desktop, phone and tablet.
+
 ## 1.0.0 (2026-10-09)
 
 The first public release.

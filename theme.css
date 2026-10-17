@@ -252,8 +252,9 @@ body {
 	--nav-item-color: var(--tela-title-ink);
 
 	/* Active tab: Tela's wash-04 over the base, flattened to a solid colour so
-	   the hairline outline doesn't show through. */
-	--tab-background-active: color-mix(in oklch, var(--mono-100) 4%, var(--background-primary));
+	   the hairline outline doesn't show through. Mixed in sRGB, as the wash
+	   is: in oklch the grey picks up a red cast. */
+	--tab-background-active: color-mix(in srgb, var(--mono-100) 4%, var(--background-primary));
 
 	/* Overlays sit on the raised panel, as Tela's menus and popovers do. */
 	--menu-background: var(--tela-panel);
@@ -271,6 +272,30 @@ body {
 	--tab-curve: 0px;
 	--tab-radius-active: 0;
 	--status-bar-radius: 0;
+}
+
+/* Desktop document tabs meet the strip's edges, as in Tela. Keep the title
+   and close button's inner padding, and Obsidian's window-control offsets. */
+body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs:not(.mod-stacked) {
+	--tab-container-padding-start: 0px;
+	--tab-container-padding-end: 0px;
+}
+
+body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs:not(.mod-stacked) > .workspace-tab-header-container > .workspace-tab-header-container-inner {
+	margin: 0 0 calc(var(--tab-outline-width) * -1);
+	padding: 0;
+}
+
+body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs:not(.mod-stacked) > .workspace-tab-header-container > .workspace-tab-header-container-inner > .workspace-tab-header {
+	padding: 0;
+}
+
+/* With the left sidebar collapsed, the first tab starts at the ribbon's edge,
+   as the note does. Obsidian pads the window's top-left tabs by 8px plus the
+   room macOS keeps for its window buttons; keep only the room. Right to
+   left, macOS reserves its buttons there too, so that stays as it is. */
+body:not(.mod-rtl).is-hidden-frameless:not(.is-fullscreen) .workspace-split.mod-root .workspace-tabs.mod-top-left-space:not(.mod-stacked) > .workspace-tab-header-container {
+	padding-left: var(--frame-left-space);
 }
 
 /* Faint text can't hold 4.5:1 under the hover and selection washes, so a
@@ -539,6 +564,15 @@ body {
 	top: 2px;
 	border-start-start-radius: 2px;
 	border-start-end-radius: 2px;
+}
+
+/* Obsidian pins the native calendar icon to the left but reserves space for
+   it only on desktop. Android WebViews that show it paint it over date text.
+   Match desktop's physical left inset: Obsidian's later picker rule also wins
+   over its RTL rule, so logical padding would reserve the wrong side in RTL. */
+body.is-android input[type="date"]:not(:disabled),
+body.is-android input[type="datetime-local"]:not(:disabled) {
+	padding-left: var(--size-4-6);
 }
 
 /* Alternate task states. Obsidian draws every marker other than [ ] and [x]
