@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## 1.1.0 (2026-10-17)
+
+### 2026-10-17: screenshots show 1.1.0 and every heading level
+
+- The README's screenshots and cover are captured again on 1.1.0, after the tab changes. Two new ones, `headings-dark` and `headings-light`, show H1 to H6, each over a paragraph: the others showed nothing below H2. `npm run shots` takes them from the demo vault's Tour.
+- `assets/compare-1.1.0.webp` puts the reading note in 1.0.0 and 1.1.0 side by side, for the release notes.
+- Checked: `npm run qa` on the release, Obsidian 1.14.4: 0 violations in 378 screens.
 
 ### 2026-10-16: the accent marks where you are; callouts and quotes take Tela's bar
 

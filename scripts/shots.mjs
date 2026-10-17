@@ -41,6 +41,8 @@ const SHOTS = [
 	{ name: 'bases-light', mode: 'light', device: 'desktop', scene: 'cards', save: true },
 	{ name: 'tasks-dark', mode: 'dark', device: 'desktop', scene: 'tasks', save: true },
 	{ name: 'code-dark', mode: 'dark', device: 'desktop', scene: 'code', save: true },
+	{ name: 'headings-dark', mode: 'dark', device: 'desktop', scene: 'headings', save: true },
+	{ name: 'headings-light', mode: 'light', device: 'desktop', scene: 'headings', save: true },
 	{ name: 'phone-notes-dark', mode: 'dark', device: 'phone', scene: 'note-body', save: true },
 	{ name: 'phone-notes-light', mode: 'light', device: 'phone', scene: 'note-body', save: true },
 	{ name: 'phone-bases-dark', mode: 'dark', device: 'phone', scene: 'cards', save: true },
@@ -186,7 +188,7 @@ async function scene(name, mode) {
 		scroller.scrollTop += el.getBoundingClientRect().top - scroller.getBoundingClientRect().top - offset
 		await sleep(300)
 	}
-	const heading = (text) => (s) => [...s.querySelectorAll('h2')].find((h) => h.textContent.trim() === text)
+	const heading = (text, tag = 'h2') => (s) => [...s.querySelectorAll(tag)].find((h) => h.textContent.trim() === text)
 	ws.rightSplit.collapse()
 	const explorer = ws.getLeavesOfType('file-explorer')[0]
 	if (app.isMobile) ws.leftSplit.collapse()
@@ -203,12 +205,15 @@ async function scene(name, mode) {
 		await open('Library.base')
 		await leaf.view.controller?.selectView?.('Cards')
 	}
-	if (name === 'tasks' || name === 'code') {
+	// Tour.md's sections: the line to jump to, the heading, its offset.
+	const tour = { tasks: [22, 'Tasks', 28], code: [106, 'Code', 14], headings: [207, 'Heading 1', 28, 'h1'] }
+	if (tour[name]) {
+		const [line, text, offset, tag] = tour[name]
 		await open('Tour.md', { mode: 'preview' })
 		// The preview renders near the viewport only, so jump close first.
-		leaf.view.previewMode.applyScroll(name === 'tasks' ? 22 : 106)
+		leaf.view.previewMode.applyScroll(line)
 		await sleep(800)
-		await top(heading(name === 'tasks' ? 'Tasks' : 'Code'), name === 'tasks' ? 28 : 14)
+		await top(heading(text, tag), offset)
 	}
 	ws.setActiveLeaf(leaf, { focus: false })
 	document.activeElement?.blur()

@@ -11,6 +11,10 @@ mode, on desktop, phone and tablet.
     <td width="50%"><img src="assets/bases-light.webp" alt="A base in cards view, showing four book covers, in light mode"><br>Bases cards</td>
   </tr>
   <tr>
+    <td><img src="assets/headings-dark.webp" alt="Headings from H1 to H6, each over a paragraph, in dark mode"><br>Headings step down by colour and size</td>
+    <td><img src="assets/headings-light.webp" alt="Headings from H1 to H6, each over a paragraph, in light mode"><br>The same steps in light mode</td>
+  </tr>
+  <tr>
     <td><img src="assets/tasks-dark.webp" alt="Task markers, each with its own mark, in dark mode"><br>Twenty task marks</td>
     <td><img src="assets/code-dark.webp" alt="Code blocks in JavaScript, CSS, HTML and Python, in dark mode"><br>Code in Tela's terminal colours</td>
   </tr>
