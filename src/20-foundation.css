@@ -80,6 +80,14 @@ body {
 	--color-base-100: var(--tela-fg);
 }
 
+/* Mobile settings group their rows on cards. Obsidian draws a card as the
+   note's ground on the sidebar's, and Tela makes those one colour, so in
+   light mode the cards vanish. They take white instead, as dark mode's are
+   lifted toward white. */
+.is-mobile.theme-light {
+	--setting-items-background: #fff;
+}
+
 /* Accent via h/s/l rather than --color-accent, so the user's own accent
    setting keeps overriding it. Values are --tela-accent per scheme. */
 .theme-dark {
