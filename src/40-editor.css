@@ -90,6 +90,28 @@ body {
 	padding-bottom: 0.35em;
 }
 
+/* Folding a section also hides the blank line before the next heading, so a
+   heading that closes a deeper folded section sits as close to it as a
+   subheading would. It gets the space it has when the section is open;
+   folded headings of one level stay tight, like an outline. */
+/* stylelint-disable selector-class-pattern, selector-pseudo-class-disallowed-list */
+.cm-line.HyperMD-header-2:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-2),
+.cm-line.HyperMD-header-3:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-3),
+.cm-line.HyperMD-header-4:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-4),
+.cm-line.HyperMD-header-5:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-5),
+.cm-line.HyperMD-header-6:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-6) {
+	padding-top: var(--heading-spacing);
+}
+/* stylelint-enable selector-class-pattern, selector-pseudo-class-disallowed-list */
+
+.markdown-rendered .el-h2.is-collapsed + div > h1,
+.markdown-rendered .el-h3.is-collapsed + div > :is(h1, h2),
+.markdown-rendered .el-h4.is-collapsed + div > :is(h1, h2, h3),
+.markdown-rendered .el-h5.is-collapsed + div > :is(h1, h2, h3, h4),
+.markdown-rendered .el-h6.is-collapsed + div > :is(h1, h2, h3, h4, h5) {
+	margin-top: var(--heading-spacing);
+}
+
 /* Callouts are Tela's request card: a faint neutral box, radius 8, with a
    bar in the callout's colour, 4px wide, 4px in and 6px clear of the ends.
    Text starts 22px in, not the card's 16: beside 16px note text, 8px from

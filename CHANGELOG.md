@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2026-10-17: headings after a folded section keep their space; light settings cards on mobile
+
+- Folding a section also hides the blank line before the next heading, so a heading that closed a deeper folded section sat 16px under it, where an open section leaves 40px. Default Obsidian does the same, in reading view and live preview. A heading after a folded deeper section now gets `--heading-spacing` above it, the space reading view gives a heading after text; folded headings of one level stay 16px apart, like an outline. Live preview has no class on a folded line, so the rule finds it with `:has()` on the line's own fold indicator.
+- Mobile settings group their rows on cards, which Obsidian draws as `--background-primary` on `--background-secondary`. Tela makes those one colour, so in light mode the cards vanished and only the dividers marked a group. They're white now, as dark mode's are lifted toward white.
+- The Distinct sidebars description no longer refers to a setting in the Tela app that people who don't use it won't know.
+- Checked on Obsidian 1.14.4: in live preview and reading view, an H2 after a folded H3 measures 40px of space above it, the same as after an open section, and folded H2s in a row stay 16px apart. Mobile settings cards measure `#fff` on `#f7f8fa` in light mode on phone and tablet. `npm run qa`: 0 violations in 390 screens.
+
 ### 2026-10-17: options to dim images and tint italics; emphasis in headings keeps their colour
 
 The two options were asked for under the launch post; both are Style Settings toggles, off by default.

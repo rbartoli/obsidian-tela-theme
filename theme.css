@@ -187,6 +187,14 @@ body {
 	--color-base-100: var(--tela-fg);
 }
 
+/* Mobile settings group their rows on cards. Obsidian draws a card as the
+   note's ground on the sidebar's, and Tela makes those one colour, so in
+   light mode the cards vanish. They take white instead, as dark mode's are
+   lifted toward white. */
+.is-mobile.theme-light {
+	--setting-items-background: #fff;
+}
+
 /* Accent via h/s/l rather than --color-accent, so the user's own accent
    setting keeps overriding it. Values are --tela-accent per scheme. */
 .theme-dark {
@@ -491,6 +499,28 @@ body {
 .cm-line.HyperMD-header-2 {
 	border-bottom: var(--hr-thickness) solid var(--background-modifier-border);
 	padding-bottom: 0.35em;
+}
+
+/* Folding a section also hides the blank line before the next heading, so a
+   heading that closes a deeper folded section sits as close to it as a
+   subheading would. It gets the space it has when the section is open;
+   folded headings of one level stay tight, like an outline. */
+/* stylelint-disable selector-class-pattern, selector-pseudo-class-disallowed-list */
+.cm-line.HyperMD-header-2:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-2),
+.cm-line.HyperMD-header-3:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-3),
+.cm-line.HyperMD-header-4:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-4),
+.cm-line.HyperMD-header-5:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-5),
+.cm-line.HyperMD-header-6:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-6) {
+	padding-top: var(--heading-spacing);
+}
+/* stylelint-enable selector-class-pattern, selector-pseudo-class-disallowed-list */
+
+.markdown-rendered .el-h2.is-collapsed + div > h1,
+.markdown-rendered .el-h3.is-collapsed + div > :is(h1, h2),
+.markdown-rendered .el-h4.is-collapsed + div > :is(h1, h2, h3),
+.markdown-rendered .el-h5.is-collapsed + div > :is(h1, h2, h3, h4),
+.markdown-rendered .el-h6.is-collapsed + div > :is(h1, h2, h3, h4, h5) {
+	margin-top: var(--heading-spacing);
 }
 
 /* Callouts are Tela's request card: a faint neutral box, radius 8, with a
@@ -821,7 +851,7 @@ settings:
     -
         id: tela-distinct-sidebar
         title: Distinct sidebars
-        description: Give the sidebars a recessed surface instead of the editor's background, like Tela with "Match terminal background" turned off.
+        description: Give the sidebars a recessed surface of their own, so they stand apart from your notes.
         type: class-toggle
     -
         id: tela-dim-images

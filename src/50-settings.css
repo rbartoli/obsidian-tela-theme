@@ -6,7 +6,7 @@ settings:
     -
         id: tela-distinct-sidebar
         title: Distinct sidebars
-        description: Give the sidebars a recessed surface instead of the editor's background, like Tela with "Match terminal background" turned off.
+        description: Give the sidebars a recessed surface of their own, so they stand apart from your notes.
         type: class-toggle
     -
         id: tela-dim-images
