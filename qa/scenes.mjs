@@ -325,6 +325,25 @@ export const scenes = [
 				await __qa.select('.workspace-leaf-content[data-type="search"] .tree-item-self')
 			}),
 	},
+	// Tinted italics, in body text, lists, links, a quote, a callout and a table.
+	{
+		name: 'tinted-italics-reading',
+		own: true,
+		setup: (p) =>
+			p.run(async () => {
+				document.body.classList.add('tela-tinted-italics')
+				await __qa.open('Emphasis.md', { mode: 'preview' })
+			}),
+	},
+	{
+		name: 'tinted-italics-editing',
+		own: true,
+		setup: (p) =>
+			p.run(async () => {
+				document.body.classList.add('tela-tinted-italics')
+				await __qa.edit('Emphasis.md')
+			}),
+	},
 ]
 
 // Installed after every page load (and after the mobile reloads).
@@ -465,7 +484,7 @@ export function installHelpers() {
 		// The tab is emptied, not reused: a note reopened in its own tab comes
 		// back at its last scroll position.
 		async reset() {
-			document.body.classList.remove('tela-distinct-sidebar', 'is-android')
+			document.body.classList.remove('tela-distinct-sidebar', 'tela-tinted-italics', 'is-android')
 			for (const el of document.querySelectorAll('body > .print')) el.remove()
 			this.audited = new WeakSet()
 			for (const [el, state] of this.selected.splice(0)) el.classList.remove(state)

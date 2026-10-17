@@ -8,6 +8,16 @@ settings:
         title: Distinct sidebars
         description: Give the sidebars a recessed surface instead of the editor's background, like Tela with "Match terminal background" turned off.
         type: class-toggle
+    -
+        id: tela-dim-images
+        title: Dim images in dark mode
+        description: Dim images in notes to 70%, and show them in full when you hover them, so a white screenshot doesn't glare off the dark page.
+        type: class-toggle
+    -
+        id: tela-tinted-italics
+        title: Tinted italics
+        description: Give italics the same hint of accent as bold, so they stand apart from body text by colour as well as slant.
+        type: class-toggle
 
 */
 
@@ -28,4 +38,35 @@ settings:
 	--nav-item-background-active: color-mix(in srgb, var(--tela-tint-accent) 16%, var(--tela-bg));
 	--nn-theme-navitem-selected-inactive-bg: var(--nav-item-background-active);
 	--nn-theme-file-selected-inactive-bg: var(--nav-item-background-active);
+}
+
+/* Dim images: at 70% in dark mode, the share Minimal's slider defaults to,
+   and in full under the pointer. Only images in notes, never in print. */
+@media screen {
+	.tela-dim-images.theme-dark :is(.markdown-source-view, .markdown-preview-view) img {
+		transition: opacity 150ms ease-out;
+	}
+
+	.tela-dim-images.theme-dark :is(.markdown-source-view, .markdown-preview-view) img:not(:hover) {
+		opacity: 0.7;
+	}
+}
+
+/* Tinted italics take bold's colour. Obsidian paints italics with
+   --italic-color, which a quote line in live preview outranks, as it does
+   bold, so those take the colour directly. Same for the * markers. */
+.tela-tinted-italics {
+	--italic-color: var(--bold-color);
+}
+
+.tela-tinted-italics .cm-s-obsidian span.cm-formatting-em,
+.tela-tinted-italics .cm-s-obsidian span.cm-quote.cm-em,
+.tela-tinted-italics .cm-s-obsidian span.cm-quote.cm-formatting-em {
+	color: var(--italic-color);
+}
+
+/* An italic run inside a link keeps the link colour. */
+.tela-tinted-italics .markdown-rendered a :is(em, i),
+.tela-tinted-italics .cm-s-obsidian span.cm-em:is(.cm-hmd-internal-link, .cm-link, .cm-url) {
+	color: var(--link-color);
 }
