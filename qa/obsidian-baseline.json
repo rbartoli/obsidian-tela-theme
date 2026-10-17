@@ -81,6 +81,8 @@
 			"--input-radius",
 			"--input-shadow",
 			"--input-shadow-hover",
+			"--interactive-accent",
+			"--interactive-accent-hover",
 			"--interactive-hover",
 			"--interactive-normal",
 			"--link-unresolved-decoration-color",
@@ -102,6 +104,8 @@
 			"--status-bar-radius",
 			"--tab-background-active",
 			"--tab-container-background",
+			"--tab-container-padding-end",
+			"--tab-container-padding-start",
 			"--tab-curve",
 			"--tab-radius-active",
 			"--tab-text-color-active",
@@ -120,9 +124,12 @@
 			"--background-primary",
 			"--callout-color",
 			"--color-accent",
-			"--interactive-accent",
+			"--color-accent-1",
+			"--frame-left-space",
 			"--link-color",
 			"--mono-100",
+			"--nav-item-color-selected",
+			"--size-4-6",
 			"--tab-outline-color",
 			"--tab-outline-width",
 			"--text-error",
@@ -146,8 +153,11 @@
 			".cm-tooltip-autocomplete",
 			".cm-url",
 			".is-active",
+			".is-android",
 			".is-disabled",
 			".is-focused",
+			".is-fullscreen",
+			".is-hidden-frameless",
 			".is-live-preview",
 			".is-mobile",
 			".is-phone",
@@ -166,9 +176,13 @@
 			".mod-complex",
 			".mod-primary-split",
 			".mod-root",
+			".mod-rtl",
 			".mod-secondary-split",
+			".mod-stacked",
+			".mod-top-left-space",
 			".nav-action-button",
 			".nav-buttons-container",
+			".nav-file-tag",
 			".print",
 			".prompt",
 			".selected",
@@ -184,9 +198,12 @@
 			".workspace-split",
 			".workspace-tab-header",
 			".workspace-tab-header-container",
+			".workspace-tab-header-container-inner",
+			".workspace-tabs",
 			"[aria-selected]",
 			"[data-task]",
-			"[data-type]"
+			"[data-type]",
+			"[type]"
 		]
 	},
 	"unknown": [
@@ -465,6 +482,18 @@
 			".is-mobile": "calc(var(--font-preferred-size) * 0.8)",
 			"body": "12px"
 		},
+		"--frame-left-space": {
+			".mod-macos": "calc(80px - var(--frame-ribbon-left))",
+			".mod-macos.is-fullscreen, .mod-windows.is-fullscreen, .mod-linux.is-fullscreen": "0px",
+			".mod-macos.mod-system-rtl": "0px",
+			".mod-windows, .mod-linux": "0px",
+			".mod-windows.mod-system-rtl, .mod-linux.mod-system-rtl": "calc(126px - var(--frame-ribbon-left))"
+		},
+		"--frame-ribbon-left": {
+			".is-popout-window": "0px",
+			".mod-rtl": "0px",
+			"body": "var(--ribbon-width)"
+		},
 		"--h1-color": {
 			"body": "inherit"
 		},
@@ -578,6 +607,10 @@
 			"@media (forced-colors: active) » .horizontal-tab-nav-item, .vertical-tab-nav-item": "SelectedItem",
 			"body": "var(--color-accent-1)"
 		},
+		"--interactive-accent-hover": {
+			".theme-dark": "var(--color-accent-1)",
+			"body": "var(--color-accent-2)"
+		},
 		"--interactive-hover": {
 			".is-mobile": "var(--background-modifier-border)",
 			".is-mobile.theme-dark": "var(--color-secondary-5)",
@@ -645,6 +678,9 @@
 			".is-mobile": "var(--text-normal)",
 			"body": "var(--text-muted)"
 		},
+		"--nav-item-color-selected": {
+			"body": "var(--text-normal)"
+		},
 		"--nav-item-radius": {
 			".is-mobile": "var(--touch-radius-xs)",
 			"body": "var(--radius-m)"
@@ -662,9 +698,17 @@
 		"--radius-s": {
 			"body": "4px"
 		},
+		"--ribbon-width": {
+			".is-mobile": "var(--touch-size-xl)",
+			"body": "44px",
+			"body:not(.show-ribbon)": "0px"
+		},
 		"--sidebar-tab-container-background": {
 			".sidebar-toggle-button, .workspace-tabs.mod-top": "var(--titlebar-background)",
 			"body": "var(--tab-container-background)"
+		},
+		"--size-4-6": {
+			"body": "24px"
 		},
 		"--status-bar-radius": {
 			".mod-rtl": "0 var(--radius-m) 0 0",
@@ -676,6 +720,12 @@
 		"--tab-container-background": {
 			".sidebar-toggle-button, .workspace-tabs.mod-top": "var(--titlebar-background)",
 			"body": "var(--background-secondary)"
+		},
+		"--tab-container-padding-end": {
+			"body": "var(--size-4-2)"
+		},
+		"--tab-container-padding-start": {
+			"body": "var(--size-4-2)"
 		},
 		"--tab-curve": {
 			"body": "10px"
@@ -734,6 +784,9 @@
 			".is-tablet.theme-dark": "var(--background-primary)",
 			"body": "var(--background-secondary)",
 			"body.is-frameless.in-progress": "var(--background-primary)"
+		},
+		"--touch-size-xl": {
+			"body": "60px"
 		}
 	}
 }
