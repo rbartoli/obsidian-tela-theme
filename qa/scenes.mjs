@@ -64,6 +64,11 @@ export const scenes = [
 	},
 	{ name: 'base-table', setup: (p) => p.run(() => __qa.base('Table')) },
 	{ name: 'base-cards', setup: (p) => p.run(() => __qa.base('Cards')) },
+	// Obsidian 1.14's board layout, the library grouped by status.
+	{ name: 'base-kanban', setup: (p) => p.run(() => __qa.base('Kanban', 'Kanban.base')) },
+	// Obsidian 1.14's coloured highlights, in every colour and inside other blocks.
+	{ name: 'highlights-reading', scroll: READING, setup: (p) => p.run(() => __qa.open('Highlights.md', { mode: 'preview' })) },
+	{ name: 'highlights-editing', setup: (p) => p.run(() => __qa.edit('Highlights.md')) },
 	{
 		name: 'search',
 		setup: (p) =>
@@ -443,8 +448,8 @@ export function installHelpers() {
 			return { include: fresh }
 		},
 		audited: new WeakSet(),
-		async base(view) {
-			const leaf = await this.open('Library.base')
+		async base(view, path = 'Library.base') {
+			const leaf = await this.open(path)
 			await leaf.view.controller.selectView?.(view)
 			await this.settle(800)
 			return leaf
