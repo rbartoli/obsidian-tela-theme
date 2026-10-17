@@ -186,6 +186,7 @@
 			".print",
 			".prompt",
 			".selected",
+			".show-ribbon",
 			".suggestion-action",
 			".suggestion-container",
 			".suggestion-item",
