@@ -160,6 +160,22 @@
 	--text-accent-hover: color-mix(in oklch, var(--color-accent) 70%, #000);
 }
 
+/* Accent fills (primary buttons, toggles, the plugin browser's "Installed")
+   carry white text. Obsidian fills light mode with a lighter step of the
+   accent, where white is 4.3:1; the accent itself holds 5:1, and hover
+   darkens rather than lightens. The selection washes and accent-tinted ink
+   keep mixing from the lighter step (--tela-tint-accent), so text on and
+   near them is unchanged. */
+body {
+	--tela-tint-accent: var(--interactive-accent);
+}
+
+.theme-light {
+	--interactive-accent: var(--color-accent);
+	--interactive-accent-hover: color-mix(in srgb, var(--color-accent) 85%, #000);
+	--tela-tint-accent: var(--color-accent-1);
+}
+
 /* Obsidian's mobile CSS swaps in true black (.is-mobile.theme-dark) and pure
    black ink (.is-mobile.theme-light), at a specificity that beats the block
    above. Tela's mobile app keeps the desktop palette, so reassert it. */
@@ -224,10 +240,13 @@ body {
 	--input-shadow: inset 0 0 0 1px var(--background-modifier-border);
 	--input-shadow-hover: inset 0 0 0 1px var(--interactive-accent);
 
-	/* Selection is a neutral wash, not an accent fill (Tela's .rail-active,
-	   wash-10; hover wash-05). */
+	/* "You are here" is Tela's selected card: the accent at 16%, on the open
+	   note, a toggled button and the open settings page. Hover stays a
+	   neutral wash (wash-05), so a hovered row never reads as selected. */
+	--tela-selected: color-mix(in srgb, var(--tela-tint-accent) 16%, transparent);
 	--nav-item-background-hover: color-mix(in oklch, var(--mono-100) 5%, transparent);
-	--nav-item-background-active: color-mix(in oklch, var(--mono-100) 10%, transparent);
+	--nav-item-background-active: var(--tela-selected);
+	--background-modifier-active-hover: var(--tela-selected);
 
 	/* Tree rows read like Tela's rail titles, not Obsidian's muted grey. */
 	--nav-item-color: var(--tela-title-ink);
@@ -288,10 +307,83 @@ body:not(.mod-rtl).is-hidden-frameless:not(.is-fullscreen) .workspace-split.mod-
 }
 
 /* Notebook Navigator draws dates, tags and other secondary text in body ink
-   at 50%, under 4.5:1 on the light ground. Muted ink holds AA in both modes. */
+   at 50%, under 4.5:1 on the light ground. Muted ink holds AA in both modes.
+   Its selection keeps its focus cue: the focused pane's row stays the
+   text-selection blue, and an unfocused one takes the selected wash, not
+   grey, so the open note always reads as selected. */
 .theme-light,
 .theme-dark {
 	--nn-theme-foreground-faded: var(--text-muted);
+	--nn-theme-navitem-selected-inactive-bg: var(--tela-selected);
+	--nn-theme-file-selected-inactive-bg: var(--tela-selected);
+}
+
+/* Rows picked for a batch action (alt-click, shift-click) keep Obsidian's
+   accent selection. Obsidian leaves the open note out of the pick, so while
+   one is under way the open note steps back to the hover wash: in the
+   accent it would read as picked too. */
+/* stylelint-disable-next-line selector-pseudo-class-disallowed-list */
+.workspace-leaf-content:is([data-type="file-explorer"], [data-type="bookmarks"]):has(.tree-item-self.is-selected) .tree-item-self.is-active:not(.is-selected) {
+	background-color: var(--nav-item-background-hover);
+}
+
+/* A picked row's file-type badge (CANVAS, BASE) takes the row's ink, as
+   Obsidian does for a dragged row: muted ink on the selection is under
+   4.5:1, down to 3.8:1 with Distinct sidebars in light mode. */
+.tree-item-self.is-selected .nav-file-tag {
+	color: var(--nav-item-color-selected);
+}
+
+/* Menus highlight in the accent at 18%, the command palette and suggestions
+   at 16%, as Tela's context menu and palette do. A destructive item
+   highlights in red, its title ink moved toward the body ink: plain error
+   red on its own wash is 3.4:1 in light mode. */
+.menu {
+	--background-modifier-hover: color-mix(in srgb, var(--tela-tint-accent) 18%, transparent);
+}
+
+.menu-item.is-warning:not(.is-disabled):is(.selected, .mobile-tap) {
+	background-color: color-mix(in srgb, var(--text-error) 18%, transparent);
+	color: color-mix(in oklch, var(--text-error) 60%, var(--text-normal));
+}
+
+.prompt,
+.suggestion-container {
+	--background-modifier-hover: var(--tela-selected);
+}
+
+/* Obsidian draws a suggestion's action hint ("Enter to create") in the
+   interactive accent: 3:1 on the selected row in light mode. Moved toward
+   the body ink, it holds AA on the accent wash in both modes. */
+.suggestion-item.mod-complex .suggestion-action {
+	color: color-mix(in oklch, var(--tela-tint-accent) 60%, var(--text-normal));
+}
+
+/* Settings mark the open page as the file tree marks the open note.
+   Obsidian paints it with the hover wash, and not on phones, where the list
+   and the page never share the screen. */
+body:not(.is-phone) .vertical-tab-nav-item.is-active {
+	background-color: var(--tela-selected);
+}
+
+/* The active sidebar view and a toggled header button (sort, auto-reveal)
+   are Tela's active icon button: the accent on the selected wash, hovered
+   or not. Obsidian colours a focused view's icon through its tab variables,
+   so those carry the accent too. */
+:is(.mod-primary-split, .mod-secondary-split) .workspace-tab-header-container .workspace-tab-header.is-active,
+:is(.mod-primary-split, .mod-secondary-split) .workspace-tab-header-container .workspace-tab-header.is-active:hover {
+	--icon-color: var(--interactive-accent);
+	--icon-color-focused: var(--interactive-accent);
+	--tab-text-color-active: var(--interactive-accent);
+	--tab-text-color-focused-active: var(--interactive-accent);
+	--tab-text-color-focused-active-current: var(--interactive-accent);
+
+	background-color: var(--tela-selected);
+}
+
+.nav-buttons-container .nav-action-button.is-active {
+	background-color: var(--tela-selected);
+	color: var(--interactive-accent);
 }
 
 /* The focused pane's active tab gets Tela's 2px accent top line. No variable
@@ -386,11 +478,92 @@ body {
 	padding-bottom: 0.35em;
 }
 
-/* Callout titles are the callout colour on a 10% tint of itself. Fine on
-   the dark ground; on the pale one every hue lands near 4.1:1, so light
-   mode deepens the title ink (the icon keeps the raw colour). */
+/* Callouts are Tela's request card: a faint neutral box, radius 8, with a
+   bar in the callout's colour, 4px wide, 4px in and 6px clear of the ends.
+   Text starts 22px in, not the card's 16: beside 16px note text, 8px from
+   the bar crowds it. The inline padding is logical, so the text keeps clear
+   of the bar in right-to-left notes too.
+   Every bar is a border, not a background: axe skips short text (titles,
+   inline code) inside anything with a sizeable background pseudo-element,
+   so a filled bar would hide callout titles from npm run qa. */
+body {
+	--callout-radius: 8px;
+}
+
+.callout {
+	/* Code sits on the note's own ground. Obsidian's code ground is within a
+	   step of the card's, so inline code and code blocks would lose their
+	   box; on the ground they keep it, at the contrast they have outside. */
+	--code-background: var(--background-primary);
+
+	position: relative;
+	padding-inline: 22px 12px;
+	background-color: color-mix(in srgb, var(--text-normal) 4%, transparent);
+}
+
+.callout::before {
+	content: "";
+	position: absolute;
+	inset-block: 6px;
+	inset-inline-start: 4px;
+	width: 0;
+	border-inline-start: 4px solid var(--callout-color);
+	border-radius: 2px;
+}
+
+/* Callout titles take the callout colour. On the pale box several hues
+   land under 4.5:1 (cyan 4.31:1), so light mode deepens the title ink; the
+   icon and the bar keep the raw colour. */
 .theme-light .callout {
 	--callout-title-color: color-mix(in oklch, var(--callout-color) 78%, #000);
+}
+
+/* Quotes take the same bar in faint ink, 2px clear of the ends. Note
+   embeds keep Obsidian's 2px accent line: an embed frames a whole note,
+   and a bar there would stack with the bars of the quotes and callouts
+   inside it. */
+body {
+	--blockquote-border-thickness: 0;
+	--blockquote-border-color: var(--text-faint);
+}
+
+.markdown-rendered blockquote {
+	position: relative;
+}
+
+.markdown-rendered blockquote::before {
+	content: "";
+	position: absolute;
+	inset-block: 2px;
+	inset-inline-start: 0;
+	width: 0;
+	border-inline-start: 4px solid var(--blockquote-border-color);
+	border-radius: 2px;
+}
+
+/* Live preview draws a quote one line at a time, so the bar is each line's,
+   joined; the last and first line round its ends. Only :has() can find
+   the last line, and it looks at the next sibling alone. Nested levels
+   draw theirs with .cm-blockquote-border. */
+.markdown-source-view.mod-cm6 .cm-blockquote-border::before,
+/* stylelint-disable-next-line selector-class-pattern */
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote::before {
+	width: 0;
+	border-inline-start: 4px solid var(--blockquote-border-color);
+}
+
+/* stylelint-disable-next-line selector-class-pattern, selector-pseudo-class-disallowed-list */
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote:not(:has(+ .HyperMD-quote))::before {
+	bottom: 2px;
+	border-end-start-radius: 2px;
+	border-end-end-radius: 2px;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote:not(.HyperMD-quote + .HyperMD-quote)::before {
+	top: 2px;
+	border-start-start-radius: 2px;
+	border-start-end-radius: 2px;
 }
 
 /* Obsidian pins the native calendar icon to the left but reserves space for
@@ -648,8 +821,11 @@ settings:
 
 /* On the light recess, a black wash darkens a row past what muted text can
    hold. Rows there lift toward the note's ground instead: halfway on hover,
-   all the way when selected. */
+   and when selected, to the selected wash laid on that ground (on the
+   recess itself it would drop muted text to 4.1:1). */
 .tela-distinct-sidebar.theme-light :is(.mod-left-split, .mod-right-split, .workspace-drawer) {
 	--nav-item-background-hover: color-mix(in srgb, var(--tela-bg) 50%, var(--tela-recess));
-	--nav-item-background-active: var(--tela-bg);
+	--nav-item-background-active: color-mix(in srgb, var(--tela-tint-accent) 16%, var(--tela-bg));
+	--nn-theme-navitem-selected-inactive-bg: var(--nav-item-background-active);
+	--nn-theme-file-selected-inactive-bg: var(--nav-item-background-active);
 }

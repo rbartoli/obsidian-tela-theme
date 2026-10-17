@@ -142,6 +142,19 @@ export const scenes = [
 			}),
 		audit: '.modal-container',
 	},
+	// No other scene shows text on an accent fill. The Sync tab's "Sign up"
+	// does, offline, and shares its colours with every primary button and the
+	// plugin browser's "Installed".
+	{
+		name: 'settings-sync',
+		setup: (p) =>
+			p.run(async () => {
+				app.setting.open()
+				app.setting.openTabById('sync')
+				await __qa.settle(600)
+			}),
+		audit: '.modal-container',
+	},
 	{
 		name: 'drawer',
 		only: ['phone', 'tablet'],
@@ -236,6 +249,17 @@ export const scenes = [
 				await __qa.select('.workspace-leaf-content[data-type="file-explorer"] .tree-item-self')
 			}),
 	},
+	// Rows picked for a batch action take a selection of their own, with the
+	// file-type badges on it. Obsidian leaves the open note out of a pick.
+	{
+		name: 'picked-explorer',
+		setup: (p) =>
+			p.run(async () => {
+				await __qa.open('Tour.md', { mode: 'preview' })
+				await __qa.reveal('file-explorer')
+				await __qa.select('.workspace-leaf-content[data-type="file-explorer"] .tree-item-self:not(.is-active)', 'is-selected')
+			}),
+	},
 	{
 		name: 'selected-search',
 		setup: (p) =>
@@ -277,6 +301,17 @@ export const scenes = [
 				await __qa.open('Tour.md', { mode: 'preview' })
 				await __qa.reveal('file-explorer')
 				await __qa.select('.workspace-leaf-content[data-type="file-explorer"] .tree-item-self')
+			}),
+	},
+	{
+		name: 'distinct-picked-explorer',
+		own: true,
+		setup: (p) =>
+			p.run(async () => {
+				document.body.classList.add('tela-distinct-sidebar')
+				await __qa.open('Tour.md', { mode: 'preview' })
+				await __qa.reveal('file-explorer')
+				await __qa.select('.workspace-leaf-content[data-type="file-explorer"] .tree-item-self:not(.is-active)', 'is-selected')
 			}),
 	},
 	{
@@ -405,13 +440,14 @@ export function installHelpers() {
 			return leaf
 		},
 		// Gives every matching row the selected state, as a click would, until
-		// the next reset.
-		async select(selector) {
+		// the next reset: is-active is the open note's, is-selected a row picked
+		// for a batch action (alt-click, shift-click).
+		async select(selector, state = 'is-active') {
 			await this.find(selector)
 			for (const el of document.querySelectorAll(selector)) {
-				if (el.classList.contains('is-active')) continue
-				el.classList.add('is-active')
-				this.selected.push(el)
+				if (el.classList.contains(state)) continue
+				el.classList.add(state)
+				this.selected.push([el, state])
 			}
 			await this.settle()
 		},
@@ -432,7 +468,7 @@ export function installHelpers() {
 			document.body.classList.remove('tela-distinct-sidebar', 'is-android')
 			for (const el of document.querySelectorAll('body > .print')) el.remove()
 			this.audited = new WeakSet()
-			for (const el of this.selected.splice(0)) el.classList.remove('is-active')
+			for (const [el, state] of this.selected.splice(0)) el.classList.remove(state)
 			if (app.vault.getConfig('rightToLeft')) app.vault.setConfig('rightToLeft', false)
 			const leaves = []
 			ws.iterateRootLeaves((leaf) => leaves.push(leaf))

@@ -40,6 +40,10 @@ mode, on desktop, phone and tablet.
 
 - Dark and light palettes taken from the Tela app, with its blue accent. Your own accent
   colour in Settings → Appearance still applies.
+- The open note, settings page and sidebar view are marked in the accent. Hover stays
+  grey, so a row you point at never looks selected.
+- Callouts sit on a faint card with a rounded bar in their colour; quotes take the same
+  bar in grey.
 - Code blocks in the colours of Tela's terminal, every one readable on the code
   background.
 - Tasks with their own marks for important `[!]`, question `[?]`, cancelled `[-]` and in
