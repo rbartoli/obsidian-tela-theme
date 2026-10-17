@@ -19,7 +19,7 @@
 	/* "You are here" is Tela's selected card: the accent at 16%, on the open
 	   note, a toggled button and the open settings page. Hover stays a
 	   neutral wash (wash-05), so a hovered row never reads as selected. */
-	--tela-selected: color-mix(in srgb, var(--interactive-accent) 16%, transparent);
+	--tela-selected: color-mix(in srgb, var(--tela-tint-accent) 16%, transparent);
 	--nav-item-background-hover: color-mix(in oklch, var(--mono-100) 5%, transparent);
 	--nav-item-background-active: var(--tela-selected);
 	--background-modifier-active-hover: var(--tela-selected);
@@ -78,12 +78,19 @@ body {
 	background-color: var(--nav-item-background-hover);
 }
 
+/* A picked row's file-type badge (CANVAS, BASE) takes the row's ink, as
+   Obsidian does for a dragged row: muted ink on the selection is under
+   4.5:1, down to 3.8:1 with Distinct sidebars in light mode. */
+.tree-item-self.is-selected .nav-file-tag {
+	color: var(--nav-item-color-selected);
+}
+
 /* Menus highlight in the accent at 18%, the command palette and suggestions
    at 16%, as Tela's context menu and palette do. A destructive item
    highlights in red, its title ink moved toward the body ink: plain error
    red on its own wash is 3.4:1 in light mode. */
 .menu {
-	--background-modifier-hover: color-mix(in srgb, var(--interactive-accent) 18%, transparent);
+	--background-modifier-hover: color-mix(in srgb, var(--tela-tint-accent) 18%, transparent);
 }
 
 .menu-item.is-warning:not(.is-disabled):is(.selected, .mobile-tap) {
@@ -100,7 +107,7 @@ body {
    interactive accent: 3:1 on the selected row in light mode. Moved toward
    the body ink, it holds AA on the accent wash in both modes. */
 .suggestion-item.mod-complex .suggestion-action {
-	color: color-mix(in oklch, var(--interactive-accent) 60%, var(--text-normal));
+	color: color-mix(in oklch, var(--tela-tint-accent) 60%, var(--text-normal));
 }
 
 /* Settings mark the open page as the file tree marks the open note.

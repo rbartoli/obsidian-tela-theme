@@ -53,6 +53,22 @@
 	--text-accent-hover: color-mix(in oklch, var(--color-accent) 70%, #000);
 }
 
+/* Accent fills (primary buttons, toggles, the plugin browser's "Installed")
+   carry white text. Obsidian fills light mode with a lighter step of the
+   accent, where white is 4.3:1; the accent itself holds 5:1, and hover
+   darkens rather than lightens. The selection washes and accent-tinted ink
+   keep mixing from the lighter step (--tela-tint-accent), so text on and
+   near them is unchanged. */
+body {
+	--tela-tint-accent: var(--interactive-accent);
+}
+
+.theme-light {
+	--interactive-accent: var(--color-accent);
+	--interactive-accent-hover: color-mix(in srgb, var(--color-accent) 85%, #000);
+	--tela-tint-accent: var(--color-accent-1);
+}
+
 /* Obsidian's mobile CSS swaps in true black (.is-mobile.theme-dark) and pure
    black ink (.is-mobile.theme-light), at a specificity that beats the block
    above. Tela's mobile app keeps the desktop palette, so reassert it. */

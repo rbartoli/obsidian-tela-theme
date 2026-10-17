@@ -160,6 +160,22 @@
 	--text-accent-hover: color-mix(in oklch, var(--color-accent) 70%, #000);
 }
 
+/* Accent fills (primary buttons, toggles, the plugin browser's "Installed")
+   carry white text. Obsidian fills light mode with a lighter step of the
+   accent, where white is 4.3:1; the accent itself holds 5:1, and hover
+   darkens rather than lightens. The selection washes and accent-tinted ink
+   keep mixing from the lighter step (--tela-tint-accent), so text on and
+   near them is unchanged. */
+body {
+	--tela-tint-accent: var(--interactive-accent);
+}
+
+.theme-light {
+	--interactive-accent: var(--color-accent);
+	--interactive-accent-hover: color-mix(in srgb, var(--color-accent) 85%, #000);
+	--tela-tint-accent: var(--color-accent-1);
+}
+
 /* Obsidian's mobile CSS swaps in true black (.is-mobile.theme-dark) and pure
    black ink (.is-mobile.theme-light), at a specificity that beats the block
    above. Tela's mobile app keeps the desktop palette, so reassert it. */
@@ -227,7 +243,7 @@ body {
 	/* "You are here" is Tela's selected card: the accent at 16%, on the open
 	   note, a toggled button and the open settings page. Hover stays a
 	   neutral wash (wash-05), so a hovered row never reads as selected. */
-	--tela-selected: color-mix(in srgb, var(--interactive-accent) 16%, transparent);
+	--tela-selected: color-mix(in srgb, var(--tela-tint-accent) 16%, transparent);
 	--nav-item-background-hover: color-mix(in oklch, var(--mono-100) 5%, transparent);
 	--nav-item-background-active: var(--tela-selected);
 	--background-modifier-active-hover: var(--tela-selected);
@@ -286,12 +302,19 @@ body {
 	background-color: var(--nav-item-background-hover);
 }
 
+/* A picked row's file-type badge (CANVAS, BASE) takes the row's ink, as
+   Obsidian does for a dragged row: muted ink on the selection is under
+   4.5:1, down to 3.8:1 with Distinct sidebars in light mode. */
+.tree-item-self.is-selected .nav-file-tag {
+	color: var(--nav-item-color-selected);
+}
+
 /* Menus highlight in the accent at 18%, the command palette and suggestions
    at 16%, as Tela's context menu and palette do. A destructive item
    highlights in red, its title ink moved toward the body ink: plain error
    red on its own wash is 3.4:1 in light mode. */
 .menu {
-	--background-modifier-hover: color-mix(in srgb, var(--interactive-accent) 18%, transparent);
+	--background-modifier-hover: color-mix(in srgb, var(--tela-tint-accent) 18%, transparent);
 }
 
 .menu-item.is-warning:not(.is-disabled):is(.selected, .mobile-tap) {
@@ -308,7 +331,7 @@ body {
    interactive accent: 3:1 on the selected row in light mode. Moved toward
    the body ink, it holds AA on the accent wash in both modes. */
 .suggestion-item.mod-complex .suggestion-action {
-	color: color-mix(in oklch, var(--interactive-accent) 60%, var(--text-normal));
+	color: color-mix(in oklch, var(--tela-tint-accent) 60%, var(--text-normal));
 }
 
 /* Settings mark the open page as the file tree marks the open note.
@@ -768,7 +791,7 @@ settings:
    recess itself it would drop muted text to 4.1:1). */
 .tela-distinct-sidebar.theme-light :is(.mod-left-split, .mod-right-split, .workspace-drawer) {
 	--nav-item-background-hover: color-mix(in srgb, var(--tela-bg) 50%, var(--tela-recess));
-	--nav-item-background-active: color-mix(in srgb, var(--interactive-accent) 16%, var(--tela-bg));
+	--nav-item-background-active: color-mix(in srgb, var(--tela-tint-accent) 16%, var(--tela-bg));
 	--nn-theme-navitem-selected-inactive-bg: var(--nav-item-background-active);
 	--nn-theme-file-selected-inactive-bg: var(--nav-item-background-active);
 }
