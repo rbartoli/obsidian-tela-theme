@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### 2026-10-18: the cover says "Contrast-audited"
+
+- The cover's facts line read "WCAG AA text", which holds only with the theme's blue accent (see "the contrast claim names its scope"). It now reads "Contrast-audited", true for any accent. `scripts/shots-cover.html` has the new line; `assets/cover.webp` is rendered again from it on Obsidian 1.14.4, and differs from the last one only in that line.
+
 ### 2026-10-18: inputs on macOS keep Tela's 6px corners
 
 - Obsidian rounds inputs to 8px on macOS (`--input-radius` on `.mod-macos`, which outranks the theme's `body`), so text fields, dropdowns and buttons there weren't Tela's 6px. They are now; phones and tablets keep Obsidian's touch radius. The drift check found it.
