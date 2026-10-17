@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### 2026-10-17: options to dim images and tint italics; emphasis in headings keeps their colour
+
+The two options were asked for under the launch post; both are Style Settings toggles, off by default.
+
+- **Dim images in dark mode** shows images in notes, in reading view and live preview, at 70% opacity, the default of Minimal's slider for the same thing, and in full under the pointer, with a 150ms fade. Light mode, print, and images shown on their own (an image file in a tab or a Canvas card, Bases card covers) are unchanged. Phones and tablets have no hover, so there images stay dimmed.
+- **Tinted italics** gives italics bold's colour, the accent at 16% in body ink. Obsidian paints italics with `--italic-color`, but in live preview a quote line outranks it, as it does bold, so the option colours italics on quote lines, and the `*` markers, directly. An italic run inside a link keeps the link colour.
+- A bold or italic run in a heading keeps the heading's colour, where bold took its near-body ink since 1.0.0 (and italics would have with the new option): in a blue H1 or H2, a bold word read as a smaller, different heading. Links in a heading keep the link colour.
+- Checked on Obsidian 1.14.4: two QA scenes, `tinted-italics-reading` and `tinted-italics-editing`, audit a new fixture note with emphasis in a heading, and italics in body text, a list, links, a quote, a callout and a table, with the option on: 0 violations in 12 screens. Italics measure the bold colour in body text, on a quote line in live preview and in reading view, in both modes, and the link colour inside links; with the option off they keep body ink. Images measure 0.7 opacity in dark mode with the option on, in reading view and live preview, 1 under the pointer, and 1 in light mode. Bold and italic runs in an H2 measure the heading's colour in both modes and views, with the italics option on and off, while bold in body text keeps its tint. `npm run qa`: 0 violations in 390 screens before the heading fix, and in the 186 screens of the scenes it touches (reading, editing and both italics scenes) after it.
+
 ## 1.1.0 (2026-10-17)
 
 ### 2026-10-17: screenshots show 1.1.0 and every heading level

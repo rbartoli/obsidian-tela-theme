@@ -62,9 +62,14 @@ mode, on desktop, phone and tablet.
 ## Settings
 
 With the [Style Settings](https://github.com/obsidian-community/obsidian-style-settings)
-plugin, the theme has one option:
+plugin, the theme has three options, all off by default:
 
 - **Distinct sidebars** gives the sidebars a recessed surface of their own.
+- **Dim images in dark mode** shows images in notes at 70% until you hover them, so a
+  white screenshot doesn't glare off the dark page. Phones and tablets have no hover, so
+  there images stay dimmed.
+- **Tinted italics** gives italics the same hint of accent as bold, so they stand apart
+  from body text by colour as well as slant.
 
 ## Fonts
 
