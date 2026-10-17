@@ -122,3 +122,9 @@ body {
 	--input-radius: 6px;
 	--checkbox-radius: 4px;
 }
+
+/* Obsidian rounds inputs to 8px on macOS, on a selector that outranks body.
+   Phones and tablets keep their touch radius. */
+.mod-macos:not(.is-mobile) {
+	--input-radius: 6px;
+}

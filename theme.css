@@ -230,6 +230,12 @@ body {
 	--checkbox-radius: 4px;
 }
 
+/* Obsidian rounds inputs to 8px on macOS, on a selector that outranks body.
+   Phones and tablets keep their touch radius. */
+.mod-macos:not(.is-mobile) {
+	--input-radius: 6px;
+}
+
 /* Tela blends its chrome with the content's ground: rail, toolbar and tab
    strip all sit on --bg, separated only by hairline borders. Obsidian puts
    sidebars, ribbon and status bar on --background-secondary, so pointing that
