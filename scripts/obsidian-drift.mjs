@@ -294,29 +294,44 @@ function subject(selector) {
 	return last.replace(new RegExp(MODE.source, 'g'), '').split(/(?=[.[:])/).sort(byName).join('')
 }
 
+// Every mode and platform body can be in, as the classes Obsidian gives it.
+const STATES = ['theme-dark', 'theme-light'].flatMap((mode) =>
+	[['mod-macos'], ['mod-windows'], ['mod-linux'], ...['is-phone', 'is-tablet'].flatMap((size) => ['is-ios', 'is-android'].map((os) => ['is-mobile', size, os]))].map((platform) => new Set([mode, ...platform])),
+)
+
+// Whether a selector on body applies in a state: the mode and platform classes
+// it names are there, and those its :not() names aren't. Other classes, such
+// as a style setting's, count as there.
+function applies(selector, state) {
+	const modes = (sel) => [...sel.matchAll(new RegExp(MODE.source, 'g'))].map((m) => m[1])
+	const negated = [...selector.matchAll(/:not\(((?:[^()]|\([^()]*\))*)\)/g)].flatMap((m) => modes(m[1]))
+	return modes(selector.replace(/:not\((?:[^()]|\([^()]*\))*\)/g, '')).every((c) => state.has(c)) && !negated.some((c) => state.has(c))
+}
+
 const atRules = (scope) => scope.split(' » ').filter((p) => p.startsWith('@')).join(' » ')
 const selectorsOf = (scope) => split(scope.split(' » ').at(-1), /,/)
 const outranks = (a, b) => (a[0] - b[0] || a[1] - b[1] || a[2] - b[2]) > 0
 
-// Variables the theme sets on body that Obsidian also declares there for one
-// mode or platform, to a different value and on a selector that outranks every
-// one the theme sets them on. There Obsidian's value wins, so the theme's
-// reaches only the other modes. theme.css loads after app.css, so a tie goes
-// to the theme. Declarations on a component (.is-mobile .menu) are Obsidian
-// styling that component, and are left out.
+// Variables the theme sets on body that Obsidian also declares there for a
+// mode or platform: in some state of body the theme sets them for, Obsidian's
+// selector outranks the theme's best and gives a different value, so there
+// the theme's value doesn't reach. theme.css loads after app.css, so a tie
+// goes to the theme. Declarations on a component (.is-mobile .menu) are
+// Obsidian styling that component, and declarations in at-rules are left out.
 function overrides(app, uses) {
+	const onBody = (scope) => (atRules(scope) ? [] : selectorsOf(scope).filter((sel) => subject(sel) === 'body'))
 	const found = []
 	for (const v of uses.sets) {
-		const theme = uses.decls.filter((d) => d.name === v).flatMap((d) => selectorsOf(d.scope).map((sel) => ({ sel, at: atRules(d.scope) })))
-		const values = new Set(uses.decls.filter((d) => d.name === v).map((d) => d.value))
+		const theme = uses.decls.filter((d) => d.name === v).flatMap((d) => onBody(d.scope).map((sel) => ({ sel, spec: specificity(sel), value: d.value })))
 		for (const [scope, value] of Object.entries(app.defaults.get(v) ?? {})) {
-			if (values.has(value)) continue
-			for (const sel of selectorsOf(scope).filter((sel) => MODE.test(sel) && subject(sel) === 'body')) {
-				const at = atRules(scope)
+			for (const sel of onBody(scope).filter((sel) => MODE.test(sel))) {
 				const spec = specificity(sel)
-				const held = theme.some((t) => (!t.at || t.at === at) && subject(t.sel) === 'body' && !outranks(spec, specificity(t.sel)))
-				const where = at ? `${at} » ${sel}` : sel
-				if (!held) found.push({ key: `${v} ${where}`, text: `\`${v}\`: \`${where}\` sets \`${value}\`, over the theme's value` })
+				const lost = STATES.some((state) => {
+					if (!applies(sel, state)) return false
+					const best = theme.filter((t) => applies(t.sel, state)).sort((a, b) => (outranks(a.spec, b.spec) ? -1 : 1))[0]
+					return best && best.value !== value && outranks(spec, best.spec)
+				})
+				if (lost) found.push({ key: `${v} ${sel}`, text: `\`${v}\`: \`${sel}\` sets \`${value}\`, over the theme's value` })
 			}
 		}
 	}
@@ -327,8 +342,9 @@ function overrides(app, uses) {
 // variables per mode or platform, at least one of them the theme's: as it
 // points the phone drawer's background at --background-secondary in dark mode
 // and --background-primary in light. A value the theme gives one of them for
-// that surface reaches only the modes that read it. Per-mode steps of the base palette (--color-base-*) are how
-// Obsidian shades its modes, and are left out.
+// that surface reaches only the modes that read it. Per-mode steps of the
+// base palette (--color-base-*) are how Obsidian shades its modes, and are
+// left out.
 function pointers(app, uses) {
 	const sets = new Set(uses.sets)
 	const found = []

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2026-10-18: inputs on macOS keep Tela's 6px corners
+
+- Obsidian rounds inputs to 8px on macOS (`--input-radius` on `.mod-macos`, which outranks the theme's `body`), so text fields, dropdowns and buttons there weren't Tela's 6px. They are now; phones and tablets keep Obsidian's touch radius. The drift check found it.
+- The drift check's per-mode test now asks, for each state body can be in (dark or light; macOS, Windows, Linux, or a phone or tablet on iOS or Android), whether the theme sets the variable there and Obsidian's selector outranks it. It used to compare selectors one by one, so a theme rule that skips phones (`:not(.is-mobile)`) counted as covering them. 1.14.4 is certified again with 11 cases, the 12 of 2026-10-18 less this fix.
+- Checked: with main's `theme.css` the check flags `.mod-macos`, and with the drawer fix also taken out, `--mobile-sidebar-background`; with this branch's, nothing. `--input-radius` computes 6px with `.mod-macos` on body and stays at Obsidian's touch radius with `.is-mobile`. `npm run qa` doesn't run on macOS, so it can't see this change.
+
 ### 2026-10-18: the drift check lists new variables and flags per-mode traps
 
 - `npm run drift`, and so the weekly canary issue, lists the variables Obsidian added and removed since the certified release, marking any the theme uses, so a polish pass can see what's new. Against a 1.13.4 baseline, 1.14.4 has 87 new (the Bases board's among them) and 3 gone.
