@@ -292,9 +292,10 @@ body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs:not(.mod-stacked)
 
 /* With the left sidebar collapsed, the first tab starts at the ribbon's edge,
    as the note does. Obsidian pads the window's top-left tabs by 8px plus the
-   room macOS keeps for its window buttons; keep only the room. Right to
-   left, macOS reserves its buttons there too, so that stays as it is. */
-body:not(.mod-rtl).is-hidden-frameless:not(.is-fullscreen) .workspace-split.mod-root .workspace-tabs.mod-top-left-space:not(.mod-stacked) > .workspace-tab-header-container {
+   room macOS keeps for its window buttons; keep only the room. Without the
+   ribbon the sidebar toggle sits in the strip and the 8px centres it, so
+   that stays, as does right to left, where macOS reserves its buttons. */
+body.show-ribbon:not(.mod-rtl).is-hidden-frameless:not(.is-fullscreen) .workspace-split.mod-root .workspace-tabs.mod-top-left-space:not(.mod-stacked) > .workspace-tab-header-container {
 	padding-left: var(--frame-left-space);
 }
 
