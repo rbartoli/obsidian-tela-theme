@@ -334,12 +334,11 @@ body.show-ribbon:not(.mod-rtl).is-hidden-frameless:not(.is-fullscreen) .workspac
 }
 
 /* Rows picked for a batch action (alt-click, shift-click) keep Obsidian's
-   accent selection. Obsidian leaves the open note out of the pick, so while
-   one is under way the open note steps back to the hover wash: in the
-   accent it would read as picked too. */
-/* stylelint-disable-next-line selector-pseudo-class-disallowed-list */
-.workspace-leaf-content:is([data-type="file-explorer"], [data-type="bookmarks"]):has(.tree-item-self.is-selected) .tree-item-self.is-active:not(.is-selected) {
-	background-color: var(--nav-item-background-hover);
+   accent selection and add the accent ring of a hovered input. The open
+   note's wash is accent too, and Obsidian leaves it out of the pick, so
+   without the ring it would read as picked. */
+.workspace-leaf-content:is([data-type="file-explorer"], [data-type="bookmarks"]) .tree-item-self.is-selected {
+	box-shadow: inset 0 0 0 1px var(--interactive-accent);
 }
 
 /* A picked row's file-type badge (CANVAS, BASE) takes the row's ink, as
@@ -503,17 +502,17 @@ body {
 
 /* Folding a section also hides the blank line before the next heading, so a
    heading that closes a deeper folded section sits as close to it as a
-   subheading would. It gets the space it has when the section is open;
-   folded headings of one level stay tight, like an outline. */
-/* stylelint-disable selector-class-pattern, selector-pseudo-class-disallowed-list */
-.cm-line.HyperMD-header-2:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-2),
-.cm-line.HyperMD-header-3:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-3),
-.cm-line.HyperMD-header-4:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-4),
-.cm-line.HyperMD-header-5:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-5),
-.cm-line.HyperMD-header-6:has(> .cm-fold-indicator.is-collapsed) + .HyperMD-header:not(.HyperMD-header-6) {
-	padding-top: var(--heading-spacing);
+   subheading would. Reading view gives it the space it has when the section
+   is open, and folded headings of one level stay tight, like an outline.
+   Live preview marks a folded line only inside it, where just :has() could
+   see it, so the space hangs below the fold's "…" instead, and any heading
+   after a folded H3 to H6 gets it. H1 and H2 go without: the space would
+   push their rule away from the text. */
+/* stylelint-disable-next-line selector-class-pattern */
+.cm-line:is(.HyperMD-header-3, .HyperMD-header-4, .HyperMD-header-5, .HyperMD-header-6) .cm-foldPlaceholder {
+	display: inline-block;
+	margin-bottom: calc(var(--heading-spacing) - var(--p-spacing));
 }
-/* stylelint-enable selector-class-pattern, selector-pseudo-class-disallowed-list */
 
 .markdown-rendered .el-h2.is-collapsed + div > h1,
 .markdown-rendered .el-h3.is-collapsed + div > :is(h1, h2),
@@ -587,28 +586,14 @@ body {
 }
 
 /* Live preview draws a quote one line at a time, so the bar is each line's,
-   joined; the last and first line round its ends. Only :has() can find
-   the last line, and it looks at the next sibling alone. Nested levels
-   draw theirs with .cm-blockquote-border. */
+   joined, and its ends stay square: only :has() can find the last line,
+   which Obsidian's theme review flags as slow. Nested levels draw theirs
+   with .cm-blockquote-border. */
 .markdown-source-view.mod-cm6 .cm-blockquote-border::before,
 /* stylelint-disable-next-line selector-class-pattern */
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote::before {
 	width: 0;
 	border-inline-start: 4px solid var(--blockquote-border-color);
-}
-
-/* stylelint-disable-next-line selector-class-pattern, selector-pseudo-class-disallowed-list */
-.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote:not(:has(+ .HyperMD-quote))::before {
-	bottom: 2px;
-	border-end-start-radius: 2px;
-	border-end-end-radius: 2px;
-}
-
-/* stylelint-disable-next-line selector-class-pattern */
-.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote:not(.HyperMD-quote + .HyperMD-quote)::before {
-	top: 2px;
-	border-start-start-radius: 2px;
-	border-start-end-radius: 2px;
 }
 
 /* Obsidian pins the native calendar icon to the left but reserves space for
