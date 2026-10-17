@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### 2026-10-17: no `:has()` selectors
+
+Obsidian's theme review warns against `:has()`, which can make the browser restyle much of the page on any change. It flagged 1.1.0's two, and the fold rule below would have added five. Each now hooks something Obsidian marks itself.
+
+- Rows picked for a batch action add a 1px accent ring, the one a hovered input takes, to Obsidian's accent selection. The open note keeps its accent wash during a pick, where 1.1.0 stepped it back to the hover wash: only `:has()` could tell that a pick was under way, and the ring alone sets picked rows apart.
+- In live preview the quote bar runs the full height of its lines, with square ends: only `:has()` could find a quote's last line to round it. Reading view keeps the rounded bar, 2px clear of the ends.
+- In live preview, the space after a folded section hangs below the "…" of a folded H3 to H6. A heading after a folded H3 still gets the 40px an open section leaves, but so does an H3 after a folded H3, where folded headings of one level stayed 16px apart; and a folded H1 or H2 gets no extra space, since below their rule it would push the rule away from the text. Reading view is unchanged.
+- Checked on Obsidian 1.14.4: `theme.css` has no `:has(` selector and `npm run lint` passes. In live preview an H2 after a folded H3 sits 41px below it, against 40px after an open section; the quote bar measures no inset and no radius; picked rows measure the ring in both modes, and the open note keeps its accent wash. `npm run qa`: 0 violations in 390 screens.
+
 ### 2026-10-17: headings after a folded section keep their space; light settings cards on mobile
 
 - Folding a section also hides the blank line before the next heading, so a heading that closed a deeper folded section sat 16px under it, where an open section leaves 40px. Default Obsidian does the same, in reading view and live preview. A heading after a folded deeper section now gets `--heading-spacing` above it, the space reading view gives a heading after text; folded headings of one level stay 16px apart, like an outline. Live preview has no class on a folded line, so the rule finds it with `:has()` on the line's own fold indicator.

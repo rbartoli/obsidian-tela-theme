@@ -102,12 +102,11 @@ body.show-ribbon:not(.mod-rtl).is-hidden-frameless:not(.is-fullscreen) .workspac
 }
 
 /* Rows picked for a batch action (alt-click, shift-click) keep Obsidian's
-   accent selection. Obsidian leaves the open note out of the pick, so while
-   one is under way the open note steps back to the hover wash: in the
-   accent it would read as picked too. */
-/* stylelint-disable-next-line selector-pseudo-class-disallowed-list */
-.workspace-leaf-content:is([data-type="file-explorer"], [data-type="bookmarks"]):has(.tree-item-self.is-selected) .tree-item-self.is-active:not(.is-selected) {
-	background-color: var(--nav-item-background-hover);
+   accent selection and add the accent ring of a hovered input. The open
+   note's wash is accent too, and Obsidian leaves it out of the pick, so
+   without the ring it would read as picked. */
+.workspace-leaf-content:is([data-type="file-explorer"], [data-type="bookmarks"]) .tree-item-self.is-selected {
+	box-shadow: inset 0 0 0 1px var(--interactive-accent);
 }
 
 /* A picked row's file-type badge (CANVAS, BASE) takes the row's ink, as
