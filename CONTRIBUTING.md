@@ -119,6 +119,14 @@ theme reads, or no longer uses a class or attribute the theme styles. It also re
 Obsidian's changed defaults for those variables, followed down `var()` chains, against
 `qa/obsidian-baseline.json`: the release last certified with `npm run qa`.
 
+It lists the variables Obsidian added and removed since that release, marking any the
+theme uses, so a polish pass can see what's new. And it flags variables Obsidian declares
+per mode or platform on `body` (`.theme-dark`, `.is-mobile`, `.mod-macos` and the like),
+where a value the theme sets once can lose, or reach only some modes: one the theme sets
+that a more specific selector overrides, or one Obsidian points at a theme variable in
+some modes and not others, as it does the phone drawer's background. Certifying a release
+accepts the ones it has, so the report shows only new ones.
+
 ```sh
 npm run drift                                         # the newest release
 npm run drift -- --obsidian 1.14.4 --update-baseline  # certify a release once QA passes on it

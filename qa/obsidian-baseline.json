@@ -85,6 +85,7 @@
 			"--interactive-accent-hover",
 			"--interactive-hover",
 			"--interactive-normal",
+			"--italic-color",
 			"--link-unresolved-decoration-color",
 			"--link-unresolved-decoration-style",
 			"--link-unresolved-opacity",
@@ -100,6 +101,7 @@
 			"--prompt-background",
 			"--prompt-border-color",
 			"--radius-s",
+			"--setting-items-background",
 			"--sidebar-tab-container-background",
 			"--status-bar-radius",
 			"--tab-background-active",
@@ -126,9 +128,11 @@
 			"--color-accent",
 			"--color-accent-1",
 			"--frame-left-space",
+			"--heading-spacing",
 			"--link-color",
 			"--mono-100",
 			"--nav-item-color-selected",
+			"--p-spacing",
 			"--size-4-6",
 			"--tab-outline-color",
 			"--tab-outline-width",
@@ -139,9 +143,16 @@
 		"selectors": [
 			".HyperMD-header-1",
 			".HyperMD-header-2",
+			".HyperMD-header-3",
+			".HyperMD-header-4",
+			".HyperMD-header-5",
+			".HyperMD-header-6",
 			".HyperMD-quote",
 			".callout",
 			".cm-blockquote-border",
+			".cm-em",
+			".cm-foldPlaceholder",
+			".cm-formatting-em",
 			".cm-formatting-strong",
 			".cm-header-6",
 			".cm-hmd-internal-link",
@@ -154,6 +165,7 @@
 			".cm-url",
 			".is-active",
 			".is-android",
+			".is-collapsed",
 			".is-disabled",
 			".is-focused",
 			".is-fullscreen",
@@ -164,6 +176,7 @@
 			".is-selected",
 			".is-warning",
 			".list-item",
+			".markdown-preview-view",
 			".markdown-rendered",
 			".markdown-source-view",
 			".math-block",
@@ -200,6 +213,7 @@
 			".workspace-tab-header",
 			".workspace-tab-header-container",
 			".workspace-tab-header-container-inner",
+			".workspace-tab-header-inner",
 			".workspace-tabs",
 			"[aria-selected]",
 			"[data-task]",
@@ -211,6 +225,12 @@
 		"--nn-theme-file-selected-inactive-bg",
 		"--nn-theme-foreground-faded",
 		"--nn-theme-navitem-selected-inactive-bg",
+		".cm-header",
+		".el-h2",
+		".el-h3",
+		".el-h4",
+		".el-h5",
+		".el-h6",
 		".mod-left-split",
 		".mod-right-split"
 	],
@@ -555,6 +575,9 @@
 			":root": "600",
 			"@supports (font-variation-settings: normal) » :root": "600"
 		},
+		"--heading-spacing": {
+			"body": "calc(var(--p-spacing) * 2.5)"
+		},
 		"--hr-thickness": {
 			"body": "2px"
 		},
@@ -628,6 +651,9 @@
 			".theme-dark": "var(--color-base-30)",
 			"body": "var(--color-base-00)"
 		},
+		"--italic-color": {
+			"body": "inherit"
+		},
 		"--link-color": {
 			".bases-cards-property.mod-title": "var(--text-normal)",
 			".bases-group-heading": "var(--bases-group-heading-value-color)",
@@ -689,6 +715,10 @@
 		"--nav-item-weight-active": {
 			"body": "inherit"
 		},
+		"--p-spacing": {
+			".markdown-source-view:not(.is-live-preview)": "0rem",
+			"body": "1rem"
+		},
 		"--prompt-background": {
 			".is-mobile": "var(--background-secondary)",
 			"body": "var(--background-primary)"
@@ -703,6 +733,11 @@
 			".is-mobile": "var(--touch-size-xl)",
 			"body": "44px",
 			"body:not(.show-ribbon)": "0px"
+		},
+		"--setting-items-background": {
+			".is-mobile": "var(--background-primary)",
+			".is-mobile.theme-dark": "var(--color-secondary-2)",
+			"body": "var(--background-primary-alt)"
 		},
 		"--sidebar-tab-container-background": {
 			".sidebar-toggle-button, .workspace-tabs.mod-top": "var(--titlebar-background)",
@@ -789,5 +824,19 @@
 		"--touch-size-xl": {
 			"body": "60px"
 		}
-	}
+	},
+	"accepted": [
+		"--font-ui-large .is-mobile",
+		"--font-ui-medium .is-mobile",
+		"--font-ui-small .is-mobile",
+		"--font-ui-smaller .is-mobile",
+		"--input-radius .mod-macos",
+		"--input-radius .is-mobile",
+		"--interactive-hover .is-mobile.theme-dark",
+		"--interactive-normal .is-mobile.theme-dark",
+		"--nav-item-radius .is-mobile",
+		"--background-modifier-form-field",
+		"--modal-background",
+		"--system-status-background"
+	]
 }

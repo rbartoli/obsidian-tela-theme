@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### 2026-10-18: the drift check lists new variables and flags per-mode traps
+
+- `npm run drift`, and so the weekly canary issue, lists the variables Obsidian added and removed since the certified release, marking any the theme uses, so a polish pass can see what's new. Against a 1.13.4 baseline, 1.14.4 has 87 new (the Bases board's among them) and 3 gone.
+- It also flags variables Obsidian declares per mode or platform on `body`, where a value the theme sets once can lose or reach only some modes. That's the trap behind the light phone drawer (2026-10-09): Obsidian points the drawer's background at `--background-secondary` in dark mode and `--background-primary` in light. Two kinds:
+  - a variable the theme sets that a more specific selector overrides for one mode or platform, with a different value;
+  - one the theme leaves alone that Obsidian points at a theme variable in some modes and not others.
+- Certifying a release accepts the cases it has, so the report shows only new ones. 1.14.4 is certified again, on main, with 12 cases. 6 are deliberate: phones keep Obsidian's touch sizes for UI text, inputs and rows. 2 are harmless: the values match the theme's. 3 are Obsidian's layering on dark phones, where settings cards lift a step toward white and buttons a step more, and modals sit on the sidebar colour; Tela's panel fill there sank buttons into the cards, so Obsidian's values stay. The last is a bug, left for a separate fix: inputs on macOS take 8px corners, not Tela's 6.
+- Checked: with the drawer fix taken out of `theme.css`, the check flags `--mobile-sidebar-background`; with it in, it doesn't.
+
 ### 2026-10-18: QA covers 1.14's coloured highlights and the Bases board
 
 - Three new scenes audit what Obsidian 1.14 added: `highlights-reading` and `highlights-editing` open a fixture note with the default highlight and all six colours, in body text, a list, a task, a quote, a callout and a table; `base-kanban` opens a base that groups the demo library by status on the board layout.
