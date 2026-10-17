@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### 2026-10-18: the contrast claim names its scope
+
+- The README leads with the audit rather than the standard, and says the WCAG AA result holds for the theme's blue accent. A custom accent in Settings → Appearance can drop accent text below AA: measured on 2026-10-11, dark mode gives blue #086ddd 3.90:1, teal 3.53:1 and navy 1.92:1, light mode gives yellow 3.29:1, cyan 3.58:1 and green 4.05:1. It also says what the audit doesn't judge: text on images, and plugins beyond those under Compatibility.
+- Compatibility lists Notebook Navigator, which `npm run qa` has audited since 2026-10-09.
+
 ### 2026-10-17: no `:has()` selectors
 
 Obsidian's theme review warns against `:has()`, which can make the browser restyle much of the page on any change. It flagged 1.1.0's two, and the fold rule below would have added five. Each now hooks something Obsidian marks itself.

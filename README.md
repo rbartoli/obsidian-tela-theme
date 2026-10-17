@@ -30,10 +30,12 @@ mode, on desktop, phone and tablet.
 
 ## Why Tela
 
-- **Easy to read, easy to scan.** Every text colour clears WCAG AA (4.5:1) in dark and
-  light mode, on desktop, phone and tablet, and headings step down by colour as well as
-  size. An [automated contrast audit](CONTRIBUTING.md#qa) of notes, Canvas, Bases,
-  search, menus and settings checks this before each release.
+- **Easy to read, easy to scan.** Before each release, an
+  [automated contrast audit](CONTRIBUTING.md#qa) checks more than 390 screens of notes,
+  Canvas, Bases, search, menus and settings, in dark and light mode, on desktop, phone and
+  tablet. With the theme's blue accent, every text colour clears WCAG AA (4.5:1). The
+  audit doesn't judge text on images, or plugins beyond those under Compatibility.
+  Headings step down by colour as well as size.
 - **Ready as installed.** One quiet surface for sidebars, tabs and notes, hairline
   borders, and nothing to set up.
 - **Built to survive Obsidian updates.** The theme works through Obsidian's own variables
@@ -43,7 +45,8 @@ mode, on desktop, phone and tablet.
 ## Features
 
 - Dark and light palettes taken from the Tela app, with its blue accent. Your own accent
-  colour in Settings → Appearance still applies.
+  colour in Settings → Appearance still applies, but the audit covers only the blue: some
+  accents, such as navy in dark mode or yellow in light, make accent text hard to read.
 - The open note, settings page and sidebar view are marked in the accent. Hover stays
   grey, so a row you point at never looks selected.
 - Callouts sit on a faint card with a rounded bar in their colour; quotes take the same
@@ -80,8 +83,8 @@ over the theme's.
 ## Compatibility
 
 Obsidian 1.13.4 or later, on desktop and mobile. Checked with the Dataview, Tasks, Kanban,
-Excalidraw and Iconize plugins, and with right-to-left text. File-tree icons are left to a
-plugin such as Iconize.
+Excalidraw, Iconize and Notebook Navigator plugins, and with right-to-left text. File-tree
+icons are left to a plugin such as Iconize.
 
 ## Verifying a release
 
