@@ -25,8 +25,9 @@
 	--nav-item-color: var(--tela-title-ink);
 
 	/* Active tab: Tela's wash-04 over the base, flattened to a solid colour so
-	   the hairline outline doesn't show through. */
-	--tab-background-active: color-mix(in oklch, var(--mono-100) 4%, var(--background-primary));
+	   the hairline outline doesn't show through. Mixed in sRGB, as the wash
+	   is: in oklch the grey picks up a red cast. */
+	--tab-background-active: color-mix(in srgb, var(--mono-100) 4%, var(--background-primary));
 
 	/* Overlays sit on the raised panel, as Tela's menus and popovers do. */
 	--menu-background: var(--tela-panel);
@@ -46,6 +47,30 @@ body {
 	--status-bar-radius: 0;
 }
 
+/* Desktop document tabs meet the strip's edges, as in Tela. Keep the title
+   and close button's inner padding, and Obsidian's window-control offsets. */
+body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs:not(.mod-stacked) {
+	--tab-container-padding-start: 0px;
+	--tab-container-padding-end: 0px;
+}
+
+body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs:not(.mod-stacked) > .workspace-tab-header-container > .workspace-tab-header-container-inner {
+	margin: 0 0 calc(var(--tab-outline-width) * -1);
+	padding: 0;
+}
+
+body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs:not(.mod-stacked) > .workspace-tab-header-container > .workspace-tab-header-container-inner > .workspace-tab-header {
+	padding: 0;
+}
+
+/* With the left sidebar collapsed, the first tab starts at the ribbon's edge,
+   as the note does. Obsidian pads the window's top-left tabs by 8px plus the
+   room macOS keeps for its window buttons; keep only the room. Right to
+   left, macOS reserves its buttons there too, so that stays as it is. */
+body:not(.mod-rtl).is-hidden-frameless:not(.is-fullscreen) .workspace-split.mod-root .workspace-tabs.mod-top-left-space:not(.mod-stacked) > .workspace-tab-header-container {
+	padding-left: var(--frame-left-space);
+}
+
 /* Faint text can't hold 4.5:1 under the hover and selection washes, so a
    washed row lifts it to muted, as Obsidian already does for file-type
    badges: result counts, row subtext, menu and list descriptions. */
@@ -62,7 +87,7 @@ body {
 }
 
 /* The focused pane's active tab gets Tela's 2px accent top line. No variable
-   covers this, so it is the one component rule in the chrome layer. */
+   covers this. */
 body.is-focused .workspace-split.mod-root .mod-active .workspace-tab-header.is-active {
 	box-shadow:
 		inset 0 2px 0 var(--interactive-accent),
