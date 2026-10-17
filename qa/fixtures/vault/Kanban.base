@@ -1,0 +1,18 @@
+filters:
+  and:
+    - file.inFolder("Library")
+properties:
+  note.author:
+    displayName: Author
+  note.status:
+    displayName: Status
+views:
+  - type: kanban
+    name: Kanban
+    groupBy:
+      property: note.status
+      direction: ASC
+    order:
+      - file.name
+      - note.author
+    image: note.cover

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2026-10-18: QA covers 1.14's coloured highlights and the Bases board
+
+- Three new scenes audit what Obsidian 1.14 added: `highlights-reading` and `highlights-editing` open a fixture note with the default highlight and all six colours, in body text, a list, a task, a quote, a callout and a table; `base-kanban` opens a base that groups the demo library by status on the board layout.
+- `__qa.base()` takes the base's path, so a scene can open a base other than `Library.base`.
+- Checked on Obsidian 1.14.4: the scenes run in dark and light, on desktop, phone and tablet; on desktop the board shows the library in three status columns and the note shows every colour. `npm run qa`: 0 violations in 412 screens.
+
 ### 2026-10-18: the contrast claim names its scope
 
 - The README leads with the audit rather than the standard, and says the WCAG AA result holds for the theme's blue accent. A custom accent in Settings → Appearance can drop accent text below AA: measured on 2026-10-11, dark mode gives blue #086ddd 3.90:1, teal 3.53:1 and navy 1.92:1, light mode gives yellow 3.29:1, cyan 3.58:1 and green 4.05:1. It also says what the audit doesn't judge: text on images, and plugins beyond those under Compatibility.
