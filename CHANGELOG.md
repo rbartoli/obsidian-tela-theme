@@ -5,6 +5,8 @@
 ### 2026-10-15: document tabs meet the strip's edges
 
 - Desktop document tabs lose the outer top and side gaps, bringing the active accent line to the top edge like Tela. The title and close button keep their inner padding. The change excludes stacked tabs, sidebar tabs and mobile layouts, and preserves Obsidian's space for window controls.
+- With the left sidebar collapsed, the first tab starts at the ribbon's edge, in line with the note, where it sat 8px further in. Obsidian pads the window's top-left tabs by 8px plus the room macOS keeps for its window buttons; the room stays, and right-to-left layouts are unchanged.
+- The active tab is a neutral grey. It was mixed in oklch, which gave it a red cast in both modes (dark `rgb(24,20,21)` on `rgb(13,14,17)`); mixed in sRGB, as Tela's wash is, it is `rgb(23,24,27)`.
 - Checked in Obsidian 1.14.4 in dark and light mode: 196 screens, zero axe violations across reading, editing, title bar, right-to-left text and mobile drawer scenes on desktop, phone and tablet, without community plugins. Measured zero top and side gaps in split panes, compared stacked and sidebar spacing with the previous theme, and clicked the new-tab and close controls. Regenerated the README images and added a before/after comparison in `assets/tabs-spacing.webp`.
 
 ## 1.0.0 (2026-10-09)
