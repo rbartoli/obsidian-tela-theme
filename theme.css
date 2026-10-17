@@ -290,6 +290,12 @@ body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs:not(.mod-stacked)
 	padding: 0;
 }
 
+/* Inside the tab, the title and the close icon sit 10px from its edges, as
+   Tela's tabs do; the close button carries 2px of its own. */
+body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs:not(.mod-stacked) > .workspace-tab-header-container > .workspace-tab-header-container-inner > .workspace-tab-header > .workspace-tab-header-inner {
+	padding-inline: 10px 8px;
+}
+
 /* With the left sidebar collapsed, the first tab starts at the ribbon's edge,
    as the note does. Obsidian pads the window's top-left tabs by 8px plus the
    room macOS keeps for its window buttons; keep only the room. Without the
