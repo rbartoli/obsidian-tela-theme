@@ -12,6 +12,11 @@
 // reports what changed. Defaults are followed down var() chains, because a
 // change one step down matters as much as one in the variable itself.
 //
+// It lists the variables app.css added and removed since that release, and
+// flags variables Obsidian declares per mode or platform where a value the
+// theme sets once can lose, or reach only some modes. Certifying a release
+// accepts the ones it has, so the report shows only new ones.
+//
 // Options:
 //   --obsidian <x.y.z>  release to check (default: the newest with a desktop app
 //                       package). Cached in ~/.cache/tela-qa, shared with npm run qa.
@@ -142,7 +147,7 @@ function themeUses() {
 		for (const [, name] of bare.matchAll(/\[\s*([\w-]+)/g)) selectors.add(`[${name}]`)
 	}
 	const keep = (tokens) => [...tokens].filter((t) => !own(t)).sort(byName)
-	return { sets: keep(sets), reads: keep(reads), selectors: keep(selectors) }
+	return { sets: keep(sets), reads: keep(reads), selectors: keep(selectors), decls: decls.filter((d) => d.name.startsWith('--')) }
 }
 
 // What a release offers the theme: app.css's custom properties by scope, the
@@ -205,7 +210,7 @@ function certify(version, app, uses) {
 	for (const v of [...new Set([...tracked.sets, ...tracked.reads, ...behind.keys()])].sort(byName)) {
 		if (app.defaults.has(v)) defaults[v] = Object.fromEntries(Object.entries(app.defaults.get(v)).sort(([a], [b]) => byName(a, b)))
 	}
-	return { obsidian: version, uses: tracked, unknown: unknown.sort(byName), defaults }
+	return { obsidian: version, uses: tracked, unknown: unknown.sort(byName), defaults, accepted: traps(app, uses).map((t) => t.key) }
 }
 
 function check(app, uses, base) {
@@ -237,13 +242,114 @@ function check(app, uses, base) {
 	return { gone, fresh, changed }
 }
 
+// The variables app.css defines in the release and not in the certified one,
+// and the reverse, so a polish pass can see what Obsidian now offers.
+function variables(app, baseApp) {
+	const diff = (a, b) => [...a.defaults.keys()].filter((v) => !b.defaults.has(v)).sort(byName)
+	return { added: diff(app, baseApp), removed: diff(baseApp, app) }
+}
+
+// Mode and platform classes Obsidian sets on body.
+const MODE = /\.(theme-dark|theme-light|is-mobile|is-phone|is-tablet|is-ios|is-android|mod-macos|mod-windows|mod-linux)(?![\w-])/
+
+// A list split at its top-level commas, or a selector at its top-level
+// combinators, leaving :not(a, b) and attribute values whole.
+function split(s, at) {
+	const parts = []
+	let depth = 0
+	let start = 0
+	for (let i = 0; i < s.length; i++) {
+		if (s[i] === '(' || s[i] === '[') depth++
+		else if (s[i] === ')' || s[i] === ']') depth--
+		else if (depth === 0 && at.test(s[i])) {
+			parts.push(s.slice(start, i))
+			start = i + 1
+		}
+	}
+	return [...parts, s.slice(start)].map((p) => p.trim()).filter(Boolean)
+}
+
+function specificity(selector) {
+	const s = [0, 0, 0]
+	const add = (t) => t.forEach((n, i) => (s[i] += n))
+	let rest = selector.replace(/"[^"]*"|'[^']*'/g, '""').replace(/:where\((?:[^()]|\([^()]*\))*\)/g, '')
+	rest = rest.replace(/:(?:not|is|has)\(((?:[^()]|\([^()]*\))*)\)/g, (_, list) => {
+		add(split(list, /,/).map(specificity).reduce((a, b) => (a[0] - b[0] || a[1] - b[1] || a[2] - b[2]) >= 0 ? a : b))
+		return ''
+	})
+	s[2] += (rest.match(/::[\w-]+/g) ?? []).length
+	rest = rest.replace(/::[\w-]+/g, '')
+	s[0] += (rest.match(/#[\w-]+/g) ?? []).length
+	s[1] += (rest.match(/\.[\w-]+|\[[^\]]*\]|:[\w-]+(\([^)]*\))?/g) ?? []).length
+	s[2] += (rest.match(/(?:^|[\s>+~])[a-zA-Z][\w-]*/g) ?? []).length
+	return s
+}
+
+// The element a selector styles: body, for a selector on body alone (its mode,
+// platform and state classes), else its last compound without mode classes.
+function subject(selector) {
+	const parts = split(selector, /[\s>+~]/)
+	const last = parts.at(-1).replace(/:(?:not|is|where)\((?:[^()]|\([^()]*\))*\)/g, '')
+	if (parts.length === 1 && /^(body|html|:root)?(\.(theme|is|mod|tela|show)-[\w-]+)*$/.test(last)) return 'body'
+	return last.replace(new RegExp(MODE.source, 'g'), '').split(/(?=[.[:])/).sort(byName).join('')
+}
+
+const atRules = (scope) => scope.split(' » ').filter((p) => p.startsWith('@')).join(' » ')
+const selectorsOf = (scope) => split(scope.split(' » ').at(-1), /,/)
+const outranks = (a, b) => (a[0] - b[0] || a[1] - b[1] || a[2] - b[2]) > 0
+
+// Variables the theme sets on body that Obsidian also declares there for one
+// mode or platform, to a different value and on a selector that outranks every
+// one the theme sets them on. There Obsidian's value wins, so the theme's
+// reaches only the other modes. theme.css loads after app.css, so a tie goes
+// to the theme. Declarations on a component (.is-mobile .menu) are Obsidian
+// styling that component, and are left out.
+function overrides(app, uses) {
+	const found = []
+	for (const v of uses.sets) {
+		const theme = uses.decls.filter((d) => d.name === v).flatMap((d) => selectorsOf(d.scope).map((sel) => ({ sel, at: atRules(d.scope) })))
+		const values = new Set(uses.decls.filter((d) => d.name === v).map((d) => d.value))
+		for (const [scope, value] of Object.entries(app.defaults.get(v) ?? {})) {
+			if (values.has(value)) continue
+			for (const sel of selectorsOf(scope).filter((sel) => MODE.test(sel) && subject(sel) === 'body')) {
+				const at = atRules(scope)
+				const spec = specificity(sel)
+				const held = theme.some((t) => (!t.at || t.at === at) && subject(t.sel) === 'body' && !outranks(spec, specificity(t.sel)))
+				const where = at ? `${at} » ${sel}` : sel
+				if (!held) found.push({ key: `${v} ${where}`, text: `\`${v}\`: \`${where}\` sets \`${value}\`, over the theme's value` })
+			}
+		}
+	}
+	return found
+}
+
+// Variables the theme leaves alone that Obsidian points at different
+// variables per mode or platform, at least one of them the theme's: as it
+// points the phone drawer's background at --background-secondary in dark mode
+// and --background-primary in light. A value the theme gives one of them for
+// that surface reaches only the modes that read it. Per-mode steps of the base palette (--color-base-*) are how
+// Obsidian shades its modes, and are left out.
+function pointers(app, uses) {
+	const sets = new Set(uses.sets)
+	const found = []
+	for (const [v, scopes] of app.defaults) {
+		if (sets.has(v)) continue
+		const modal = Object.entries(scopes).filter(([scope]) => !atRules(scope) && selectorsOf(scope).some((sel) => MODE.test(sel) && subject(sel) === 'body'))
+		const targets = new Set(modal.map(([, value]) => refs(value).filter((r) => sets.has(r) && !r.startsWith('--color-base-')).join(' ')))
+		if (targets.size > 1) found.push({ key: v, text: `\`${v}\`: ${modal.map(([scope, value]) => `\`${scope}\` → \`${value}\``).join(', ')}` })
+	}
+	return found.sort((a, b) => byName(a.key, b.key))
+}
+
+const traps = (app, uses) => [...overrides(app, uses), ...pointers(app, uses)]
+
 const GONE = {
 	sets: 'the theme sets it; Obsidian no longer reads it.',
 	reads: 'the theme reads it; Obsidian no longer defines it.',
 	selectors: 'the theme styles it; Obsidian no longer uses it.',
 }
 
-function markdown(version, base, { gone, changed }) {
+function markdown(version, base, { gone, changed, vars, modes }, uses) {
 	const code = (s) => `\`${s}\``
 	const entry = (c) => [
 		`- ${code(c.variable)}${!c.read && !c.set && c.behind.length ? `, behind ${c.behind.map(code).join(', ')}` : ''}`,
@@ -264,6 +370,17 @@ function markdown(version, base, { gone, changed }) {
 		lines.push('', '## Defaults of variables the theme sets', '', "The theme's value still wins wherever Obsidian's selector is no more specific than the theme's.", '')
 		lines.push(...set.flatMap(entry))
 	}
+	if (modes.length) {
+		lines.push('', '## Set for one mode or platform', '', "Obsidian declares these per mode or platform, so a value the theme sets once can lose there, or reach only some modes. Reassert the theme's value at Obsidian's specificity; or, if Obsidian's value is right there, certify the release to accept it.", '')
+		lines.push(...modes.map((m) => `- ${m.text}`))
+	}
+	if (vars?.added.length || vars?.removed.length) {
+		const list = (vs) => vs.map((v) => code(v) + (uses.has(v) ? ' (the theme uses it)' : '')).join(', ')
+		lines.push('', '## Variables', '')
+		if (vars.added.length) lines.push(`${vars.added.length} new in Obsidian ${version}: ${list(vars.added)}.`, '')
+		if (vars.removed.length) lines.push(`${vars.removed.length} gone since ${base.obsidian}: ${list(vars.removed)}.`, '')
+		lines.pop()
+	}
 	lines.push('', '## Next', '', `Run \`npm run qa -- --obsidian ${version}\` and fix what it finds. Then certify the release with \`npm run drift -- --obsidian ${version} --update-baseline\` and commit \`qa/obsidian-baseline.json\`.`)
 	return `${lines.join('\n')}\n`
 }
@@ -283,12 +400,14 @@ async function main() {
 
 	const base = JSON.parse(readFileSync(opt.baseline, 'utf8'))
 	const found = check(app, uses, base)
+	found.vars = base.obsidian === version ? null : variables(app, appIndex(await obsidianAsar(base.obsidian)))
+	found.modes = traps(app, uses).filter((t) => !base.accepted?.includes(t.key))
 	if (found.fresh.length) console.log(`new since the baseline, so not checked until a release is certified: ${found.fresh.join(' ')}`)
-	if (!found.gone.length && !found.changed.length) {
+	if (!found.gone.length && !found.changed.length && !found.modes.length && !found.vars?.added.length && !found.vars?.removed.length) {
 		console.log(`Obsidian ${version}: nothing the theme relies on has gone or changed since ${base.obsidian}.`)
 		return
 	}
-	const md = markdown(version, base, found)
+	const md = markdown(version, base, found, new Set([...uses.sets, ...uses.reads]))
 	console.log(md)
 	if (opt.report) writeFileSync(opt.report, md)
 	if (found.gone.length) process.exitCode = 1
