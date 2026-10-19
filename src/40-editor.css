@@ -58,6 +58,14 @@ body {
 	color: var(--link-color);
 }
 
+/* A bold or italic run in a heading keeps the heading's colour: in bold's
+   near-body ink it reads as a different, lesser heading. Links in a heading
+   keep theirs. */
+.markdown-rendered :is(h1, h2, h3, h4, h5, h6) :is(strong, b, em, i),
+.cm-s-obsidian span.cm-header:is(.cm-strong, .cm-em, .cm-formatting-strong, .cm-formatting-em):not(.cm-hmd-internal-link, .cm-link, .cm-url) {
+	color: inherit;
+}
+
 /* No variable sets text-transform, so h6's capitals need Obsidian's own heading
    selectors: the reading view's h6, and the heading text in the editor.
    Small caps (--h6-variant) would avoid the rule, but they render about 8px
@@ -80,6 +88,28 @@ body {
 .cm-line.HyperMD-header-2 {
 	border-bottom: var(--hr-thickness) solid var(--background-modifier-border);
 	padding-bottom: 0.35em;
+}
+
+/* Folding a section also hides the blank line before the next heading, so a
+   heading that closes a deeper folded section sits as close to it as a
+   subheading would. Reading view gives it the space it has when the section
+   is open, and folded headings of one level stay tight, like an outline.
+   Live preview marks a folded line only inside it, where just :has() could
+   see it, so the space hangs below the fold's "…" instead, and any heading
+   after a folded H3 to H6 gets it. H1 and H2 go without: the space would
+   push their rule away from the text. */
+/* stylelint-disable-next-line selector-class-pattern */
+.cm-line:is(.HyperMD-header-3, .HyperMD-header-4, .HyperMD-header-5, .HyperMD-header-6) .cm-foldPlaceholder {
+	display: inline-block;
+	margin-bottom: calc(var(--heading-spacing) - var(--p-spacing));
+}
+
+.markdown-rendered .el-h2.is-collapsed + div > h1,
+.markdown-rendered .el-h3.is-collapsed + div > :is(h1, h2),
+.markdown-rendered .el-h4.is-collapsed + div > :is(h1, h2, h3),
+.markdown-rendered .el-h5.is-collapsed + div > :is(h1, h2, h3, h4),
+.markdown-rendered .el-h6.is-collapsed + div > :is(h1, h2, h3, h4, h5) {
+	margin-top: var(--heading-spacing);
 }
 
 /* Callouts are Tela's request card: a faint neutral box, radius 8, with a
@@ -146,28 +176,14 @@ body {
 }
 
 /* Live preview draws a quote one line at a time, so the bar is each line's,
-   joined; the last and first line round its ends. Only :has() can find
-   the last line, and it looks at the next sibling alone. Nested levels
-   draw theirs with .cm-blockquote-border. */
+   joined, and its ends stay square: only :has() can find the last line,
+   which Obsidian's theme review flags as slow. Nested levels draw theirs
+   with .cm-blockquote-border. */
 .markdown-source-view.mod-cm6 .cm-blockquote-border::before,
 /* stylelint-disable-next-line selector-class-pattern */
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote::before {
 	width: 0;
 	border-inline-start: 4px solid var(--blockquote-border-color);
-}
-
-/* stylelint-disable-next-line selector-class-pattern, selector-pseudo-class-disallowed-list */
-.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote:not(:has(+ .HyperMD-quote))::before {
-	bottom: 2px;
-	border-end-start-radius: 2px;
-	border-end-end-radius: 2px;
-}
-
-/* stylelint-disable-next-line selector-class-pattern */
-.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote:not(.HyperMD-quote + .HyperMD-quote)::before {
-	top: 2px;
-	border-start-start-radius: 2px;
-	border-start-end-radius: 2px;
 }
 
 /* Obsidian pins the native calendar icon to the left but reserves space for

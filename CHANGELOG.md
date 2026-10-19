@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.1.1 (2026-10-19)
+
+Fixes only, cut from 1.1.0. The new options to dim images and tint italics, on main since 2026-10-17, wait for the next minor release.
+
+- Checked: `npm run qa` on the release, Obsidian 1.14.4: 0 violations in 378 screens.
+
+### 2026-10-18: inputs on macOS keep Tela's 6px corners
+
+- Obsidian rounds inputs to 8px on macOS (`--input-radius` on `.mod-macos`, which outranks the theme's `body`), so text fields, dropdowns and buttons there weren't Tela's 6px. They are now; phones and tablets keep Obsidian's touch radius.
+- Checked: `--input-radius` computes 6px with `.mod-macos` on body and stays at Obsidian's touch radius with `.is-mobile`. `npm run qa` doesn't run on macOS, so it can't see this change.
+
+### 2026-10-17: no `:has()` selectors
+
+Obsidian's theme review warns against `:has()`, which can make the browser restyle much of the page on any change. It flagged 1.1.0's two, and the fold rule below would have added five. Each now hooks something Obsidian marks itself.
+
+- Rows picked for a batch action add a 1px accent ring, the one a hovered input takes, to Obsidian's accent selection. The open note keeps its accent wash during a pick, where 1.1.0 stepped it back to the hover wash: only `:has()` could tell that a pick was under way, and the ring alone sets picked rows apart.
+- In live preview the quote bar runs the full height of its lines, with square ends: only `:has()` could find a quote's last line to round it. Reading view keeps the rounded bar, 2px clear of the ends.
+- In live preview, the space after a folded section hangs below the "…" of a folded H3 to H6. A heading after a folded H3 still gets the 40px an open section leaves, but so does an H3 after a folded H3, where folded headings of one level stayed 16px apart; and a folded H1 or H2 gets no extra space, since below their rule it would push the rule away from the text. Reading view is unchanged.
+- Checked on Obsidian 1.14.4: `theme.css` has no `:has(` selector and `npm run lint` passes. In live preview an H2 after a folded H3 sits 41px below it, against 40px after an open section; the quote bar measures no inset and no radius; picked rows measure the ring in both modes, and the open note keeps its accent wash. `npm run qa`: 0 violations in 390 screens.
+
+### 2026-10-17: headings after a folded section keep their space; light settings cards on mobile
+
+- Folding a section also hides the blank line before the next heading, so a heading that closed a deeper folded section sat 16px under it, where an open section leaves 40px. Default Obsidian does the same, in reading view and live preview. A heading after a folded deeper section now gets `--heading-spacing` above it, the space reading view gives a heading after text; folded headings of one level stay 16px apart, like an outline. Live preview has no class on a folded line, so the rule finds it with `:has()` on the line's own fold indicator.
+- Mobile settings group their rows on cards, which Obsidian draws as `--background-primary` on `--background-secondary`. Tela makes those one colour, so in light mode the cards vanished and only the dividers marked a group. They're white now, as dark mode's are lifted toward white.
+- The Distinct sidebars description no longer refers to a setting in the Tela app that people who don't use it won't know.
+- Checked on Obsidian 1.14.4: in live preview and reading view, an H2 after a folded H3 measures 40px of space above it, the same as after an open section, and folded H2s in a row stay 16px apart. Mobile settings cards measure `#fff` on `#f7f8fa` in light mode on phone and tablet. `npm run qa`: 0 violations in 390 screens.
+
+### 2026-10-17: emphasis in headings keeps their colour
+
+- A bold or italic run in a heading keeps the heading's colour, where bold took its near-body ink since 1.0.0: in a blue H1 or H2, a bold word read as a smaller, different heading. Links in a heading keep the link colour.
+- Checked on Obsidian 1.14.4: bold and italic runs in an H2 measure the heading's colour in both modes and views, while bold in body text keeps its tint.
+
 ## 1.1.0 (2026-10-17)
 
 ### 2026-10-17: screenshots show 1.1.0 and every heading level
