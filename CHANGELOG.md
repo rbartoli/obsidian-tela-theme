@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### 2026-10-19: a card for the directory; phones keep their padding
+
+- The community directory's theme grid shows a listing's first screenshot as a 277×184 card, cropped to 3:2. Tela's was `notes-light`, a white window whose text can't be read at that size, so on the dark grid it read as a blank tile; 12 of the Popular top 20 put the theme's name in that image. `assets/card.webp` (2400×1600, laid out by `scripts/shots-card.html`) is the cover's scene in 3:2: the wordmark and tagline sized for the card, the light Library window behind the dark Frankenstein note, and a phone in each mode. `npm run shots -- --only card` renders it from the same captures as the cover.
+- The cover's phone frame had a 1:2 screen, which cropped the 9:16 phone captures by 25px a side and took the note's padding with it, so text ran to the screen's edge. The screen is 9:16 now, in the cover and the card. `assets/cover.webp` is rendered again on Obsidian 1.14.4 and differs from the last one only in the phone.
+
 ### 2026-10-18: the cover says "Contrast-audited"
 
 - The cover's facts line read "WCAG AA text", which holds only with the theme's blue accent (see "the contrast claim names its scope"). It now reads "Contrast-audited", true for any accent. `scripts/shots-cover.html` has the new line; `assets/cover.webp` is rendered again from it on Obsidian 1.14.4, and differs from the last one only in that line.

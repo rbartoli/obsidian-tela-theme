@@ -1,0 +1,50 @@
+<!-- The community directory's first screenshot, 1200x800 at 2x, which its
+     theme grid shows as a 277px card: the cover's scene in 3:2, with a
+     phone in each mode and type sized to survive the card. scripts/shots.mjs
+     fills {{light}}, {{dark}}, {{phone}} and {{phoneLight}} as for the cover. -->
+<style>
+	.cover {
+		position: relative;
+		width: 1200px;
+		height: 800px;
+		overflow: hidden;
+		background: radial-gradient(120% 140% at 85% 30%, #f7f8fa 0%, #ebedf3 55%, #e1e4ec 100%);
+		font-family: "Inter", sans-serif;
+		-webkit-font-smoothing: antialiased;
+	}
+	.title { position: absolute; left: 72px; top: 72px; }
+	h1 { margin: 0; color: #1f2328; font-size: 120px; font-weight: 600; letter-spacing: -0.035em; line-height: 1; }
+	.tagline { margin-top: 20px; color: #3b434c; font-size: 32px; letter-spacing: -0.01em; }
+	.window {
+		position: absolute;
+		width: 600px;
+		overflow: hidden;
+		border-radius: 10px;
+		box-shadow: 0 0 0 1px rgb(15 20 30 / 10%), 0 24px 60px -12px rgb(15 20 30 / 35%), 0 8px 18px -8px rgb(15 20 30 / 25%);
+	}
+	.window img { display: block; width: 100%; }
+	.light { left: 528px; top: 72px; }
+	.dark { left: 72px; top: 328px; }
+	.phone {
+		position: absolute;
+		width: 180px;
+		height: 320px;
+		padding: 7px;
+		border-radius: 32px;
+		background: #0b0c0f;
+		box-shadow: inset 0 0 0 1px rgb(255 255 255 / 8%), 0 0 0 1px rgb(15 20 30 / 25%), 0 30px 60px -14px rgb(15 20 30 / 50%);
+	}
+	.phone img { display: block; width: 180px; height: 320px; border-radius: 26px; }
+	.phone.on-dark { left: 718px; top: 394px; }
+	.phone.on-light { left: 934px; top: 394px; }
+</style>
+<div class="cover">
+	<div class="title">
+		<h1>Tela</h1>
+		<div class="tagline">Easy to read. Easy to scan.</div>
+	</div>
+	<div class="window light"><img src="{{light}}" alt=""></div>
+	<div class="window dark"><img src="{{dark}}" alt=""></div>
+	<div class="phone on-dark"><img src="{{phone}}" alt=""></div>
+	<div class="phone on-light"><img src="{{phoneLight}}" alt=""></div>
+</div>
