@@ -8,10 +8,11 @@
 // On WSL it drives the Windows app, for Windows' text rendering; elsewhere, the
 // Linux app (`obsidian` on PATH, or OBSIDIAN_BIN). Desktop shots are 1200x800
 // and phone shots 900x1600, the community directory's sizes; the cover is
-// 2560x1280. Everything is captured at 2x and written as lossless WebP, except
-// the thumbnail, a 1024x576 window scaled to a 512x288 PNG. The
-// cover is laid out by scripts/shots-cover.html and rendered by the same
-// Obsidian, in the Inter it bundles.
+// 2560x1280 and the directory's card 2400x1600. Everything is captured at 2x
+// and written as lossless WebP, except the thumbnail, a 1024x576 window scaled
+// to a 512x288 PNG. The cover and card are laid out by scripts/shots-cover.html
+// and scripts/shots-card.html and rendered by the same Obsidian, in the Inter
+// it bundles.
 //
 // Options:
 //   --obsidian <x.y.z>  app version (default: the latest release, as npm run qa)
@@ -49,8 +50,14 @@ const SHOTS = [
 	// The thumbnail in Obsidian's theme browser, at the 512x288 it recommends.
 	{ name: 'screenshot', mode: 'dark', device: 'store', scene: 'note', save: true, size: '512x288' },
 ]
-// The cover's three windows, by shot name.
-const COVER = { light: 'bases-light', dark: 'notes-dark', phone: 'phone-notes-dark' }
+// The windows the covers show, by shot name.
+const COVER = { light: 'bases-light', dark: 'notes-dark', phone: 'phone-notes-dark', phoneLight: 'phone-notes-light' }
+// The covers, laid out by scripts/<html>: the README's, and the community
+// directory's first screenshot, which its theme grid crops to a 3:2 card.
+const COVERS = {
+	cover: { html: 'shots-cover.html', width: 1280, height: 640 },
+	card: { html: 'shots-card.html', width: 1200, height: 800 },
+}
 const DEVICES = {
 	desktop: { width: 1200, height: 800, mobile: false },
 	store: { width: 1024, height: 576, mobile: false },
@@ -70,12 +77,12 @@ const wsl = existsSync('/proc/sys/fs/binfmt_misc/WSLInterop') || /microsoft/i.te
 const platform = opt.platform ?? (wsl ? 'windows' : 'linux')
 if (!['windows', 'linux'].includes(platform)) throw new Error(`unknown platform ${platform}`)
 
-const known = ['cover', ...SHOTS.filter((s) => s.save).map((s) => s.name)]
+const known = [...Object.keys(COVERS), ...SHOTS.filter((s) => s.save).map((s) => s.name)]
 const only = opt.only ? opt.only.split(',').map((s) => s.trim()) : known
 const unknown = only.filter((n) => !known.includes(n))
 if (unknown.length) throw new Error(`unknown shots: ${unknown.join(', ')} (known: ${known.join(', ')})`)
-const needed = new Set(only.filter((n) => n !== 'cover'))
-if (only.includes('cover')) for (const n of Object.values(COVER)) needed.add(n)
+const needed = new Set(only.filter((n) => !COVERS[n]))
+if (only.some((n) => COVERS[n])) for (const n of Object.values(COVER)) needed.add(n)
 // Desktop first, so the app reloads into phone emulation once.
 const shots = SHOTS.filter((s) => needed.has(s.name)).sort((a, b) => DEVICES[a.device].mobile - DEVICES[b.device].mobile)
 
@@ -287,16 +294,16 @@ async function main() {
 			if (shot.save && only.includes(shot.name)) (shot.size ? thumbnail : webp)(png[shot.name], shot.name, shot.size)
 		}
 
-		if (only.includes('cover')) {
+		for (const [name, layout] of Object.entries(COVERS).filter(([n]) => only.includes(n))) {
 			await useDevice(page, 'desktop')
-			await page.send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 640, deviceScaleFactor: 2, mobile: false })
-			const url = (name) => `data:image/png;base64,${readFileSync(png[name]).toString('base64')}`
-			const html = readFileSync(join(root, 'scripts', 'shots-cover.html'), 'utf8').replace(/\{\{(\w+)\}\}/g, (_, key) => url(COVER[key]))
+			await page.send('Emulation.setDeviceMetricsOverride', { width: layout.width, height: layout.height, deviceScaleFactor: 2, mobile: false })
+			const url = (key) => `data:image/png;base64,${readFileSync(png[COVER[key]]).toString('base64')}`
+			const html = readFileSync(join(root, 'scripts', layout.html), 'utf8').replace(/\{\{(\w+)\}\}/g, (_, key) => url(key))
 			await page.evaluate(`(${cover})(${JSON.stringify(html)})`)
-			const file = join(tmp, 'cover.png')
+			const file = join(tmp, `${name}.png`)
 			writeFileSync(file, Buffer.from((await page.send('Page.captureScreenshot', { format: 'png' })).data, 'base64'))
 			await page.evaluate("document.getElementById('tela-cover')?.remove()")
-			webp(file, 'cover')
+			webp(file, name)
 		}
 
 		if (opt['keep-open']) {
