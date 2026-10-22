@@ -9,10 +9,10 @@
 // Linux app (`obsidian` on PATH, or OBSIDIAN_BIN). Desktop shots are 1200x800
 // and phone shots 900x1600, the community directory's sizes; the cover is
 // 2560x1280 and the directory's card 2400x1600. Everything is captured at 2x
-// and written as lossless WebP, except the thumbnail, a 1024x576 window scaled
-// to a 512x288 PNG. The cover and card are laid out by scripts/shots-cover.html
-// and scripts/shots-card.html and rendered by the same Obsidian, in the Inter
-// it bundles.
+// and written as lossless WebP, except the thumbnail, the card's scene in 16:9
+// scaled to a 512x288 PNG. The cover, card and thumbnail are laid out by
+// scripts/shots-cover.html, scripts/shots-card.html and scripts/shots-thumb.html
+// and rendered by the same Obsidian, in the Inter it bundles.
 //
 // Options:
 //   --obsidian <x.y.z>  app version (default: the latest release, as npm run qa)
@@ -47,20 +47,19 @@ const SHOTS = [
 	{ name: 'phone-notes-dark', mode: 'dark', device: 'phone', scene: 'note-body', save: true },
 	{ name: 'phone-notes-light', mode: 'light', device: 'phone', scene: 'note-body', save: true },
 	{ name: 'phone-bases-dark', mode: 'dark', device: 'phone', scene: 'cards', save: true },
-	// The thumbnail in Obsidian's theme browser, at the 512x288 it recommends.
-	{ name: 'screenshot', mode: 'dark', device: 'store', scene: 'note', save: true, size: '512x288' },
 ]
 // The windows the covers show, by shot name.
 const COVER = { light: 'bases-light', dark: 'notes-dark', phone: 'phone-notes-dark', phoneLight: 'phone-notes-light' }
-// The covers, laid out by scripts/<html>: the README's, and the community
-// directory's first screenshot, which its theme grid crops to a 3:2 card.
+// The covers, laid out by scripts/<html>: the README's, the community
+// directory's first screenshot, which its theme grid crops to a 3:2 card, and
+// the thumbnail in Obsidian's theme browser, at the 512x288 it recommends.
 const COVERS = {
 	cover: { html: 'shots-cover.html', width: 1280, height: 640 },
 	card: { html: 'shots-card.html', width: 1200, height: 800 },
+	screenshot: { html: 'shots-thumb.html', width: 1024, height: 576, size: '512x288' },
 }
 const DEVICES = {
 	desktop: { width: 1200, height: 800, mobile: false },
-	store: { width: 1024, height: 576, mobile: false },
 	phone: { width: 450, height: 800, mobile: true },
 }
 
@@ -291,7 +290,7 @@ async function main() {
 			await sleep(400)
 			png[shot.name] = join(tmp, `${shot.name}.png`)
 			writeFileSync(png[shot.name], Buffer.from((await page.send('Page.captureScreenshot', { format: 'png' })).data, 'base64'))
-			if (shot.save && only.includes(shot.name)) (shot.size ? thumbnail : webp)(png[shot.name], shot.name, shot.size)
+			if (shot.save && only.includes(shot.name)) webp(png[shot.name], shot.name)
 		}
 
 		for (const [name, layout] of Object.entries(COVERS).filter(([n]) => only.includes(n))) {
@@ -303,7 +302,8 @@ async function main() {
 			const file = join(tmp, `${name}.png`)
 			writeFileSync(file, Buffer.from((await page.send('Page.captureScreenshot', { format: 'png' })).data, 'base64'))
 			await page.evaluate("document.getElementById('tela-cover')?.remove()")
-			webp(file, name)
+			if (layout.size) thumbnail(file, name, layout.size)
+			else webp(file, name)
 		}
 
 		if (opt['keep-open']) {
