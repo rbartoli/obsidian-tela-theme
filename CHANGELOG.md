@@ -1,6 +1,13 @@
 # Changelog
 
-## Unreleased
+## 1.2.0 (2026-10-23)
+
+- Checked: `npm run qa` on the release, Obsidian 1.14.5: 0 violations in 414 screens.
+
+### 2026-10-23: the menu scene runs on tablets
+
+- The file explorer draws only the rows in view. On a tablet the demo vault's root no longer fits, so `Tour.md` sat below the fold and the `menu` scene, which right-clicks its row, failed to run there in both modes. The scene now reveals the file first.
+- Checked: the scene runs on desktop, phone and tablet, in dark and light.
 
 ### 2026-10-23: the cover matches the directory's card
 
