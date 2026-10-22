@@ -1,6 +1,8 @@
-<!-- The README cover, 1280x640 at 2x. scripts/shots.mjs fills {{light}},
-     {{dark}} and {{phone}} with its captures and renders this in a shadow
-     root over Obsidian, so the type is the Inter that Obsidian bundles. -->
+<!-- The README cover and GitHub social preview, 1280x640 at 2x: the card's
+     scene (scripts/shots-card.html) at 0.72 scale beside the title.
+     scripts/shots.mjs fills {{light}}, {{dark}}, {{phone}} and {{phoneLight}}
+     with its captures and renders this in a shadow root over Obsidian, so the
+     type is the Inter that Obsidian bundles. -->
 <style>
 	.cover {
 		position: relative;
@@ -11,41 +13,39 @@
 		font-family: "Inter", sans-serif;
 		-webkit-font-smoothing: antialiased;
 	}
-	.title { position: absolute; left: 88px; top: 206px; }
-	h1 { margin: 0; color: #1f2328; font-size: 104px; font-weight: 600; letter-spacing: -0.035em; line-height: 1; }
-	.tagline { margin-top: 22px; color: #3b434c; font-size: 25px; letter-spacing: -0.01em; }
-	.facts { display: flex; gap: 10px; align-items: center; margin-top: 26px; color: #59636e; font-size: 15px; }
-	.facts i { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: #9aa2ad; }
+	.title { position: absolute; left: 64px; top: 50%; transform: translateY(-50%); }
+	h1 { margin: 0; color: #1f2328; font-size: 112px; font-weight: 600; letter-spacing: -0.035em; line-height: 1; }
+	.tagline { margin-top: 20px; color: #3b434c; font-size: 30px; letter-spacing: -0.01em; }
 	.window {
 		position: absolute;
-		width: 560px;
+		width: 432px;
 		overflow: hidden;
-		border-radius: 10px;
-		box-shadow: 0 0 0 1px rgb(15 20 30 / 10%), 0 24px 60px -12px rgb(15 20 30 / 35%), 0 8px 18px -8px rgb(15 20 30 / 25%);
+		border-radius: 8px;
+		box-shadow: 0 0 0 1px rgb(15 20 30 / 10%), 0 18px 45px -9px rgb(15 20 30 / 35%), 0 6px 14px -6px rgb(15 20 30 / 25%);
 	}
 	.window img { display: block; width: 100%; }
-	.light { left: 676px; top: 52px; }
-	.dark { left: 588px; top: 232px; }
+	.light { left: 784px; top: 84px; }
+	.dark { left: 456px; top: 268px; }
 	.phone {
 		position: absolute;
-		left: 1074px;
-		top: 273px;
-		width: 168px;
-		height: 299px;
-		padding: 7px;
-		border-radius: 30px;
+		width: 130px;
+		height: 231px;
+		padding: 5px;
+		border-radius: 24px;
 		background: #0b0c0f;
-		box-shadow: inset 0 0 0 1px rgb(255 255 255 / 8%), 0 0 0 1px rgb(15 20 30 / 25%), 0 30px 60px -14px rgb(15 20 30 / 50%);
+		box-shadow: inset 0 0 0 1px rgb(255 255 255 / 8%), 0 0 0 1px rgb(15 20 30 / 25%), 0 22px 45px -10px rgb(15 20 30 / 50%);
 	}
-	.phone img { display: block; width: 168px; height: 299px; border-radius: 24px; }
+	.phone img { display: block; width: 130px; height: 231px; border-radius: 19px; }
+	.phone.on-dark { left: 921px; top: 316px; }
+	.phone.on-light { left: 1077px; top: 316px; }
 </style>
 <div class="cover">
 	<div class="title">
 		<h1>Tela</h1>
 		<div class="tagline">Easy to read. Easy to scan.</div>
-		<div class="facts">Dark and light<i></i>Contrast-audited<i></i>Desktop and mobile</div>
 	</div>
 	<div class="window light"><img src="{{light}}" alt=""></div>
 	<div class="window dark"><img src="{{dark}}" alt=""></div>
-	<div class="phone"><img src="{{phone}}" alt=""></div>
+	<div class="phone on-dark"><img src="{{phone}}" alt=""></div>
+	<div class="phone on-light"><img src="{{phoneLight}}" alt=""></div>
 </div>

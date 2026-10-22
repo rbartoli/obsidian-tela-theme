@@ -1,4 +1,4 @@
-<img src="assets/cover.webp" alt="Tela, an Obsidian theme that is easy to read and easy to scan: a reading note in dark mode, the Library's book covers in light mode, and the same note on a phone">
+<img src="assets/cover.webp" alt="Tela, an Obsidian theme that is easy to read and easy to scan: a reading note in dark mode, the Library's book covers in light mode, and the same note on phones in dark and light">
 
 An Obsidian theme inspired by the style guide of the Tela app. It supports dark and light
 mode, on desktop, phone and tablet.
