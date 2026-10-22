@@ -101,6 +101,8 @@ export const scenes = [
 			p.run(async () => {
 				await __qa.open('Tour.md', { mode: 'preview' })
 				await __qa.reveal('file-explorer')
+				// The explorer renders only the rows in view; on a tablet Tour.md sits below the fold
+				app.workspace.getLeavesOfType('file-explorer')[0].view.revealInFolder(app.vault.getAbstractFileByPath('Tour.md'))
 				const row = await __qa.find('.nav-file-title[data-path="Tour.md"]')
 				const r = row.getBoundingClientRect()
 				row.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, clientX: r.left + 40, clientY: r.top + r.height / 2 }))
