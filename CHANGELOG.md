@@ -9,6 +9,10 @@
 - The file explorer draws only the rows in view. On a tablet the demo vault's root no longer fits, so `Tour.md` sat below the fold and the `menu` scene, which right-clicks its row, failed to run there in both modes. The scene now reveals the file first.
 - Checked: the scene runs on desktop, phone and tablet, in dark and light.
 
+### 2026-10-23: the cover matches the directory's card
+
+- The README cover, also the GitHub social preview, kept its launch layout after the directory got its card: one dark phone and a facts line. It now shows the card's scene at 0.72 scale beside the title: the same windows and a phone in each mode, and the title and tagline without the facts line, which can't be read at a link preview's size. `scripts/shots-cover.html` has the new layout; `assets/cover.webp` is rendered again from it on Obsidian 1.14.4.
+
 ### 2026-10-22: the theme browser's thumbnail matches the card
 
 - `assets/screenshot.png`, the 512×288 thumbnail Obsidian's theme browser shows, was a plain capture of the dark note. It is now the card's scene in 16:9 (wordmark, tagline, both windows and a phone in each mode), laid out by `scripts/shots-thumb.html`, so the theme browser and the community directory show the same image. `npm run shots -- --only screenshot` renders it from the same captures as the card; the `store` device that captured the old one is gone.
