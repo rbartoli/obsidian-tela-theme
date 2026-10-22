@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### 2026-10-22: the theme browser's thumbnail matches the card
+
+- `assets/screenshot.png`, the 512×288 thumbnail Obsidian's theme browser shows, was a plain capture of the dark note. It is now the card's scene in 16:9 (wordmark, tagline, both windows and a phone in each mode), laid out by `scripts/shots-thumb.html`, so the theme browser and the community directory show the same image. `npm run shots -- --only screenshot` renders it from the same captures as the card; the `store` device that captured the old one is gone.
+
 ### 2026-10-19: a card for the directory; phones keep their padding
 
 - The community directory's theme grid shows a listing's first screenshot as a 277×184 card, cropped to 3:2. Tela's was `notes-light`, a white window whose text can't be read at that size, so on the dark grid it read as a blank tile; 12 of the Popular top 20 put the theme's name in that image. `assets/card.webp` (2400×1600, laid out by `scripts/shots-card.html`) is the cover's scene in 3:2: the wordmark and tagline sized for the card, the light Library window behind the dark Frankenstein note, and a phone in each mode. `npm run shots -- --only card` renders it from the same captures as the cover.
