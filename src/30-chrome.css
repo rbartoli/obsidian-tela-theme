@@ -141,6 +141,19 @@ body.show-ribbon:not(.mod-rtl).is-hidden-frameless:not(.is-fullscreen) .workspac
 	color: color-mix(in oklch, var(--tela-tint-accent) 60%, var(--text-normal));
 }
 
+/* Notices are near-black in both modes, so light mode's accent text, pulled
+   toward black for pale grounds, reads 2.3:1 on one. Links in a notice take
+   the accent pulled toward white instead: 5.6:1, near dark mode's link, and
+   still the user's hue. Hover lightens further, as it does on a dark ground. */
+.theme-light .notice {
+	--text-accent: color-mix(in oklch, var(--color-accent) 75%, #fff);
+	--text-accent-hover: color-mix(in oklch, var(--color-accent) 65%, #fff);
+	--link-color: var(--text-accent);
+	--link-color-hover: var(--text-accent-hover);
+	--link-external-color: var(--text-accent);
+	--link-external-color-hover: var(--text-accent-hover);
+}
+
 /* Settings mark the open page as the file tree marks the open note.
    Obsidian paints it with the hover wash, and not on phones, where the list
    and the page never share the screen. */

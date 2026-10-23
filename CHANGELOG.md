@@ -1,6 +1,13 @@
 # Changelog
 
-## Unreleased
+## 1.2.1 (2026-10-23)
+
+- Checked: `npm run qa` on the release, Obsidian 1.14.5: 0 violations in 420 screens.
+
+### 2026-10-23: links in notices read in light mode
+
+- Obsidian's notices are near-black in both modes. Light mode's accent text is pulled toward black for pale grounds, so a link in a notice read 2.3:1 there: Theme Autoupdater's Roll back link showed it, and any plugin's notice with a link has it. Links in a notice now take the accent pulled toward white, 5.6:1, near dark mode's link and still the user's hue; hover lightens further.
+- A new QA scene, `notice`, shows a notice with an internal and an external link, in dark and light, on desktop, phone and tablet. On 1.2.0 it fails in light mode on every device, 2.3:1 on both links; it passes now. During the audit the notice is opaque at its lightest, 90% black over white, since axe can't decide on text over a translucent layer.
 
 ### 2026-10-23: the README reads right in the directory
 
