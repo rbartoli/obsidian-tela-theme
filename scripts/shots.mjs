@@ -66,7 +66,8 @@ const COVERS = {
 }
 // The community directory's carousel after the card, in order, laid out by
 // scripts/shots-slide.html: a claim from the README over a crop of a capture
-// ([shot, x, y, width] in the window's CSS px), or over a phone pair.
+// ([shot, x, y, width] in the window's CSS px). The carousel takes five
+// desktop images; phone shots go in its own mobile section.
 const SLIDES = {
 	'slide-2-note': {
 		title: 'Every text colour clears WCAG AA',
@@ -87,11 +88,6 @@ const SLIDES = {
 		title: 'Code in terminal colours',
 		line: "Taken from the Tela app's terminal, every colour readable on the code background.",
 		crop: ['zoom-code-dark', 385, 84, 763],
-	},
-	'slide-6-phones': {
-		title: 'The same palette on phones',
-		line: 'Phones and tablets keep the desktop colours instead of pure black.',
-		phones: ['phone-notes-dark', 'phone-notes-light'],
 	},
 }
 const DEVICES = {
@@ -118,7 +114,7 @@ const unknown = only.filter((n) => !known.includes(n))
 if (unknown.length) throw new Error(`unknown shots: ${unknown.join(', ')} (known: ${known.join(', ')})`)
 const needed = new Set(only.filter((n) => !COVERS[n] && !SLIDES[n]))
 if (only.some((n) => COVERS[n])) for (const n of Object.values(COVER)) needed.add(n)
-for (const n of only.filter((n) => SLIDES[n])) for (const s of SLIDES[n].phones ?? SLIDES[n].crop.slice(0, 1)) needed.add(s)
+for (const n of only.filter((n) => SLIDES[n])) needed.add(SLIDES[n].crop[0])
 // Desktop first, so the app reloads into phone emulation once.
 const shots = SHOTS.filter((s) => needed.has(s.name)).sort((a, b) => DEVICES[a.device].mobile - DEVICES[b.device].mobile)
 
@@ -352,10 +348,8 @@ async function main() {
 			else webp(file, name)
 		}
 		for (const [name, slide] of Object.entries(SLIDES).filter(([n]) => only.includes(n))) {
-			const [shot, x, y, w] = slide.crop ?? []
-			const figure = slide.phones
-				? `<div class="phones">${slide.phones.map((s) => `<div class="phone"><img src="${url(s)}" alt=""></div>`).join('')}</div>`
-				: `<div class="crop" style="--x: ${x}; --y: ${y}; --w: ${w}"><img src="${url(shot)}" alt=""></div>`
+			const [shot, x, y, w] = slide.crop
+			const figure = `<div class="crop" style="--x: ${x}; --y: ${y}; --w: ${w}"><img src="${url(shot)}" alt=""></div>`
 			const fill = { title: slide.title, line: slide.line, figure }
 			const html = readFileSync(join(root, 'scripts', 'shots-slide.html'), 'utf8').replace(/\{\{(\w+)\}\}/g, (_, key) => fill[key])
 			webp(await compose(name, html, 1200, 800), name)
