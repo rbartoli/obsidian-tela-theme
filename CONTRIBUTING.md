@@ -95,7 +95,7 @@ versions newer than itself. All options are listed at the top of `qa/run.mjs`.
 ## Screenshots
 
 `npm run shots` regenerates the README's cover and screenshots, the community directory's
-card (its first screenshot) and the theme browser's 512×288 thumbnail, in `assets/` from the demo vault, in a throwaway Obsidian, in about a
+card (its first screenshot), the slides that follow it in the directory's carousel and the theme browser's 512×288 thumbnail, in `assets/` from the demo vault, in a throwaway Obsidian, in about a
 minute. Run it after any visible change.
 
 ```sh
@@ -108,7 +108,7 @@ On WSL it drives the Windows app, for Windows' text rendering, which needs
 `networkingMode=mirrored` in `.wslconfig`; elsewhere it uses the Linux app. Desktop shots
 are 1200×800 and phone shots 900×1600, the community directory's sizes, captured at 2x and
 written as lossless WebP. The cover's layout is `scripts/shots-cover.html`, the card's
-`scripts/shots-card.html` and the thumbnail's `scripts/shots-thumb.html`, all rendered by the same Obsidian in the Inter it bundles. Scenes and options are at the top of
+`scripts/shots-card.html`, the thumbnail's `scripts/shots-thumb.html` and the slides' `scripts/shots-slide.html`, all rendered by the same Obsidian in the Inter it bundles. Scenes and options are at the top of
 `scripts/shots.mjs`.
 
 ## Obsidian updates

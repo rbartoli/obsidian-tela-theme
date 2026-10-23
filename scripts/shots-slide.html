@@ -1,0 +1,53 @@
+<!-- A slide in the community directory's carousel, 1200x800 at 2x, which its
+     listing shows about 556px wide: one claim over a zoomed-in crop of the
+     app, on the card's backdrop. scripts/shots.mjs fills {{title}}, {{line}}
+     and {{figure}}: a .crop of a 1200x800 capture from (--x, --y), --w wide,
+     scaled to fill the frame, or a .phones pair, running off the bottom edge. -->
+<style>
+	.slide {
+		position: relative;
+		width: 1200px;
+		height: 800px;
+		overflow: hidden;
+		background: radial-gradient(120% 140% at 85% 30%, #f7f8fa 0%, #ebedf3 55%, #e1e4ec 100%);
+		font-family: "Inter", sans-serif;
+		-webkit-font-smoothing: antialiased;
+	}
+	.caption { position: absolute; left: 72px; top: 64px; right: 72px; }
+	h2 { margin: 0; color: #1f2328; font-size: 52px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
+	p { margin: 14px 0 0; color: #3b434c; font-size: 26px; letter-spacing: -0.01em; line-height: 1.35; }
+	.crop {
+		position: absolute;
+		left: 72px;
+		top: 224px;
+		width: 1056px;
+		height: 504px;
+		overflow: hidden;
+		border-radius: 10px;
+		box-shadow: 0 0 0 1px rgb(15 20 30 / 10%), 0 24px 60px -12px rgb(15 20 30 / 35%), 0 8px 18px -8px rgb(15 20 30 / 25%);
+	}
+	.crop img {
+		--k: calc(1056 / var(--w));
+		position: absolute;
+		left: calc(var(--x) * var(--k) * -1px);
+		top: calc(var(--y) * var(--k) * -1px);
+		width: calc(1200px * var(--k));
+	}
+	.phones { position: absolute; left: 72px; right: 72px; top: 224px; display: flex; justify-content: center; gap: 48px; }
+	.phone {
+		width: 440px;
+		height: 782px;
+		padding: 12px;
+		border-radius: 62px;
+		background: #0b0c0f;
+		box-shadow: inset 0 0 0 1px rgb(255 255 255 / 8%), 0 0 0 1px rgb(15 20 30 / 25%), 0 30px 60px -14px rgb(15 20 30 / 50%);
+	}
+	.phone img { display: block; width: 440px; height: 782px; border-radius: 50px; }
+</style>
+<div class="slide">
+	<div class="caption">
+		<h2>{{title}}</h2>
+		<p>{{line}}</p>
+	</div>
+	{{figure}}
+</div>

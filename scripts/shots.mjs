@@ -1,22 +1,23 @@
 // npm run shots [-- options]
 //
-// Regenerates the README's cover and screenshots, and the theme browser's
-// thumbnail, in assets/ from the demo vault, in a throwaway Obsidian (temporary
-// profile, temporary copy of demo/).
+// Regenerates the README's cover and screenshots, the community directory's
+// card and slides, and the theme browser's thumbnail, in assets/ from the demo
+// vault, in a throwaway Obsidian (temporary profile, temporary copy of demo/).
 // Run it after any visible change and commit assets/.
 //
 // On WSL it drives the Windows app, for Windows' text rendering; elsewhere, the
 // Linux app (`obsidian` on PATH, or OBSIDIAN_BIN). Desktop shots are 1200x800
 // and phone shots 900x1600, the community directory's sizes; the cover is
-// 2560x1280 and the directory's card 2400x1600. Everything is captured at 2x
-// and written as lossless WebP, except the thumbnail, the card's scene in 16:9
-// scaled to a 512x288 PNG. The cover, card and thumbnail are laid out by
-// scripts/shots-cover.html, scripts/shots-card.html and scripts/shots-thumb.html
-// and rendered by the same Obsidian, in the Inter it bundles.
+// 2560x1280 and the directory's card and slides 2400x1600. Everything is
+// captured at 2x (the slides' crops at 3x) and written as lossless WebP, except
+// the thumbnail, the card's scene in 16:9 scaled to a 512x288 PNG. The cover,
+// card, thumbnail and slides are laid out by scripts/shots-cover.html,
+// shots-card.html, shots-thumb.html and shots-slide.html and rendered by the
+// same Obsidian, in the Inter it bundles.
 //
 // Options:
 //   --obsidian <x.y.z>  app version (default: the latest release, as npm run qa)
-//   --only <list>       names from SHOTS below, or cover (default: all)
+//   --only <list>       names from SHOTS, COVERS or SLIDES below (default: all)
 //   --platform <name>   windows or linux (default: windows on WSL, else linux)
 //   --keep-open         leave Obsidian running afterwards
 //
@@ -47,6 +48,11 @@ const SHOTS = [
 	{ name: 'phone-notes-dark', mode: 'dark', device: 'phone', scene: 'note-body', save: true },
 	{ name: 'phone-notes-light', mode: 'light', device: 'phone', scene: 'note-body', save: true },
 	{ name: 'phone-bases-dark', mode: 'dark', device: 'phone', scene: 'cards', save: true },
+	// At 3x, for the slides' crops.
+	{ name: 'zoom-note-light', mode: 'light', device: 'desktop', scene: 'note-body', scale: 3 },
+	{ name: 'zoom-tasks-dark', mode: 'dark', device: 'desktop', scene: 'moby-tasks', scale: 3 },
+	{ name: 'zoom-bases-light', mode: 'light', device: 'desktop', scene: 'cards', scale: 3 },
+	{ name: 'zoom-code-dark', mode: 'dark', device: 'desktop', scene: 'moby-code', scale: 3 },
 ]
 // The windows the covers show, by shot name.
 const COVER = { light: 'bases-light', dark: 'notes-dark', phone: 'phone-notes-dark', phoneLight: 'phone-notes-light' }
@@ -57,6 +63,36 @@ const COVERS = {
 	cover: { html: 'shots-cover.html', width: 1280, height: 640 },
 	card: { html: 'shots-card.html', width: 1200, height: 800 },
 	screenshot: { html: 'shots-thumb.html', width: 1024, height: 576, size: '512x288' },
+}
+// The community directory's carousel after the card, in order, laid out by
+// scripts/shots-slide.html: a claim from the README over a crop of a capture
+// ([shot, x, y, width] in the window's CSS px), or over a phone pair.
+const SLIDES = {
+	'slide-2-note': {
+		title: 'Every text colour clears WCAG AA',
+		line: 'An automated audit checks more than 400 screens, in dark and light, before each release.',
+		crop: ['zoom-note-light', 406, 84, 721],
+	},
+	'slide-3-tasks': {
+		title: 'Each kind of task has its own mark',
+		line: 'Important, question, cancelled and in progress read at a glance.',
+		crop: ['zoom-tasks-dark', 388, 82, 595],
+	},
+	'slide-4-bases': {
+		title: 'One quiet surface, hairline borders',
+		line: 'Sidebars, tabs, notes and Bases, with nothing to set up.',
+		crop: ['zoom-bases-light', 0, 0, 900],
+	},
+	'slide-5-code': {
+		title: 'Code in terminal colours',
+		line: "Taken from the Tela app's terminal, every colour readable on the code background.",
+		crop: ['zoom-code-dark', 385, 84, 763],
+	},
+	'slide-6-phones': {
+		title: 'The same palette on phones',
+		line: 'Phones and tablets keep the desktop colours instead of pure black.',
+		phones: ['phone-notes-dark', 'phone-notes-light'],
+	},
 }
 const DEVICES = {
 	desktop: { width: 1200, height: 800, mobile: false },
@@ -76,12 +112,13 @@ const wsl = existsSync('/proc/sys/fs/binfmt_misc/WSLInterop') || /microsoft/i.te
 const platform = opt.platform ?? (wsl ? 'windows' : 'linux')
 if (!['windows', 'linux'].includes(platform)) throw new Error(`unknown platform ${platform}`)
 
-const known = [...Object.keys(COVERS), ...SHOTS.filter((s) => s.save).map((s) => s.name)]
+const known = [...Object.keys(COVERS), ...Object.keys(SLIDES), ...SHOTS.filter((s) => s.save).map((s) => s.name)]
 const only = opt.only ? opt.only.split(',').map((s) => s.trim()) : known
 const unknown = only.filter((n) => !known.includes(n))
 if (unknown.length) throw new Error(`unknown shots: ${unknown.join(', ')} (known: ${known.join(', ')})`)
-const needed = new Set(only.filter((n) => !COVERS[n]))
+const needed = new Set(only.filter((n) => !COVERS[n] && !SLIDES[n]))
 if (only.some((n) => COVERS[n])) for (const n of Object.values(COVER)) needed.add(n)
+for (const n of only.filter((n) => SLIDES[n])) for (const s of SLIDES[n].phones ?? SLIDES[n].crop.slice(0, 1)) needed.add(s)
 // Desktop first, so the app reloads into phone emulation once.
 const shots = SHOTS.filter((s) => needed.has(s.name)).sort((a, b) => DEVICES[a.device].mobile - DEVICES[b.device].mobile)
 
@@ -157,9 +194,9 @@ async function ready(page) {
 	await sleep(1500)
 }
 
-async function useDevice(page, device) {
+async function useDevice(page, device, scale = 2) {
 	const d = DEVICES[device]
-	await page.send('Emulation.setDeviceMetricsOverride', { width: d.width, height: d.height, deviceScaleFactor: 2, mobile: false })
+	await page.send('Emulation.setDeviceMetricsOverride', { width: d.width, height: d.height, deviceScaleFactor: scale, mobile: false })
 	if ((await page.evaluate('app.isMobile')) === d.mobile) return
 	await page.evaluate(`${d.mobile ? "localStorage.setItem('EmulateMobile', '1')" : "localStorage.removeItem('EmulateMobile')"}; setTimeout(() => location.reload(), 50); true`)
 	await sleep(1500)
@@ -210,6 +247,10 @@ async function scene(name, mode) {
 	if (name === 'cards') {
 		await open('Library.base')
 		await leaf.view.controller?.selectView?.('Cards')
+	}
+	if (name === 'moby-tasks' || name === 'moby-code') {
+		await open('Library/Moby-Dick.md', { mode: 'preview' })
+		await top(heading(name === 'moby-tasks' ? 'After reading' : 'Counting names'), 28)
 	}
 	// Tour.md's sections: the line to jump to, the heading, its offset.
 	const tour = { tasks: [22, 'Tasks', 28], code: [106, 'Code', 14], headings: [207, 'Heading 1', 28, 'h1'] }
@@ -283,7 +324,7 @@ async function main() {
 
 		const png = {}
 		for (const shot of shots) {
-			await useDevice(page, shot.device)
+			await useDevice(page, shot.device, shot.scale)
 			await page.evaluate(`(${scene})(${JSON.stringify(shot.scene)}, ${JSON.stringify(shot.mode)})`)
 			const d = DEVICES[shot.device]
 			await page.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: d.width - 1, y: d.height / 2 })
@@ -293,17 +334,31 @@ async function main() {
 			if (shot.save && only.includes(shot.name)) webp(png[shot.name], shot.name)
 		}
 
-		for (const [name, layout] of Object.entries(COVERS).filter(([n]) => only.includes(n))) {
+		const url = (shot) => `data:image/png;base64,${readFileSync(png[shot]).toString('base64')}`
+		// Renders a layout over the app at width x height, at 2x.
+		const compose = async (name, html, width, height) => {
 			await useDevice(page, 'desktop')
-			await page.send('Emulation.setDeviceMetricsOverride', { width: layout.width, height: layout.height, deviceScaleFactor: 2, mobile: false })
-			const url = (key) => `data:image/png;base64,${readFileSync(png[COVER[key]]).toString('base64')}`
-			const html = readFileSync(join(root, 'scripts', layout.html), 'utf8').replace(/\{\{(\w+)\}\}/g, (_, key) => url(key))
+			await page.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 2, mobile: false })
 			await page.evaluate(`(${cover})(${JSON.stringify(html)})`)
 			const file = join(tmp, `${name}.png`)
 			writeFileSync(file, Buffer.from((await page.send('Page.captureScreenshot', { format: 'png' })).data, 'base64'))
 			await page.evaluate("document.getElementById('tela-cover')?.remove()")
+			return file
+		}
+		for (const [name, layout] of Object.entries(COVERS).filter(([n]) => only.includes(n))) {
+			const html = readFileSync(join(root, 'scripts', layout.html), 'utf8').replace(/\{\{(\w+)\}\}/g, (_, key) => url(COVER[key]))
+			const file = await compose(name, html, layout.width, layout.height)
 			if (layout.size) thumbnail(file, name, layout.size)
 			else webp(file, name)
+		}
+		for (const [name, slide] of Object.entries(SLIDES).filter(([n]) => only.includes(n))) {
+			const [shot, x, y, w] = slide.crop ?? []
+			const figure = slide.phones
+				? `<div class="phones">${slide.phones.map((s) => `<div class="phone"><img src="${url(s)}" alt=""></div>`).join('')}</div>`
+				: `<div class="crop" style="--x: ${x}; --y: ${y}; --w: ${w}"><img src="${url(shot)}" alt=""></div>`
+			const fill = { title: slide.title, line: slide.line, figure }
+			const html = readFileSync(join(root, 'scripts', 'shots-slide.html'), 'utf8').replace(/\{\{(\w+)\}\}/g, (_, key) => fill[key])
+			webp(await compose(name, html, 1200, 800), name)
 		}
 
 		if (opt['keep-open']) {
