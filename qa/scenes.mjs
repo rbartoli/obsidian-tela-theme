@@ -131,6 +131,30 @@ export const scenes = [
 			}),
 		audit: '.hover-popover',
 	},
+	// A plugin's notice with links in it, as Theme Autoupdater's has. Notices
+	// are near-black in both modes, so links on them need their own colour.
+	{
+		name: 'notice',
+		setup: (p) =>
+			p.run(async () => {
+				await __qa.open('Tour.md', { mode: 'preview' })
+				// Short enough not to wrap, and the plain text in spans: axe can't
+				// decide on a link split across lines, or on bare text beside links.
+				const text = createFragment()
+				text.createSpan({ text: 'Tela 1.2.0 · ' })
+				text.createEl('a', { text: 'Roll back', href: '#' })
+				text.createSpan({ text: ' · ' })
+				text.createEl('a', { text: 'Notes', href: 'https://github.com/rbartoli/obsidian-tela-theme/releases', cls: 'external-link' })
+				new Notice(text, 0)
+				await __qa.settle(600)
+			}),
+		// The notice is 90% black, so axe looks through it at the header behind
+		// and can't decide. Opaque at its lightest, 90% black over white, it
+		// audits the worst case. The external-link icon is a background image,
+		// which axe won't read text over.
+		auditCss: '.notice-container .notice { background-color: #1a1a1a; } .notice .external-link { background-image: none; }',
+		audit: '.notice-container',
+	},
 	{
 		name: 'graph',
 		setup: (p) =>
@@ -486,13 +510,13 @@ export function installHelpers() {
 		},
 		// One empty tab, the file explorer showing every folder open, the right
 		// sidebar (and on mobile both drawers) closed, no Style Settings class,
-		// nothing set up for printing, no rows selected by select(), left-to-right,
+		// nothing set up for printing, no notices, no rows selected by select(), left-to-right,
 		// and no simulated Android platform class.
 		// The tab is emptied, not reused: a note reopened in its own tab comes
 		// back at its last scroll position.
 		async reset() {
 			document.body.classList.remove('tela-distinct-sidebar', 'tela-tinted-italics', 'is-android')
-			for (const el of document.querySelectorAll('body > .print')) el.remove()
+			for (const el of document.querySelectorAll('body > .print, .notice')) el.remove()
 			this.audited = new WeakSet()
 			for (const [el, state] of this.selected.splice(0)) el.classList.remove(state)
 			if (app.vault.getConfig('rightToLeft')) app.vault.setConfig('rightToLeft', false)
