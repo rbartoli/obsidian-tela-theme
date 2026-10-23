@@ -61,6 +61,10 @@ The theme sets Inter, which Obsidian ships with, for the interface and notes, an
 
 Obsidian 1.13.4 or later, on desktop and mobile. Checked with the Dataview, Tasks, Kanban, Excalidraw, Iconize and Notebook Navigator plugins, and with right-to-left text. File-tree icons are left to a plugin such as Iconize.
 
+## Updates
+
+Obsidian doesn't update themes on its own: get each release from Settings → Appearance → Check for updates, or install [Theme Autoupdater](https://community.obsidian.md/plugins/theme-autoupdater), a plugin by the same author, to have them installed at startup with a backup and one-click rollback.
+
 ## Verifying a release
 
 Each release's `theme.css` and `manifest.json` carry signed build provenance. To check that a downloaded `theme.css` was built by this repository's release workflow:

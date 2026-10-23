@@ -4,7 +4,7 @@
 
 ### 2026-10-23: the README reads right in the directory
 
-- The community directory renders every line break in the README, so the README's lines wrapped at about 90 characters broke mid-sentence on the listing ("Style Settings" / "plugin"). Each paragraph and bullet is now one line; GitHub renders it as before. The audit's screen count reads "more than 400", as in the listing's description.
+- The community directory renders every line break in the README, so the README's lines wrapped at about 90 characters broke mid-sentence on the listing ("Style Settings" / "plugin"). Each paragraph and bullet is now one line; GitHub renders it as before. The audit's screen count reads "more than 400", as in the listing's description. A new Updates section says how to get each release, by hand or with Theme Autoupdater.
 
 ## 1.2.0 (2026-10-23)
 
