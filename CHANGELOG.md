@@ -4,9 +4,9 @@
 
 ### 2026-10-23: slides for the directory's carousel
 
-- After the card, the directory's carousel showed eight bare window grabs at 1200×800. The listing shows them about 556px wide, so UI text came out near 7px, and the headings and tasks shots carried the Tour's test text. Five slides now follow the card. Each has one claim from the README over a zoomed-in crop of the app on the card's backdrop: the reading note (WCAG AA), tasks, the Library base with the sidebar and tabs (one quiet surface), code, and the phone pair. At listing size, text on the note, tasks and code slides reads at 9 to 13px; the Bases and phone slides stay near 8px and show the look rather than the text.
+- After the card, the directory's carousel showed eight bare window grabs at 1200×800. The listing shows them about 556px wide, so UI text came out near 7px, and the headings and tasks shots carried the Tour's test text. Four slides now follow the card, filling the carousel's five desktop images. Each has one claim from the README over a zoomed-in crop of the app on the card's backdrop: the reading note (WCAG AA), tasks, the Library base with the sidebar and tabs (one quiet surface), and code. At listing size, text on the note, tasks and code slides reads at 9 to 13px; the Bases slide stays near 8px and shows the look rather than the text. A phone-pair slide was dropped: the directory takes phone shots in a mobile section of their own, which keeps the README's three at 900×1600.
 - The tasks and code come from a lived-in note: `demo/Library/Moby-Dick.md` gains reading tasks, marginalia and a Python snippet. The cover's scene doesn't show it, so the cover, card and thumbnail are unchanged.
-- `scripts/shots-slide.html` lays the slides out, and `scripts/shots.mjs` writes `assets/slide-2-note.webp` to `slide-6-phones.webp` from captures at 3x, so a crop keeps full resolution. Rendered on Obsidian 1.14.5.
+- `scripts/shots-slide.html` lays the slides out, and `scripts/shots.mjs` writes `assets/slide-2-note.webp` to `slide-5-code.webp` from captures at 3x, so a crop keeps full resolution. Rendered on Obsidian 1.14.5.
 
 ## 1.2.1 (2026-10-23)
 
