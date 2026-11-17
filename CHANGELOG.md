@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### 17/11/2026: light attention orange matches the Tela app
+
+- Light mode's attention orange moves from `#bc4c00` to `#b64a00`, the value the Tela app took in rblab-io/tela#1413, so the theme stays in step with the app. The app's change lifted the colour on panels (`#ebedf3`) from 4.30:1 to 4.52:1, over WCAG AA. Dark mode's `#f76b15` is unchanged.
+- `theme.css` is rebuilt from `src/10-tokens.css`; `npm run check` and the lint on `src/` and `theme.css` pass. `npm run qa` on Obsidian 1.15.1: 0 violations in 422 screens.
+
 ### 2026-10-23: slides for the directory's carousel
 
 - After the card, the directory's carousel showed eight bare window grabs at 1200×800. The listing shows them about 556px wide, so UI text came out near 7px, and the headings and tasks shots carried the Tour's test text. Four slides now follow the card, filling the carousel's five desktop images. Each has one claim from the README over a zoomed-in crop of the app on the card's backdrop: the reading note (WCAG AA), tasks, the Library base with the sidebar and tabs (one quiet surface), and code. At listing size, text on the note, tasks and code slides reads at 9 to 13px; the Bases slide stays near 8px and shows the look rather than the text. A phone-pair slide was dropped: the directory takes phone shots in a mobile section of their own, which keeps the README's three at 900×1600.
