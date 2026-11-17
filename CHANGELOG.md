@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 17/11/2026: certified against Obsidian 1.15.1
+
+- `qa/obsidian-baseline.json` now holds 1.15.1, certified after `npm run qa` on it: 0 violations in 422 screens. The weekly canary compares against it from here on, so its issue stops repeating what 1.14.4 to 1.15.1 changed (issue 26).
+- Triage of that drift report: nearly all of it is the minifier rewriting `0.15` as `.15`, quote styles and selector spacing, or Obsidian regrouping selectors with no new value. The one change in a variable the theme sets is `--titlebar-background`, which `body.is-focused` now also sets on the ribbon, sidebar toggle and top tab bar; the audit passes, and the look is unchecked beyond that. `--callout-color` now takes a valid CSS colour; the audit passes with it, and callout colours are not checked by eye.
+- Not covered: 1.15.1 adds 52 variables, including `--mermaid-*` for the new diagram renderer. No QA scene renders a diagram, so diagram colours in both modes are unchecked; that stays in the project note's To do.
+
 ### 17/11/2026: light attention orange matches the Tela app
 
 - Light mode's attention orange moves from `#bc4c00` to `#b64a00`, the value the Tela app took in rblab-io/tela#1413, so the theme stays in step with the app. The app's change lifted the colour on panels (`#ebedf3`) from 4.30:1 to 4.52:1, over WCAG AA. Dark mode's `#f76b15` is unchanged.
