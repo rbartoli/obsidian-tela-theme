@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 19/11/2026: no stray scrollbar in callouts with inline code
+
+- A callout could show a horizontal scrollbar when inline code wrapped at the end of a line. Wrapped code keeps its padding at the break, Chromium doesn't count that padding when it fits the line, and the code ended up to 4px past the text. Obsidian's callout content scrolls sideways, so those pixels drew a bar. Obsidian's default theme does the same.
+- 0.3em of the card's end padding moves onto the callout content, which gives the code room and leaves the text column where it was.
+- Checked on Obsidian 1.15.1 with a long callout of task items, at 41 window widths from 420 to 1900px and text sizes of 14 and 16px. Live preview went from 9 of 82 layouts with a bar to 0 of 82. A sweep of reading view and live preview together went from 9 of 120 measured layouts with a bar to 0 of 120; the callout hadn't rendered in the other 44 of its 164 layouts. The text column kept its width in all 120, and a wide table in a callout still scrolls, left to right and right to left. `npm run qa`: 0 violations in 422 screens.
+
 ### 17/11/2026: certified against Obsidian 1.15.1
 
 - `qa/obsidian-baseline.json` now holds 1.15.1, certified after `npm run qa` on it: 0 violations in 422 screens. The weekly canary compares against it from here on, so its issue stops repeating what 1.14.4 to 1.15.1 changed (issue 26).

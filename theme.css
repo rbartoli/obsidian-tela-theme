@@ -560,8 +560,17 @@ body {
 	--code-background: var(--background-primary);
 
 	position: relative;
-	padding-inline: 22px 12px;
+	padding-inline: 22px calc(12px - 0.3em);
 	background-color: color-mix(in srgb, var(--text-normal) 4%, transparent);
+}
+
+/* Inline code that wraps keeps its padding at the break, and Chromium doesn't
+   count that padding when it fits the line, so the code can end 0.3em past
+   the text. The content box scrolls sideways for wide tables, so those few
+   pixels drew a scrollbar. This padding, moved here from the card's, gives
+   them room and leaves the text where it was. */
+.callout-content {
+	padding-inline-end: 0.3em;
 }
 
 .callout::before {
