@@ -1,6 +1,15 @@
 # Changelog
 
-## Unreleased
+## 1.2.2 (19/11/2026)
+
+- Checked: `npm run qa` on the release, Obsidian 1.15.1: 0 violations in 488 screens.
+
+### 19/11/2026: diagram labels read on yellow in light mode
+
+- Obsidian 1.15 draws diagrams with its Pele renderer, which takes its colours from the theme and writes the note's ground colour on them. Light mode's yellow `#bf8700`, the sixth series colour, carried that text at 2.96:1: the sixth pie slice, timeline period and git branch label.
+- The sixth series now takes `#9a6700` in light mode, 4.58:1. Yellow stays as it was everywhere else, since highlights, callouts and canvas cards tint from it. Dark mode is unchanged.
+- A new QA scene, `diagrams`, renders 13 diagram types and uses all eight series colours, in dark and light, on desktop, phone and tablet. axe can't judge SVG text, so `qa/diagrams.mjs` measures each label against the shapes under it and fails below 4.5:1. It fails on 1.2.1's colours in light mode on every device and passes now.
+- Not covered: diagrams in PDF export, and accent colours other than Tela's blue.
 
 ### 19/11/2026: no stray scrollbar in callouts with inline code
 

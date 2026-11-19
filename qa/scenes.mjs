@@ -5,6 +5,7 @@
 // __qa), not this module's scope.
 
 import { assertDateInputSeparation } from './date-inputs.mjs'
+import { assertDiagramContrast } from './diagrams.mjs'
 
 // Phone and tablet are Obsidian's own mobile emulation: the window size picks
 // between them, at 600px (app.js: "(min-width: 600px) and (min-height: 600px)").
@@ -34,7 +35,7 @@ async function dateInputs(p, { android = false, rtl = false } = {}) {
 // name: used in --scene and output paths. scroll: the scroller to page
 // through, one screenshot and audit per screenful. only: the devices a scene
 // applies to; modes: the colour schemes. own: needs this repo's theme (a Style
-// Settings class). plugin: needs that community plugin (skipped with
+// Settings class, or a check held to this theme alone). plugin: needs that community plugin (skipped with
 // --no-plugins).
 // auditCss: applied during the audit only, after the screenshot, to hide
 // transparent layers that stop axe from finding the text's background.
@@ -69,6 +70,15 @@ export const scenes = [
 	// Obsidian 1.14's coloured highlights, in every colour and inside other blocks.
 	{ name: 'highlights-reading', scroll: READING, setup: (p) => p.run(() => __qa.open('Highlights.md', { mode: 'preview' })) },
 	{ name: 'highlights-editing', setup: (p) => p.run(() => __qa.edit('Highlights.md')) },
+	{
+		name: 'diagrams',
+		own: true,
+		scroll: READING,
+		setup: async (p) => {
+			await p.run(() => __qa.open('Diagrams.md', { mode: 'preview' }))
+			await assertDiagramContrast(p)
+		},
+	},
 	{
 		name: 'search',
 		setup: (p) =>
