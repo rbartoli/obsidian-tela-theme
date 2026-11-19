@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### 19/11/2026: the Obsidian canary closes its issue once a release is certified
+
+- The canary opened or updated its `obsidian-update` issue but never closed it, so #26 (Obsidian 1.15.1) stayed open after #30 certified that release. It was the repo's only issue, and the directory's Scorecard read "Closed 0% of 1 issues".
+- When the check comes back clean, the canary now closes the open issue with a link to the run. It doesn't close one when the check itself fails, because a download error writes no report either.
+
 ### 19/11/2026: diagrams hold up with any accent, and print without zoom buttons
 
 - In light mode, and so in every PDF export, which Obsidian always renders light, diagrams wrote near-white text on the accent. A pale accent made that text hard to read: `#ffc800` gave a default Gantt bar's label 1.46:1, and cyan, green, orange, pink and purple gave 1.88:1 to 2.79:1.

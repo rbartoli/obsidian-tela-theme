@@ -134,7 +134,8 @@ npm run drift -- --obsidian 1.14.4 --update-baseline  # certify a release once Q
 ```
 
 `.github/workflows/obsidian-canary.yml` runs it every Monday and files what it finds as an
-issue labelled `obsidian-update`.
+issue labelled `obsidian-update`. Once the release is certified and the check comes back
+clean, the next run closes that issue.
 
 ## Releasing (maintainers)
 
