@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### 17/11/2026: certified against Obsidian 1.15.1
+
+- `qa/obsidian-baseline.json` now holds 1.15.1, certified after `npm run qa` on it: 0 violations in 422 screens. The weekly canary compares against it from here on, so its issue stops repeating what 1.14.4 to 1.15.1 changed (issue 26).
+- Triage of that drift report: nearly all of it is the minifier rewriting `0.15` as `.15`, quote styles and selector spacing, or Obsidian regrouping selectors with no new value. The one change in a variable the theme sets is `--titlebar-background`, which `body.is-focused` now also sets on the ribbon, sidebar toggle and top tab bar; the audit passes, and the look is unchecked beyond that. `--callout-color` now takes a valid CSS colour; the audit passes with it, and callout colours are not checked by eye.
+- Not covered: 1.15.1 adds 52 variables, including `--mermaid-*` for the new diagram renderer. No QA scene renders a diagram, so diagram colours in both modes are unchecked; that stays in the project note's To do.
+
+### 17/11/2026: light attention orange matches the Tela app
+
+- Light mode's attention orange moves from `#bc4c00` to `#b64a00`, the value the Tela app took in rblab-io/tela#1413, so the theme stays in step with the app. The app's change lifted the colour on panels (`#ebedf3`) from 4.30:1 to 4.52:1, over WCAG AA. Dark mode's `#f76b15` is unchanged.
+- `theme.css` is rebuilt from `src/10-tokens.css`; `npm run check` and the lint on `src/` and `theme.css` pass. `npm run qa` on Obsidian 1.15.1: 0 violations in 422 screens.
+
 ### 2026-10-23: slides for the directory's carousel
 
 - After the card, the directory's carousel showed eight bare window grabs at 1200×800. The listing shows them about 556px wide, so UI text came out near 7px, and the headings and tasks shots carried the Tour's test text. Four slides now follow the card, filling the carousel's five desktop images. Each has one claim from the README over a zoomed-in crop of the app on the card's backdrop: the reading note (WCAG AA), tasks, the Library base with the sidebar and tabs (one quiet surface), and code. At listing size, text on the note, tasks and code slides reads at 9 to 13px; the Bases slide stays near 8px and shows the look rather than the text. A phone-pair slide was dropped: the directory takes phone shots in a mobile section of their own, which keeps the README's three at 900×1600.
