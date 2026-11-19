@@ -95,6 +95,7 @@
 			"--link-unresolved-opacity",
 			"--menu-background",
 			"--menu-border-color",
+			"--mermaid-color-6",
 			"--mobile-sidebar-background",
 			"--modal-border-color",
 			"--nav-item-background-active",
@@ -152,6 +153,7 @@
 			".HyperMD-header-6",
 			".HyperMD-quote",
 			".callout",
+			".callout-content",
 			".cm-blockquote-border",
 			".cm-em",
 			".cm-foldPlaceholder",
@@ -702,6 +704,9 @@
 		},
 		"--menu-border-color": {
 			"body": "var(--background-modifier-border-hover)"
+		},
+		"--mermaid-color-6": {
+			"body": "var(--color-yellow)"
 		},
 		"--mobile-sidebar-background": {
 			".is-mobile": "var(--background-primary)",

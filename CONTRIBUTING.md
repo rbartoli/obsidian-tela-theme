@@ -77,7 +77,8 @@ violation. The date-input scenes also check native calendar-icon and text bounds
 including empty and filled date/time fields with Android's platform CSS and RTL. Mobile
 emulation alone keeps desktop date padding, so those scenes explicitly add `is-android`.
 This exercises platform CSS in Electron; it does not emulate Android's native picker.
-The report, screenshots and contact sheets go to `qa/out/`.
+The diagrams scene measures every label's contrast itself, because axe can't judge SVG
+text, and fails below 4.5:1. The report, screenshots and contact sheets go to `qa/out/`.
 
 ```sh
 npm run qa                                  # every scene, on the latest Obsidian

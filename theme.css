@@ -88,6 +88,7 @@
 	--tela-cyan: #1b7c83;
 	--tela-purple: #8250df;
 	--tela-yellow: #bf8700;
+	--tela-diagram-yellow: #9a6700;
 	--tela-code-keyword: #cf222e;
 	--tela-code-function: #8250df;
 	--tela-code-string: #116329;
@@ -158,6 +159,13 @@
 .theme-light {
 	--text-accent: color-mix(in oklch, var(--color-accent) 82%, #000);
 	--text-accent-hover: color-mix(in oklch, var(--color-accent) 70%, #000);
+}
+
+/* Diagrams write the note's ground colour on their series colours. Under that
+   text light mode's yellow reads 2.96:1, so the sixth series takes a darker
+   step of the same family. */
+.theme-light {
+	--mermaid-color-6: var(--tela-diagram-yellow);
 }
 
 /* Accent fills (primary buttons, toggles, the plugin browser's "Installed")
