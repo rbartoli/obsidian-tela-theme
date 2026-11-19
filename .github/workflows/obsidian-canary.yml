@@ -2,7 +2,8 @@ name: Obsidian canary
 
 # Checks the newest Obsidian release for changes that would quietly break the
 # theme (npm run drift), and files what it finds as an issue labelled
-# obsidian-update, updating the open one if there is one.
+# obsidian-update, updating the open one if there is one. Once a release comes
+# back clean, it closes that issue: the release has been certified.
 
 on:
   schedule:
@@ -48,6 +49,17 @@ jobs:
             gh issue edit "$issue" --title "$title" --body-file drift.md
           else
             gh issue create --label obsidian-update --title "$title" --body-file drift.md
+          fi
+      - name: Close the issue once the release is certified
+        if: steps.drift.outcome == 'success' && hashFiles('drift.md') == ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          issue="$(gh issue list --label obsidian-update --state open --limit 1 --json number --jq '.[0].number')"
+          if [ -n "$issue" ]; then
+            gh issue close "$issue" --reason completed \
+              --comment "Nothing the theme relies on has gone or changed since the certified release: $RUN"
           fi
       - name: Fail if something the theme relies on has gone
         if: steps.drift.outcome == 'failure'
