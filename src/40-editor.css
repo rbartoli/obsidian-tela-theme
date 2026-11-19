@@ -425,4 +425,10 @@ li[data-task="-"],
 		/* stylelint-disable-next-line plugin/no-unsupported-browser-features */
 		break-after: avoid;
 	}
+
+	/* A wide diagram's zoom buttons mean nothing on paper, and cover its corner.
+	   Pele sets their display inline, so visibility is what hides them. */
+	.print .pele-zoom {
+		visibility: hidden;
+	}
 }

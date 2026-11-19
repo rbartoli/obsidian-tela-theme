@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### 19/11/2026: diagrams hold up with any accent, and print without zoom buttons
+
+- In light mode, and so in every PDF export, which Obsidian always renders light, diagrams wrote near-white text on the accent. A pale accent made that text hard to read: `#ffc800` gave a default Gantt bar's label 1.46:1, and cyan, green, orange, pink and purple gave 1.88:1 to 2.79:1.
+- Light mode now caps the diagram accent at a lightness of 0.5 in OKLCH, keeping its hue. Across 4,210 accents the label holds at least 4.6:1, and `#ffc800` becomes `#8c5800`. Tela's blue moves from `#096cdc` to `#005dcc`, in diagrams only. Dark mode is unchanged.
+- A wide diagram no longer prints its zoom buttons, which covered its corner. Obsidian's default theme still prints them.
+- The `diagrams` QA scene now also measures every label with `#ffc800` as the accent. It fails without the cap in light mode and passes now.
+- Checked on Obsidian 1.15.1: `npm run qa`, 0 violations in 488 screens, and real PDF exports with the blue and yellow accents. Not covered: PDF export on phones and tablets.
+
 ## 1.2.2 (19/11/2026)
 
 - Checked: `npm run qa` on the release, Obsidian 1.15.1: 0 violations in 488 screens.
