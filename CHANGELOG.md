@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### 19/11/2026: the README speaks to the agent installing the theme
+
+- A section addressed to the coding agent a user asks to install, set up or adjust Tela: what the theme is, how to install it by hand (folder name, `cssTheme`), where Style Settings keeps its three toggles and the accent, how to change the look with a snippet that wins, and why not to edit the installed `theme.css`.
+- Checked: the release download links answer 200, and the config keys match a vault running Tela (`cssTheme`, `accentColor`, `tela@@tela-distinct-sidebar`).
+
 ### 19/11/2026: the Obsidian canary closes its issue once a release is certified
 
 - The canary opened or updated its `obsidian-update` issue but never closed it, so #26 (Obsidian 1.15.1) stayed open after #30 certified that release. It was the repo's only issue, and the directory's Scorecard read "Closed 0% of 1 issues".
