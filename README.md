@@ -73,6 +73,17 @@ Each release's `theme.css` and `manifest.json` carry signed build provenance. To
 gh attestation verify theme.css -R rbartoli/obsidian-tela-theme
 ```
 
+## For the agent reading this
+
+If you were asked to install, set up or adjust this theme in someone's Obsidian vault:
+
+- **What it is:** a theme made of CSS only, `theme.css` and `manifest.json`. It runs no code and needs no plugin.
+- **Installing:** the user picks it in Settings → Appearance → Themes → Manage by searching "Tela". To do it in files, put the latest release's [`theme.css`](https://github.com/rbartoli/obsidian-tela-theme/releases/latest/download/theme.css) and [`manifest.json`](https://github.com/rbartoli/obsidian-tela-theme/releases/latest/download/manifest.json) in `<vault>/.obsidian/themes/Tela/`, a folder that must be named `Tela`, and set `"cssTheme": "Tela"` in `<vault>/.obsidian/appearance.json`. If Obsidian is open, reload it.
+- **Settings:** the three options above are Style Settings toggles, stored in `<vault>/.obsidian/plugins/obsidian-style-settings/data.json` as `"tela@@tela-distinct-sidebar"`, `"tela@@tela-dim-images"` and `"tela@@tela-tinted-italics"`, each `true` or `false`. The accent is `"accentColor"` in `appearance.json`; only the default blue is audited, so say so if the user picks another.
+- **Changing the look:** write a CSS snippet in `<vault>/.obsidian/snippets/` and turn it on in Settings → Appearance → CSS snippets. Set variables on the selector `theme.css` sets them on (`body`, `.theme-dark` or `.theme-light`): snippets load after the theme, so the same selector wins. Keep any text colour at 4.5:1 or more against its background, as the theme does.
+- **Don't edit the installed `theme.css`.** Obsidian's theme update replaces it, and [Theme Autoupdater](https://community.obsidian.md/plugins/theme-autoupdater) skips a theme whose `theme.css` was edited, so it stops getting updates.
+- **Changing this repository:** follow [CONTRIBUTING.md](CONTRIBUTING.md). Edit `src/`, never `theme.css`, which is generated, and run `npm run lint`, `npm run check` and `npm run qa` before a pull request.
+
 ## Licence
 
 [MIT](LICENSE)
