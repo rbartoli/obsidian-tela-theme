@@ -1,3 +1,5 @@
+const PALE_ACCENT = '#ffc800'
+
 // axe judges text by its CSS color, but diagram labels are SVG text painted with
 // fill, so it cannot see their contrast. This measures every label against the
 // shapes painted under its centre. Obsidian draws diagrams with Pele from 1.15.
@@ -77,11 +79,29 @@ async function measureLabels() {
 	}
 }
 
-export async function assertDiagramContrast(page) {
+async function assertLabels(page, accent) {
 	const { rendered, expected, low } = await page.evaluate(`(${measureLabels})()`)
 	if (rendered !== expected) throw new Error(`rendered ${rendered} of ${expected} diagrams`)
 	if (low.length) {
 		const pairs = [...new Map(low.map((l) => [`${l.ink} on ${l.under}`, l])).values()]
-		throw new Error(`${low.length} diagram labels under 4.5:1: ${pairs.map((l) => `"${l.text}" ${l.ink} on ${l.under} is ${l.ratio.toFixed(2)}:1`).join('; ')}`)
+		throw new Error(`${low.length} diagram labels under 4.5:1 with ${accent}: ${pairs.map((l) => `"${l.text}" ${l.ink} on ${l.under} is ${l.ratio.toFixed(2)}:1`).join('; ')}`)
+	}
+}
+
+const setAccent = (page, colour) => page.run((colour) => {
+	app.vault.setConfig('accentColor', colour)
+	app.updateAccentColor()
+	return __qa.settle()
+}, colour)
+
+// Diagrams fill some shapes with the accent, so they hold for a pale one too.
+// The rest of the audit covers Tela's blue only.
+export async function assertDiagramContrast(page) {
+	await assertLabels(page, "Tela's accent")
+	await setAccent(page, PALE_ACCENT)
+	try {
+		await assertLabels(page, PALE_ACCENT)
+	} finally {
+		await setAccent(page, '')
 	}
 }

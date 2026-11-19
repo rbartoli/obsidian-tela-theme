@@ -161,11 +161,13 @@
 	--text-accent-hover: color-mix(in oklch, var(--color-accent) 70%, #000);
 }
 
-/* Diagrams write the note's ground colour on their series colours. Under that
-   text light mode's yellow reads 2.96:1, so the sixth series takes a darker
-   step of the same family. */
+/* Diagrams write the note's ground colour on their series colours and accent.
+   Under that text light mode's yellow reads 2.96:1, so the sixth series takes
+   a darker step of the same family. The accent is capped in lightness, which
+   holds 4.5:1 for any accent the user picks, and PDF export is always light. */
 .theme-light {
 	--mermaid-color-6: var(--tela-diagram-yellow);
+	--mermaid-accent: oklch(from var(--color-accent) min(l, 0.5) c h);
 }
 
 /* Accent fills (primary buttons, toggles, the plugin browser's "Installed")
@@ -861,6 +863,12 @@ li[data-task="-"],
 	.print :is(h1, h2, h3, h4, h5, h6) {
 		/* stylelint-disable-next-line plugin/no-unsupported-browser-features */
 		break-after: avoid;
+	}
+
+	/* A wide diagram's zoom buttons mean nothing on paper, and cover its corner.
+	   Pele sets their display inline, so visibility is what hides them. */
+	.print .pele-zoom {
+		visibility: hidden;
 	}
 }
 

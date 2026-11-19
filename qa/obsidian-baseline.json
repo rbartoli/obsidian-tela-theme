@@ -95,6 +95,7 @@
 			"--link-unresolved-opacity",
 			"--menu-background",
 			"--menu-border-color",
+			"--mermaid-accent",
 			"--mermaid-color-6",
 			"--mobile-sidebar-background",
 			"--modal-border-color",
@@ -239,7 +240,8 @@
 		".el-h5",
 		".el-h6",
 		".mod-left-split",
-		".mod-right-split"
+		".mod-right-split",
+		".pele-zoom"
 	],
 	"defaults": {
 		"--accent-h": {
@@ -704,6 +706,9 @@
 		},
 		"--menu-border-color": {
 			"body": "var(--background-modifier-border-hover)"
+		},
+		"--mermaid-accent": {
+			"body": "var(--interactive-accent)"
 		},
 		"--mermaid-color-6": {
 			"body": "var(--color-yellow)"
